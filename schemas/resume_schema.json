@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/your-org/jtr-generator/schemas/resume_schema.json",
+  "title": "Japanese Traditional Resume",
+  "description": "日本の伝統的な履歴書データのスキーマ定義",
+  "type": "object",
+  "required": ["personal_info", "education", "work_history"],
+  "properties": {
+    "personal_info": {
+      "type": "object",
+      "description": "個人情報",
+      "required": ["name", "name_kana", "birthdate", "gender", "address", "phone", "email"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "氏名（漢字）",
+          "minLength": 1,
+          "examples": ["山田太郎", "佐藤花子"]
+        },
+        "name_kana": {
+          "type": "string",
+          "description": "氏名（ふりがな）",
+          "minLength": 1,
+          "pattern": "^[ぁ-んー]+$",
+          "examples": ["やまだたろう", "さとうはなこ"]
+        },
+        "birthdate": {
+          "type": "string",
+          "description": "生年月日（ISO 8601形式: YYYY-MM-DD）",
+          "format": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "examples": ["1990-04-01", "1995-07-15"]
+        },
+        "gender": {
+          "type": "string",
+          "description": "性別",
+          "enum": ["男性", "女性", "無回答"],
+          "examples": ["男性", "女性"]
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "郵便番号（ハイフン付き7桁）",
+          "pattern": "^[0-9]{3}-[0-9]{4}$",
+          "examples": ["150-0041", "100-0001"]
+        },
+        "address": {
+          "type": "string",
+          "description": "現住所（都道府県から番地まで）",
+          "minLength": 1,
+          "examples": ["東京都渋谷区神南1-1-1", "大阪府大阪市北区梅田1-1-1"]
+        },
+        "phone": {
+          "type": "string",
+          "description": "電話番号（固定電話、ハイフン付き）",
+          "pattern": "^[0-9]{2,4}-[0-9]{2,4}-[0-9]{4}$",
+          "examples": ["03-1234-5678", "06-1234-5678"]
+        },
+        "mobile": {
+          "type": "string",
+          "description": "携帯電話番号（ハイフン付き）",
+          "pattern": "^0[789]0-[0-9]{4}-[0-9]{4}$",
+          "examples": ["090-1234-5678", "080-9876-5432"]
+        },
+        "email": {
+          "type": "string",
+          "description": "メールアドレス",
+          "format": "email",
+          "examples": ["yamada@example.com", "satou@example.co.jp"]
+        },
+        "photo_path": {
+          "type": "string",
+          "description": "証明写真のファイルパス（オプション）",
+          "examples": ["photos/yamada.jpg", "assets/photo.png"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "education": {
+      "type": "array",
+      "description": "学歴（時系列順）",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["date", "type", "school"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "年月（ISO 8601形式: YYYY-MM）",
+            "pattern": "^[0-9]{4}-[0-9]{2}$",
+            "examples": ["2006-03", "2010-03"]
+          },
+          "type": {
+            "type": "string",
+            "description": "種別",
+            "enum": ["入学", "卒業", "中退"],
+            "examples": ["卒業", "入学"]
+          },
+          "school": {
+            "type": "string",
+            "description": "学校名（正式名称、略語禁止）",
+            "minLength": 1,
+            "examples": ["東京都立○○高等学校", "○○大学"]
+          },
+          "department": {
+            "type": "string",
+            "description": "学部・学科（オプション）",
+            "examples": ["工学部 情報工学科", "経済学部 経済学科"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "work_history": {
+      "type": "array",
+      "description": "職歴（時系列順）",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": ["date", "type", "company"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "年月（ISO 8601形式: YYYY-MM）",
+            "pattern": "^[0-9]{4}-[0-9]{2}$",
+            "examples": ["2010-04", "2015-03"]
+          },
+          "type": {
+            "type": "string",
+            "description": "種別",
+            "enum": ["入社", "退職", "異動"],
+            "examples": ["入社", "退職"]
+          },
+          "company": {
+            "type": "string",
+            "description": "会社名（正式名称、株式会社の位置に注意）",
+            "minLength": 1,
+            "examples": ["株式会社○○", "○○株式会社"]
+          },
+          "department": {
+            "type": "string",
+            "description": "部署・役職（オプション）",
+            "examples": ["営業部 主任", "開発部"]
+          },
+          "note": {
+            "type": "string",
+            "description": "備考（退職理由等、オプション）",
+            "examples": ["一身上の都合により", "現在に至る"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "qualifications": {
+      "type": "array",
+      "description": "資格・免許（取得年月順）",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": ["date", "name"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "取得年月（ISO 8601形式: YYYY-MM）",
+            "pattern": "^[0-9]{4}-[0-9]{2}$",
+            "examples": ["2012-10", "2014-06"]
+          },
+          "name": {
+            "type": "string",
+            "description": "資格名（正式名称、略語禁止）",
+            "minLength": 1,
+            "examples": ["基本情報技術者試験 合格", "普通自動車第一種運転免許"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additional_info": {
+      "type": "object",
+      "description": "追加情報",
+      "properties": {
+        "motivation": {
+          "type": "string",
+          "description": "志望動機（200-300文字程度推奨）",
+          "minLength": 1,
+          "maxLength": 1000,
+          "examples": ["貴社の○○事業に魅力を感じ、応募いたしました。\nこれまでの経験を活かし、貴社の発展に貢献したいと考えております。"]
+        },
+        "self_pr": {
+          "type": "string",
+          "description": "自己PR（200-300文字程度推奨）",
+          "minLength": 1,
+          "maxLength": 1000,
+          "examples": ["私は5年間のシステム開発経験があります。\n特にバックエンド開発を得意としており、\n大規模システムの設計・実装に携わってきました。"]
+        },
+        "remarks": {
+          "type": "string",
+          "description": "本人希望欄（オプション）",
+          "maxLength": 500,
+          "examples": ["勤務地は東京都内を希望します。"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
