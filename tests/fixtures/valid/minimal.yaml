@@ -1,0 +1,15 @@
+personal_info:
+  name: 田中一郎
+  name_kana: たなかいちろう
+  birthdate: 1995-01-15
+  gender: 男性
+  address: 東京都千代田区丸の内1-1-1
+  phone: 03-9999-9999
+  email: tanaka@example.com
+
+education:
+  - date: 2013-03
+    type: 卒業
+    school: 東京都立〇〇高等学校
+
+work_history: []
