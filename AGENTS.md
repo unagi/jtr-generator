@@ -142,34 +142,182 @@ additional_info:    # 志望動機・自己PR
 
 ## アーキテクチャ方針
 
+### 実装言語
+
+**Python 3.11+**
+
+すべての実装はPythonで統一します。これにより:
+- 型ヒント（Type Hints）による型安全性
+- ReportLabによる高品質なPDF生成
+- PyYAMLとjsonschemaによるデータ処理
+- 豊富なエコシステムとライブラリ
+
 ### ディレクトリ構造
 
 ```
 jtr-generator/
-├── src/
-│   ├── models/          # データモデル定義
-│   ├── generators/      # PDF生成ロジック
-│   ├── validators/      # 入力データ検証
-│   └── formatters/      # 日付・テキスト整形
-├── schemas/             # JSON Schema定義
-├── templates/           # 履歴書テンプレート
-├── fonts/               # ユーザー提供フォント配置先
-├── tests/               # テストコード
-├── examples/            # サンプルデータ
+├── src/                    # 共通実装（LLM非依存）
+│   ├── models/             # データモデル定義
+│   ├── generators/         # PDF生成ロジック
+│   ├── validators/         # 入力データ検証
+│   └── formatters/         # 日付・テキスト整形
+├── schemas/                # JSON Schema定義
+│   └── resume_schema.json
+├── examples/               # サンプルデータ
 │   ├── sample_resume.yaml
 │   └── sample_resume.json
-├── config.yaml          # 設定ファイル
-└── docs/                # ドキュメント
+├── platforms/              # プラットフォーム別実装
+│   ├── claude/             # Claude Skills用
+│   │   ├── skill.json      # Claude Skills定義
+│   │   ├── main.py         # エントリーポイント
+│   │   ├── config.yaml     # ユーザー設定テンプレート
+│   │   └── README.md       # Claude固有の説明
+│   ├── gemini/             # Gemini Skills用（将来）
+│   │   └── ...
+│   └── chatgpt/            # ChatGPT Skills用（将来）
+│       └── ...
+├── build/                  # ビルド出力
+│   ├── claude.zip          # Claude Skillsパッケージ
+│   ├── gemini.zip          # Gemini Skillsパッケージ（将来）
+│   └── chatgpt.zip         # ChatGPT Skillsパッケージ（将来）
+├── fonts/                  # フォント配置先（ユーザーが配置）
+│   ├── .gitkeep
+│   └── README.md           # フォント配置方法の説明
+├── tests/                  # テストコード
+└── docs/                   # ドキュメント
 ```
+
+### マルチプラットフォーム対応
+
+**設計方針:**
+- **src/**: LLM非依存の共通実装（再利用可能）
+- **platforms/**: 各LLMプラットフォーム固有の統合コード
+- **build/**: 各プラットフォーム向けのパッケージ（ZIP）
+
+**ビルドプロセス:**
+
+各プラットフォームのパッケージ（例: `build/claude.zip`）は以下を含む:
+1. `src/` の共通実装
+2. `schemas/` のスキーマ定義
+3. `platforms/{platform}/` の固有ファイル
+4. ユーザーが配置した `fonts/`（オプション）
+
+**プラットフォーム別の責務:**
+
+| コンポーネント | 説明 | 共通 | Claude | Gemini | ChatGPT |
+|---------------|------|------|--------|--------|---------|
+| src/* | 実装ロジック | ✅ | - | - | - |
+| schemas/* | データ定義 | ✅ | - | - | - |
+| skill.json | メタデータ | - | ✅ | ✅ | ✅ |
+| main.py | エントリーポイント | - | ✅ | ✅ | ✅ |
+| config.yaml | 設定テンプレート | - | ✅ | ✅ | ✅ |
 
 ### モジュール分割方針
 
-- **models**: データクラス定義（型安全性を重視）
-- **generators**: LLM Skills APIを呼び出しPDF生成
-- **validators**: 必須項目チェック、フォーマット検証、JSON Schema突合
-- **formatters**: 和暦変換、正式名称変換等のユーティリティ
+**src/models/** - データモデル定義
+- Python dataclassesまたはPydanticを使用
+- 型安全性を重視
+- JSON Schemaとの整合性を保つ
+
+**src/generators/** - PDF生成ロジック
+- ReportLabを使用した高品質PDF生成
+- JIS規格準拠のレイアウト実装
+- フォント設定は外部から注入
+
+**src/validators/** - バリデーション
+- JSON Schema突合
+- 必須項目チェック
+- フォーマット検証
+
+**src/formatters/** - ユーティリティ
+- 和暦変換（西暦 ↔ 令和/平成/昭和）
+- 正式名称変換
+- 日付フォーマット
+
+### 共通実装インターフェース
+
+#### PDF生成
+
+```python
+from typing import Dict, Any
+from pathlib import Path
+
+def generate_resume_pdf(
+    data: Dict[str, Any],
+    options: Dict[str, Any],
+    output_path: Path
+) -> None:
+    """
+    履歴書PDFを生成（LLM非依存）
+
+    Args:
+        data: schemas/resume_schema.jsonに準拠した履歴書データ
+        options: 生成オプション（LLM環境から注入される）
+            - paper_size: 'A4' or 'B5'
+            - date_format: 'seireki' or 'wareki'
+            - fonts: フォント設定（LLM環境依存）
+                - main: 本文フォントの絶対パス
+                - heading: 見出しフォントの絶対パス（optional）
+        output_path: 出力PDFファイルパス
+
+    Raises:
+        ValidationError: データがスキーマに準拠しない場合
+        FontError: フォントファイルが見つからない場合
+    """
+    pass
+```
+
+#### データ読み込み
+
+```python
+def load_resume_data(file_path: Path) -> Dict[str, Any]:
+    """
+    YAML/JSONファイルから履歴書データを読み込み（LLM非依存）
+
+    Args:
+        file_path: YAMLまたはJSONファイルのパス
+
+    Returns:
+        履歴書データ（JSON Schema準拠）
+
+    Raises:
+        ValidationError: スキーマバリデーション失敗時
+        FileNotFoundError: ファイルが存在しない場合
+    """
+    pass
+```
+
+#### 対話的生成
+
+```python
+def extract_info_from_text(text: str) -> tuple[Dict[str, Any], list[str]]:
+    """
+    チャットテキストから履歴書情報を抽出（LLM依存部分あり）
+
+    Args:
+        text: ユーザー入力テキスト
+
+    Returns:
+        (抽出された情報, 不足している必須項目のリスト)
+    """
+    pass
+
+def generate_questions(missing_fields: list[str]) -> str:
+    """
+    不足項目に対する質問を生成（LLM非依存）
+
+    Args:
+        missing_fields: 不足している項目のリスト
+
+    Returns:
+        質問テキスト
+    """
+    pass
+```
 
 ### 設定ファイル（config.yaml）
+
+プラットフォーム固有ディレクトリ（例: `platforms/claude/config.yaml`）に配置:
 
 ```yaml
 options:
@@ -177,9 +325,11 @@ options:
   paper_size: A4          # 'A4' or 'B5'
 
 fonts:
-  main: fonts/main.ttf           # 本文用フォント
-  heading: fonts/heading.ttf     # 見出し用フォント（optional）
+  main: fonts/main.ttf           # 本文用フォント（相対パス）
+  heading: fonts/heading.ttf     # 見出し用フォント（相対パス、optional）
 ```
+
+**注意**: フォントパスは相対パスで記述し、各プラットフォームの実装（main.py）で絶対パスに解決します。
 
 ## 出力フォーマット要件
 
