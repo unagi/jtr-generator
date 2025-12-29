@@ -214,3 +214,5 @@ outputs/*.jpg
 fonts/*
 !fonts/.gitkeep
 !fonts/README.md
+!fonts/BIZ_UDMincho/
+!fonts/BIZ_UDMincho/*
