@@ -9,6 +9,13 @@ personal_info:
   mobile: 090-1234-5678
   email: yamada@example.com
 
+contact_info:
+  postal_code: 100-0001
+  address: 東京都千代田区丸の内1-1-1
+  address_kana: とうきょうとちよだくまるのうち
+  phone: 03-9876-5432
+  mobile: 080-1111-2222
+
 education:
   - date: 2006-03
     type: 卒業
@@ -49,3 +56,6 @@ additional_info:
     私は5年間のシステム開発経験があります。
     特にバックエンド開発を得意としており、
     大規模システムの設計・実装に携わってきました。
+
+  remarks: |
+    勤務地は東京都内を希望します。

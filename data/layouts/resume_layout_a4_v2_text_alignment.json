@@ -1,0 +1,165 @@
+{
+  "format_version": "v1",
+  "defaults": {
+    "align": "left",
+    "valign": "baseline"
+  },
+  "bounds": {
+    "photo_area": {
+      "source": "critical_cells",
+      "name": "photo_area"
+    },
+    "photo_text_area": {
+      "bbox_pt": [
+        439.04,
+        653.56,
+        524.6,
+        763.3
+      ],
+      "note": "manual text block area derived from nearest lines"
+    }
+  },
+  "manual_blocks": {
+    "photo_text_area": {
+      "note": "derived from current absolute positions (B option)",
+      "block": {
+        "align": "left",
+        "valign": "bottom",
+        "font_size": 8.04,
+        "line_height": 10.416,
+        "margin_left": 7.26,
+        "margin_bottom": 12.694,
+        "margin_top": 36.926,
+        "lines": [
+          "3.裏面のりづけ",
+          "2.本人単身胸から上",
+          "横",
+          "1. 縦",
+          "ある場合",
+          "写真をはる必要が"
+        ]
+      },
+      "title": {
+        "text": "写真をはる位置",
+        "align": "center",
+        "valign": "center",
+        "dx_pt": 0.0,
+        "dy_pt": 0.0
+      }
+    }
+  },
+  "labels": [
+    {
+      "text": "履　歴　書",
+      "align": "left",
+      "valign": "baseline"
+    },
+    {
+      "text": "ふりがな",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "　　　　   年　　　月　　　日生　　（満　　歳）　　 ",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "年　　  月 　　日現在",
+      "align": "left",
+      "valign": "baseline"
+    },
+    {
+      "text": "年",
+      "align": "left",
+      "valign": "center",
+      "allow_delta_pt": 1.5
+    },
+    {
+      "text": "月",
+      "align": "left",
+      "valign": "center",
+      "allow_delta_pt": 1.5
+    },
+    {
+      "text": "学　歴・職　歴（各別にまとめて書く）",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "免　許・資　格",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "志望の動機、特技、好きな学科、アピールポイントなど",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "本人希望記入欄",
+      "align": "left",
+      "valign": "center"
+    },
+    {
+      "text": "（特に給料・職種・勤務時間・勤務地・その他についての希望などがあれば記入）",
+      "align": "left",
+      "valign": "center",
+      "allow_delta_pt": 1.5
+    },
+    {
+      "text": "※「性別」欄：記載は任意です。未記載とすることも可能です。",
+      "align": "left",
+      "valign": "top"
+    },
+    {
+      "text": "写真をはる位置",
+      "align": "center",
+      "valign": "center",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "写真をはる必要が",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "ある場合",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "1. 縦",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "横",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "2.本人単身胸から上",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    },
+    {
+      "text": "3.裏面のりづけ",
+      "align": "left",
+      "valign": "bottom",
+      "bounds": "photo_text_area",
+      "manual": true
+    }
+  ]
+}

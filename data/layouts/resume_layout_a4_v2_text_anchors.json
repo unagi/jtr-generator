@@ -1,0 +1,571 @@
+{
+  "format_version": "v1",
+  "source_layout": "data/layouts/resume_layout_a4_v2.json",
+  "anchor_strategy": "nearest_line",
+  "cluster_tolerance_pt": 0.2,
+  "page1_texts": [
+    {
+      "text": "履　歴　書",
+      "font_size": 20.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 731.717
+      },
+      "offset": {
+        "dx": 2.52,
+        "dy": 10.393
+      },
+      "reference_position": {
+        "x": 70.46,
+        "y": 742.11
+      }
+    },
+    {
+      "text": "年　　  月 　　日現在",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 394.16,
+        "y_line": 731.717
+      },
+      "offset": {
+        "dx": -99.75,
+        "dy": 10.343
+      },
+      "reference_position": {
+        "x": 294.41,
+        "y": 742.06
+      }
+    },
+    {
+      "text": "氏　　名",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": 3.22,
+        "dy": -11.7
+      },
+      "reference_position": {
+        "x": 71.16,
+        "y": 703.9
+      }
+    },
+    {
+      "text": "※性別",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 395.085,
+        "y_line": 637.775
+      },
+      "offset": {
+        "dx": 1.445,
+        "dy": -10.195
+      },
+      "reference_position": {
+        "x": 396.53,
+        "y": 627.58
+      }
+    },
+    {
+      "text": "電話",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 455.81,
+        "y_line": 596.8
+      },
+      "offset": {
+        "dx": 3.7,
+        "dy": 2.22
+      },
+      "reference_position": {
+        "x": 459.51,
+        "y": 599.02
+      }
+    },
+    {
+      "text": "　　　　   年　　　月　　　日生　　（満　　歳）　　",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 122.72,
+        "y_line": 612.91
+      },
+      "offset": {
+        "dx": -11.58,
+        "dy": 8.251
+      },
+      "reference_position": {
+        "x": 111.14,
+        "y": 621.161
+      }
+    },
+    {
+      "text": "現住所　〒",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 596.8
+      },
+      "offset": {
+        "dx": 3.22,
+        "dy": -12.57
+      },
+      "reference_position": {
+        "x": 71.16,
+        "y": 584.23
+      }
+    },
+    {
+      "text": "年",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 451.84
+      },
+      "offset": {
+        "dx": 22.08,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 90.02,
+        "y": 457.03
+      }
+    },
+    {
+      "text": "学　歴・職　歴（各別にまとめて書く）",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 149.42,
+        "y_line": 451.84
+      },
+      "offset": {
+        "dx": 103.8,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 253.22,
+        "y": 457.03
+      }
+    },
+    {
+      "text": "電話",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 455.81,
+        "y_line": 532.57
+      },
+      "offset": {
+        "dx": 3.7,
+        "dy": 2.7
+      },
+      "reference_position": {
+        "x": 459.51,
+        "y": 535.27
+      }
+    },
+    {
+      "text": "連絡先　〒",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 532.57
+      },
+      "offset": {
+        "dx": 3.22,
+        "dy": -12.54
+      },
+      "reference_position": {
+        "x": 71.16,
+        "y": 520.03
+      }
+    },
+    {
+      "text": "月",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 122.72,
+        "y_line": 451.84
+      },
+      "offset": {
+        "dx": 7.98,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 130.7,
+        "y": 457.03
+      }
+    },
+    {
+      "text": "写真をはる必要が",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 454.88,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": -6.18,
+        "dy": 3.7
+      },
+      "reference_position": {
+        "x": 448.7,
+        "y": 719.3
+      }
+    },
+    {
+      "text": "ある場合",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 454.88,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": -6.18,
+        "dy": -6.74
+      },
+      "reference_position": {
+        "x": 448.7,
+        "y": 708.86
+      }
+    },
+    {
+      "text": "1. 縦",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 439.04,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": 7.26,
+        "dy": -17.18
+      },
+      "reference_position": {
+        "x": 446.3,
+        "y": 698.42
+      }
+    },
+    {
+      "text": "横",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 455.81,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": 2.49,
+        "dy": -27.5
+      },
+      "reference_position": {
+        "x": 458.3,
+        "y": 688.1
+      }
+    },
+    {
+      "text": "2.本人単身胸から上",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 439.04,
+        "y_line": 653.56
+      },
+      "offset": {
+        "dx": 7.26,
+        "dy": 24.1
+      },
+      "reference_position": {
+        "x": 446.3,
+        "y": 677.66
+      }
+    },
+    {
+      "text": "3.裏面のりづけ",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 439.04,
+        "y_line": 653.56
+      },
+      "offset": {
+        "dx": 7.26,
+        "dy": 13.66
+      },
+      "reference_position": {
+        "x": 446.3,
+        "y": 667.22
+      }
+    },
+    {
+      "text": "ふりがな",
+      "font_size": 9.96,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 596.8
+      },
+      "offset": {
+        "dx": 3.16,
+        "dy": 2.86
+      },
+      "reference_position": {
+        "x": 71.1,
+        "y": 599.66
+      }
+    },
+    {
+      "text": "（現住所以外に連絡を希望する場合のみ記入）",
+      "font_size": 9.0,
+      "align": "left",
+      "anchor": {
+        "x_line": 149.42,
+        "y_line": 532.57
+      },
+      "offset": {
+        "dx": 119.16,
+        "dy": -11.89
+      },
+      "reference_position": {
+        "x": 268.58,
+        "y": 520.68
+      }
+    },
+    {
+      "text": "※「性別」欄：記載は任意です。未記載とすることも可能です。",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 64.58
+      },
+      "offset": {
+        "dx": 1.08,
+        "dy": -16.49
+      },
+      "reference_position": {
+        "x": 69.02,
+        "y": 48.09
+      }
+    },
+    {
+      "text": "ふりがな",
+      "font_size": 9.96,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 715.6
+      },
+      "offset": {
+        "dx": 3.16,
+        "dy": 3.34
+      },
+      "reference_position": {
+        "x": 71.1,
+        "y": 718.94
+      }
+    },
+    {
+      "text": "ふりがな",
+      "font_size": 9.96,
+      "align": "left",
+      "anchor": {
+        "x_line": 67.94,
+        "y_line": 532.57
+      },
+      "offset": {
+        "dx": 3.16,
+        "dy": 3.22
+      },
+      "reference_position": {
+        "x": 71.1,
+        "y": 535.79
+      }
+    },
+    {
+      "text": "写真をはる位置",
+      "font_size": 8.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 454.88,
+        "y_line": 731.717
+      },
+      "offset": {
+        "dx": -1.2,
+        "dy": 10.066
+      },
+      "reference_position": {
+        "x": 453.68,
+        "y": 741.783
+      }
+    }
+  ],
+  "page2_texts": [
+    {
+      "text": "年",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 54.49,
+        "y_line": 741.91
+      },
+      "offset": {
+        "dx": 22.08,
+        "dy": 4.83
+      },
+      "reference_position": {
+        "x": 76.57,
+        "y": 746.74
+      }
+    },
+    {
+      "text": "月",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 109.27,
+        "y_line": 741.91
+      },
+      "offset": {
+        "dx": 7.98,
+        "dy": 4.83
+      },
+      "reference_position": {
+        "x": 117.25,
+        "y": 746.74
+      }
+    },
+    {
+      "text": "免　許・資　格",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 135.97,
+        "y_line": 539.8
+      },
+      "offset": {
+        "dx": 164.55,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 300.52,
+        "y": 544.99
+      }
+    },
+    {
+      "text": "学　歴・職　歴（各別にまとめて書く）",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 135.97,
+        "y_line": 741.91
+      },
+      "offset": {
+        "dx": 103.83,
+        "dy": 5.31
+      },
+      "reference_position": {
+        "x": 239.8,
+        "y": 747.22
+      }
+    },
+    {
+      "text": "年",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 54.49,
+        "y_line": 539.8
+      },
+      "offset": {
+        "dx": 22.08,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 76.57,
+        "y": 544.99
+      }
+    },
+    {
+      "text": "月",
+      "font_size": 11.04,
+      "align": "left",
+      "anchor": {
+        "x_line": 109.27,
+        "y_line": 539.8
+      },
+      "offset": {
+        "dx": 7.98,
+        "dy": 5.19
+      },
+      "reference_position": {
+        "x": 117.25,
+        "y": 544.99
+      }
+    },
+    {
+      "text": "志望の動機、特技、好きな学科、アピールポイントなど",
+      "font_size": 9.96,
+      "align": "left",
+      "anchor": {
+        "x_line": 54.49,
+        "y_line": 354.38
+      },
+      "offset": {
+        "dx": 5.51,
+        "dy": 5.23
+      },
+      "reference_position": {
+        "x": 60.0,
+        "y": 359.61
+      }
+    },
+    {
+      "text": "本人希望記入欄",
+      "font_size": 9.96,
+      "align": "left",
+      "anchor": {
+        "x_line": 54.49,
+        "y_line": 168.71
+      },
+      "offset": {
+        "dx": 5.51,
+        "dy": 5.83
+      },
+      "reference_position": {
+        "x": 60.0,
+        "y": 174.54
+      }
+    },
+    {
+      "text": "（特に給料・職種・勤務時間・勤務地・その他についての希望などがあれば記入）",
+      "font_size": 9.0,
+      "align": "left",
+      "anchor": {
+        "x_line": 135.04,
+        "y_line": 168.71
+      },
+      "offset": {
+        "dx": -3.39,
+        "dy": 5.96
+      },
+      "reference_position": {
+        "x": 131.65,
+        "y": 174.67
+      }
+    }
+  ]
+}

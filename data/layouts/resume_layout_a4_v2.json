@@ -3365,7 +3365,7 @@
     },
     {
       "text": "氏　　名",
-      "x": 69.38,
+      "x": 71.16,
       "y": 703.9,
       "font_size": 11.04,
       "align": "left"
@@ -3379,7 +3379,7 @@
     },
     {
       "text": "電話",
-      "x": 457.25,
+      "x": 459.51,
       "y": 599.02,
       "font_size": 11.04,
       "align": "left"
@@ -3387,13 +3387,13 @@
     {
       "text": "　　　　   年　　　月　　　日生　　（満　　歳）　　",
       "x": 111.14,
-      "y": 620.26,
+      "y": 621.161,
       "font_size": 11.04,
       "align": "left"
     },
     {
       "text": "現住所　〒",
-      "x": 69.38,
+      "x": 71.16,
       "y": 584.23,
       "font_size": 11.04,
       "align": "left"
@@ -3414,14 +3414,14 @@
     },
     {
       "text": "電話",
-      "x": 457.25,
+      "x": 459.51,
       "y": 535.27,
       "font_size": 11.04,
       "align": "left"
     },
     {
       "text": "連絡先　〒",
-      "x": 69.38,
+      "x": 71.16,
       "y": 520.03,
       "font_size": 11.04,
       "align": "left"
@@ -3477,7 +3477,7 @@
     },
     {
       "text": "ふりがな",
-      "x": 69.26,
+      "x": 71.1,
       "y": 599.66,
       "font_size": 9.96,
       "align": "left"
@@ -3498,22 +3498,22 @@
     },
     {
       "text": "ふりがな",
-      "x": 69.26,
+      "x": 71.1,
       "y": 718.94,
       "font_size": 9.96,
       "align": "left"
     },
     {
       "text": "ふりがな",
-      "x": 69.26,
+      "x": 71.1,
       "y": 535.79,
       "font_size": 9.96,
       "align": "left"
     },
     {
       "text": "写真をはる位置",
-      "x": 456.98,
-      "y": 740.06,
+      "x": 453.68,
+      "y": 741.783,
       "font_size": 8.04,
       "align": "left"
     }
@@ -3587,7 +3587,7 @@
   "page1_data_fields": {
     "name": {
       "x": 231.03,
-      "y": 665.58,
+      "y": 673.913,
       "font_size": 28.0,
       "align": "center",
       "max_width": 326.0,
@@ -3603,7 +3603,7 @@
     },
     "birthdate_year": {
       "x": 155.3,
-      "y": 620.26,
+      "y": 621.556,
       "font_size": 10.0,
       "align": "right",
       "field_path": "personal_info.birthdate",
@@ -3611,7 +3611,7 @@
     },
     "birthdate_month": {
       "x": 204.98,
-      "y": 620.26,
+      "y": 621.556,
       "font_size": 10.0,
       "align": "right",
       "field_path": "personal_info.birthdate",
@@ -3619,25 +3619,25 @@
     },
     "birthdate_day": {
       "x": 249.14,
-      "y": 620.26,
+      "y": 621.556,
       "font_size": 10.0,
       "align": "right",
       "field_path": "personal_info.birthdate",
       "format": "day_only"
     },
     "age": {
-      "x": 337.46,
-      "y": 620.26,
+      "x": 343.46,
+      "y": 621.556,
       "font_size": 10.0,
       "align": "right",
       "field_path": "personal_info.birthdate",
       "transform": "calculate_age"
     },
     "gender": {
-      "x": 457.25,
-      "y": 622.0,
+      "x": 490.205,
+      "y": 621.176,
       "font_size": 11.0,
-      "align": "left",
+      "align": "center",
       "field_path": "personal_info.gender"
     },
     "postal_code": {
@@ -3649,7 +3649,7 @@
     },
     "address_kana": {
       "x": 150.0,
-      "y": 601.66,
+      "y": 600.616,
       "font_size": 10.0,
       "align": "left",
       "max_width": 400.0,
@@ -3668,14 +3668,85 @@
       "y": 582.52,
       "font_size": 11.0,
       "align": "left",
-      "field_path": "personal_info.phone"
+      "field_path": "personal_info.phone",
+      "type": "reference_line"
     },
     "mobile": {
       "x": 462.75,
       "y": 563.5,
       "font_size": 11.0,
       "align": "left",
-      "field_path": "personal_info.mobile"
+      "field_path": "personal_info.mobile",
+      "type": "reference_line"
+    },
+    "phone_numbers": {
+      "type": "multiline_text",
+      "field_paths": [
+        "personal_info.phone",
+        "personal_info.mobile"
+      ],
+      "separator": "\n",
+      "x": 462.75,
+      "y_top": 582.52,
+      "y_bottom": 563.5,
+      "width": 93.16,
+      "font_size": 11.0,
+      "line_height": 19.02,
+      "align": "left"
+    },
+    "contact_postal_code": {
+      "x": 130.0,
+      "y": 520.03,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "contact_info.postal_code"
+    },
+    "contact_address_kana": {
+      "x": 150.0,
+      "y": 536.746,
+      "font_size": 10.0,
+      "align": "left",
+      "max_width": 400.0,
+      "field_path": "contact_info.address_kana"
+    },
+    "contact_address": {
+      "x": 150.0,
+      "y": 500.8,
+      "font_size": 12.0,
+      "align": "left",
+      "max_width": 400.0,
+      "field_path": "contact_info.address"
+    },
+    "contact_phone": {
+      "x": 462.75,
+      "y": 518.77,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "contact_info.phone",
+      "type": "reference_line"
+    },
+    "contact_mobile": {
+      "x": 462.75,
+      "y": 499.75,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "contact_info.mobile",
+      "type": "reference_line"
+    },
+    "contact_phone_numbers": {
+      "type": "multiline_text",
+      "field_paths": [
+        "contact_info.phone",
+        "contact_info.mobile"
+      ],
+      "separator": "\n",
+      "x": 462.75,
+      "y_top": 518.77,
+      "y_bottom": 499.75,
+      "width": 93.16,
+      "font_size": 11.0,
+      "line_height": 19.02,
+      "align": "left"
     },
     "education_work_history_p1": {
       "type": "dynamic_rows",
@@ -3684,6 +3755,10 @@
         "row_height": 25.71,
         "font_size": 11.0,
         "first_row_baseline": 434.85,
+        "label": {
+          "x": 311.93,
+          "align": "center"
+        },
         "columns": {
           "year": {
             "x": 95.3,
@@ -3724,6 +3799,10 @@
         "row_height": 24.84,
         "font_size": 11.0,
         "first_row_baseline": 724.38,
+        "label": {
+          "x": 298.0,
+          "align": "center"
+        },
         "columns": {
           "year": {
             "x": 81.85,
@@ -3805,9 +3884,9 @@
     },
     "hope": {
       "type": "multiline_text",
-      "field_path": "additional_info.hope",
+      "field_path": "additional_info.remarks",
       "x": 60.0,
-      "y_top": 153.1,
+      "y_top": 151.181,
       "y_bottom": 55.0,
       "width": 477.0,
       "font_size": 11.0,
