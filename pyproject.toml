@@ -151,7 +151,7 @@ sequence = [
     { cmd = "cp examples/sample_resume.json build/claude_skill_package/examples/" },
 
     # 8. Pythonファイルのパス修正とzip作成
-    { cmd = "python scripts/build_skill_package.py" },
+    { cmd = "python tools/build_skill_package.py" },
 ]
 
 [dependency-groups]
