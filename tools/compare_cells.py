@@ -149,9 +149,9 @@ def main():
     gen_images = convert_from_path(gen_pdf, dpi=300)
 
     # A3を分割
-    ref_page1, ref_page2 = _split_a3_to_a4(ref_images[0])
+    ref_page1, _ref_page2 = _split_a3_to_a4(ref_images[0])
     gen_page1 = gen_images[0]
-    gen_page2 = gen_images[1]
+    _gen_page2 = gen_images[1]
 
     # 重要セルの定義を読み込み
     critical_cells = load_critical_cells()

@@ -3563,14 +3563,14 @@
     },
     {
       "text": "志望の動機、特技、好きな学科、アピールポイントなど",
-      "x": 55.81,
+      "x": 60.0,
       "y": 359.61,
       "font_size": 9.96,
       "align": "left"
     },
     {
       "text": "本人希望記入欄",
-      "x": 56.05,
+      "x": 60.0,
       "y": 174.54,
       "font_size": 9.96,
       "align": "left"
@@ -3582,5 +3582,236 @@
       "font_size": 9.0,
       "align": "left"
     }
-  ]
+  ],
+  "format_version": "v4",
+  "page1_data_fields": {
+    "name": {
+      "x": 231.03,
+      "y": 665.58,
+      "font_size": 28.0,
+      "align": "center",
+      "max_width": 326.0,
+      "field_path": "personal_info.name"
+    },
+    "name_kana": {
+      "x": 231.03,
+      "y": 718.94,
+      "font_size": 10.0,
+      "align": "center",
+      "max_width": 326.0,
+      "field_path": "personal_info.name_kana"
+    },
+    "birthdate_year": {
+      "x": 155.3,
+      "y": 620.26,
+      "font_size": 10.0,
+      "align": "right",
+      "field_path": "personal_info.birthdate",
+      "format": "wareki_year_only"
+    },
+    "birthdate_month": {
+      "x": 204.98,
+      "y": 620.26,
+      "font_size": 10.0,
+      "align": "right",
+      "field_path": "personal_info.birthdate",
+      "format": "month_only"
+    },
+    "birthdate_day": {
+      "x": 249.14,
+      "y": 620.26,
+      "font_size": 10.0,
+      "align": "right",
+      "field_path": "personal_info.birthdate",
+      "format": "day_only"
+    },
+    "age": {
+      "x": 337.46,
+      "y": 620.26,
+      "font_size": 10.0,
+      "align": "right",
+      "field_path": "personal_info.birthdate",
+      "transform": "calculate_age"
+    },
+    "gender": {
+      "x": 457.25,
+      "y": 622.0,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "personal_info.gender"
+    },
+    "postal_code": {
+      "x": 130.0,
+      "y": 584.23,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "personal_info.postal_code"
+    },
+    "address_kana": {
+      "x": 150.0,
+      "y": 601.66,
+      "font_size": 10.0,
+      "align": "left",
+      "max_width": 400.0,
+      "field_path": "personal_info.address_kana"
+    },
+    "address": {
+      "x": 150.0,
+      "y": 565.0,
+      "font_size": 12.0,
+      "align": "left",
+      "max_width": 400.0,
+      "field_path": "personal_info.address"
+    },
+    "phone": {
+      "x": 462.75,
+      "y": 582.52,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "personal_info.phone"
+    },
+    "mobile": {
+      "x": 462.75,
+      "y": 563.5,
+      "font_size": 11.0,
+      "align": "left",
+      "field_path": "personal_info.mobile"
+    },
+    "education_work_history_p1": {
+      "type": "dynamic_rows",
+      "max_rows": 15,
+      "row_config": {
+        "row_height": 25.71,
+        "font_size": 11.0,
+        "first_row_baseline": 434.85,
+        "columns": {
+          "year": {
+            "x": 95.3,
+            "align": "center",
+            "field_key": "year"
+          },
+          "month": {
+            "x": 135.62,
+            "align": "center",
+            "field_key": "month"
+          },
+          "content": {
+            "x": 154.42,
+            "align": "left",
+            "field_key": "content"
+          }
+        }
+      },
+      "data_sources": [
+        {
+          "label": "学　　歴",
+          "field_path": "education",
+          "content_format": "{school}{department} {type}"
+        },
+        {
+          "label": "職　　歴",
+          "field_path": "work_history",
+          "content_format": "{company} {type}{note}"
+        }
+      ]
+    }
+  },
+  "page2_data_fields": {
+    "education_work_history_p2": {
+      "type": "dynamic_rows",
+      "max_rows": 7,
+      "row_config": {
+        "row_height": 24.84,
+        "font_size": 11.0,
+        "first_row_baseline": 724.38,
+        "columns": {
+          "year": {
+            "x": 81.85,
+            "align": "center",
+            "field_key": "year"
+          },
+          "month": {
+            "x": 122.17,
+            "align": "center",
+            "field_key": "month"
+          },
+          "content": {
+            "x": 140.97,
+            "align": "left",
+            "field_key": "content"
+          }
+        }
+      },
+      "data_sources": [
+        {
+          "label": "学　　歴",
+          "field_path": "education",
+          "content_format": "{school}{department} {type}"
+        },
+        {
+          "label": "職　　歴",
+          "field_path": "work_history",
+          "content_format": "{company} {type}{note}"
+        }
+      ],
+      "continuation_from": "education_work_history_p1"
+    },
+    "qualifications": {
+      "type": "dynamic_rows",
+      "max_rows": 6,
+      "row_config": {
+        "row_height": 25.7,
+        "font_size": 11.0,
+        "first_row_baseline": 521.84,
+        "columns": {
+          "year": {
+            "x": 81.85,
+            "align": "center",
+            "field_key": "year"
+          },
+          "month": {
+            "x": 122.17,
+            "align": "center",
+            "field_key": "month"
+          },
+          "content": {
+            "x": 140.97,
+            "align": "left",
+            "field_key": "content"
+          }
+        }
+      },
+      "data_sources": [
+        {
+          "label": "",
+          "field_path": "qualifications",
+          "content_format": "{name}"
+        }
+      ]
+    },
+    "motivation_self_pr": {
+      "type": "multiline_text",
+      "field_paths": [
+        "additional_info.motivation",
+        "additional_info.self_pr"
+      ],
+      "separator": "\n\n",
+      "x": 60.0,
+      "y_top": 338.77,
+      "y_bottom": 206.0,
+      "width": 477.0,
+      "font_size": 11.0,
+      "line_height": 16.0
+    },
+    "hope": {
+      "type": "multiline_text",
+      "field_path": "additional_info.hope",
+      "x": 60.0,
+      "y_top": 153.1,
+      "y_bottom": 55.0,
+      "width": 477.0,
+      "font_size": 11.0,
+      "line_height": 16.0
+    }
+  }
 }
