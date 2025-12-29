@@ -18,9 +18,7 @@ def _cluster_positions(values: list[float], tol: float) -> list[float]:
     return [round(sum(cluster) / len(cluster), 3) for cluster in clusters]
 
 
-def _collect_line_positions(
-    lines: list[dict[str, Any]], axis: str, tol: float
-) -> list[float]:
+def _collect_line_positions(lines: list[dict[str, Any]], axis: str, tol: float) -> list[float]:
     if axis not in {"x", "y"}:
         raise ValueError("axis must be 'x' or 'y'")
 

@@ -11,7 +11,9 @@ TOLERANCE_PT = 1.0
 
 @pytest.fixture
 def anchor_data():
-    anchor_path = Path(__file__).parent.parent.parent / "data/layouts/resume_layout_a4_v2_text_anchors.json"
+    anchor_path = (
+        Path(__file__).parent.parent.parent / "data/layouts/resume_layout_a4_v2_text_anchors.json"
+    )
     with open(anchor_path, encoding="utf-8") as f:
         return json.load(f)
 
@@ -41,10 +43,14 @@ def _assert_resolved_positions(anchor_texts, resolved_texts):
 
 
 def test_page1_anchor_resolution(anchor_data, extracted_lines):
-    resolved = resolve_texts_from_anchors(anchor_data["page1_texts"], extracted_lines["page1_lines"])
+    resolved = resolve_texts_from_anchors(
+        anchor_data["page1_texts"], extracted_lines["page1_lines"]
+    )
     _assert_resolved_positions(anchor_data["page1_texts"], resolved)
 
 
 def test_page2_anchor_resolution(anchor_data, extracted_lines):
-    resolved = resolve_texts_from_anchors(anchor_data["page2_texts"], extracted_lines["page2_lines"])
+    resolved = resolve_texts_from_anchors(
+        anchor_data["page2_texts"], extracted_lines["page2_lines"]
+    )
     _assert_resolved_positions(anchor_data["page2_texts"], resolved)
