@@ -26,4 +26,4 @@ if __name__ == "__main__":
         print(f"  Page {i}: {width:.1f} x {height:.1f} pt")
         # A4 = 595.27 x 841.89 pt
         if abs(width - 595.27) < 1 and abs(height - 841.89) < 1:
-            print(f"    → A4 size confirmed")
+            print("    → A4 size confirmed")

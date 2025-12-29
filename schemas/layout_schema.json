@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resume Layout Schema",
+  "description": "JIS規格履歴書のレイアウトデータ（罫線情報）スキーマ定義（v2フォーマット）",
+  "type": "object",
+  "required": ["source_page_size_pt", "split_x_pt", "page1_lines", "page2_lines"],
+  "properties": {
+    "source_page_size_pt": {
+      "description": "元のPDFページサイズ（A3横）[幅, 高さ]（単位: pt）",
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "split_x_pt": {
+      "description": "A3を左右に分割するX座標（単位: pt）",
+      "type": "number",
+      "minimum": 0
+    },
+    "page1_lines": {
+      "description": "ページ1（左半分）の罫線データ",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/line"
+      }
+    },
+    "page2_lines": {
+      "description": "ページ2（右半分）の罫線データ",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/line"
+      }
+    }
+  },
+  "definitions": {
+    "line": {
+      "description": "単一の罫線データ（完全な描画属性を含む）",
+      "type": "object",
+      "required": ["x0", "y0", "x1", "y1", "width", "dash_pattern", "dash_phase", "cap", "join", "color"],
+      "properties": {
+        "x0": {
+          "description": "始点X座標（単位: pt）",
+          "type": "number"
+        },
+        "y0": {
+          "description": "始点Y座標（単位: pt）",
+          "type": "number"
+        },
+        "x1": {
+          "description": "終点X座標（単位: pt）",
+          "type": "number"
+        },
+        "y1": {
+          "description": "終点Y座標（単位: pt）",
+          "type": "number"
+        },
+        "width": {
+          "description": "線幅（単位: pt）",
+          "type": "number",
+          "minimum": 0
+        },
+        "dash_pattern": {
+          "description": "破線パターン（[] = 実線、[3, 3] = 破線など）",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "dash_phase": {
+          "description": "破線の開始位置（単位: pt）",
+          "type": "number",
+          "minimum": 0
+        },
+        "cap": {
+          "description": "線端形状（0=butt, 1=round, 2=square）",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "join": {
+          "description": "線接合形状（0=mitre, 1=round, 2=bevel）",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "color": {
+          "description": "線色（RGB、0.0-1.0）",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      }
+    }
+  }
+}

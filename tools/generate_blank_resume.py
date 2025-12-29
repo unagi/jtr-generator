@@ -21,5 +21,5 @@ if __name__ == "__main__":
 
     print(f"Generating PDF: {output_path}")
     generate_resume_pdf(data, options, output_path)
-    print(f"✓ PDF generated successfully")
+    print("✓ PDF generated successfully")
     print(f"  File size: {output_path.stat().st_size:,} bytes")
