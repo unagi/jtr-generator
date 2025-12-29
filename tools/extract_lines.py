@@ -2,6 +2,7 @@ import json
 import re
 from collections import defaultdict
 from typing import Any
+
 import fitz  # PyMuPDF
 
 
@@ -15,7 +16,7 @@ def _parse_dashes(dashes_str: str) -> tuple[list[float], float]:
     Returns:
         (dash_pattern, dash_phase) のタプル
     """
-    match = re.match(r'\[([\d\s.]*)\]\s*([\d.]+)', dashes_str.strip())
+    match = re.match(r"\[([\d\s.]*)\]\s*([\d.]+)", dashes_str.strip())
     if not match:
         return [], 0
 
@@ -56,13 +57,23 @@ def _merge_intervals(intervals, tol=1.2):
         else:
             ps, pe, pw, p_dash_pat, p_dash_ph, p_cap, p_join, p_color = merged[-1]
             # 線幅と描画属性が同じ場合のみ結合
-            if (s <= pe + tol and abs(w - pw) < 0.01 and
-                    dash_pat == p_dash_pat and dash_ph == p_dash_ph and
-                    cap == p_cap and join == p_join and color == p_color):
+            if (
+                s <= pe + tol
+                and abs(w - pw) < 0.01
+                and dash_pat == p_dash_pat
+                and dash_ph == p_dash_ph
+                and cap == p_cap
+                and join == p_join
+                and color == p_color
+            ):
                 merged[-1][1] = max(pe, e)
             else:
                 merged.append([s, e, w, dash_pat, dash_ph, cap, join, color])
-    return [(s, e, w, dash_pat, dash_ph, cap, join, color) for s, e, w, dash_pat, dash_ph, cap, join, color in merged]
+    return [
+        (s, e, w, dash_pat, dash_ph, cap, join, color)
+        for s, e, w, dash_pat, dash_ph, cap, join, color in merged
+    ]
+
 
 def extract_lines_a3_to_a4x2(pdf_path: str) -> dict[str, Any]:
     """
@@ -130,14 +141,71 @@ def extract_lines_a3_to_a4x2(pdf_path: str) -> dict[str, Any]:
                 op = it[0]
                 if op == "l":  # line
                     p1, p2 = it[1], it[2]
-                    segs.append((p1.x, p1.y, p2.x, p2.y, w, dash_pattern, dash_phase, line_cap, line_join, color))
+                    segs.append(
+                        (
+                            p1.x,
+                            p1.y,
+                            p2.x,
+                            p2.y,
+                            w,
+                            dash_pattern,
+                            dash_phase,
+                            line_cap,
+                            line_join,
+                            color,
+                        )
+                    )
                 elif op == "re":  # rect -> 4 edges
                     r = it[1]
                     segs += [
-                        (r.x0, r.y0, r.x1, r.y0, w, dash_pattern, dash_phase, line_cap, line_join, color),
-                        (r.x1, r.y0, r.x1, r.y1, w, dash_pattern, dash_phase, line_cap, line_join, color),
-                        (r.x1, r.y1, r.x0, r.y1, w, dash_pattern, dash_phase, line_cap, line_join, color),
-                        (r.x0, r.y1, r.x0, r.y0, w, dash_pattern, dash_phase, line_cap, line_join, color),
+                        (
+                            r.x0,
+                            r.y0,
+                            r.x1,
+                            r.y0,
+                            w,
+                            dash_pattern,
+                            dash_phase,
+                            line_cap,
+                            line_join,
+                            color,
+                        ),
+                        (
+                            r.x1,
+                            r.y0,
+                            r.x1,
+                            r.y1,
+                            w,
+                            dash_pattern,
+                            dash_phase,
+                            line_cap,
+                            line_join,
+                            color,
+                        ),
+                        (
+                            r.x1,
+                            r.y1,
+                            r.x0,
+                            r.y1,
+                            w,
+                            dash_pattern,
+                            dash_phase,
+                            line_cap,
+                            line_join,
+                            color,
+                        ),
+                        (
+                            r.x0,
+                            r.y1,
+                            r.x0,
+                            r.y0,
+                            w,
+                            dash_pattern,
+                            dash_phase,
+                            line_cap,
+                            line_join,
+                            color,
+                        ),
                     ]
 
     # 2) 水平/垂直に分類（PyMuPDF座標：左上原点・y下向き）
@@ -181,21 +249,27 @@ def extract_lines_a3_to_a4x2(pdf_path: str) -> dict[str, Any]:
             # 同じ属性の線分をマージ
             dash_pat = list(dash_pat_tuple)
             color = list(color_tuple)
-            intervals = [(min(a, b), max(a, b), w, dash_pat, dash_ph, cap, join, color) for a, b in xs]
-            for s, e, w_merged, dash_pat, dash_ph, cap, join, color in _merge_intervals(intervals, tol=1.2):
+            intervals = [
+                (min(a, b), max(a, b), w, dash_pat, dash_ph, cap, join, color) for a, b in xs
+            ]
+            for s, e, w_merged, dash_pat, dash_ph, cap, join, color in _merge_intervals(
+                intervals, tol=1.2
+            ):
                 y_rl = H - yk
-                out.append({
-                    "x0": s,
-                    "y0": y_rl,
-                    "x1": e,
-                    "y1": y_rl,
-                    "width": w_merged,
-                    "dash_pattern": dash_pat,
-                    "dash_phase": dash_ph,
-                    "cap": cap,
-                    "join": join,
-                    "color": color
-                })
+                out.append(
+                    {
+                        "x0": s,
+                        "y0": y_rl,
+                        "x1": e,
+                        "y1": y_rl,
+                        "width": w_merged,
+                        "dash_pattern": dash_pat,
+                        "dash_phase": dash_ph,
+                        "cap": cap,
+                        "join": join,
+                        "color": color,
+                    }
+                )
 
         # vertical: group by x and attributes
         by_x_attr = defaultdict(list)
@@ -207,23 +281,29 @@ def extract_lines_a3_to_a4x2(pdf_path: str) -> dict[str, Any]:
         for (xk, w, dash_pat_tuple, dash_ph, cap, join, color_tuple), ys in by_x_attr.items():
             dash_pat = list(dash_pat_tuple)
             color = list(color_tuple)
-            intervals = [(min(a, b), max(a, b), w, dash_pat, dash_ph, cap, join, color) for a, b in ys]
-            for s, e, w_merged, dash_pat, dash_ph, cap, join, color in _merge_intervals(intervals, tol=1.2):
+            intervals = [
+                (min(a, b), max(a, b), w, dash_pat, dash_ph, cap, join, color) for a, b in ys
+            ]
+            for s, e, w_merged, dash_pat, dash_ph, cap, join, color in _merge_intervals(
+                intervals, tol=1.2
+            ):
                 x_rl = xk - x_shift
                 y0_rl = H - e
                 y1_rl = H - s
-                out.append({
-                    "x0": x_rl,
-                    "y0": y0_rl,
-                    "x1": x_rl,
-                    "y1": y1_rl,
-                    "width": w_merged,
-                    "dash_pattern": dash_pat,
-                    "dash_phase": dash_ph,
-                    "cap": cap,
-                    "join": join,
-                    "color": color
-                })
+                out.append(
+                    {
+                        "x0": x_rl,
+                        "y0": y0_rl,
+                        "x1": x_rl,
+                        "y1": y1_rl,
+                        "width": w_merged,
+                        "dash_pattern": dash_pat,
+                        "dash_phase": dash_ph,
+                        "cap": cap,
+                        "join": join,
+                        "color": color,
+                    }
+                )
 
         # 座標を丸める（0.001pt精度）
         for line in out:
@@ -257,7 +337,7 @@ if __name__ == "__main__":
     data = extract_lines_a3_to_a4x2(str(pdf_path))
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"✓ Layout data extracted (v2 format)")
+    print("✓ Layout data extracted (v2 format)")
     print(f"  page1: {len(data['page1_lines'])} segments")
     print(f"  page2: {len(data['page2_lines'])} segments")
     print(f"  Output: {output_path}")

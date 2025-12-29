@@ -9,7 +9,6 @@ PDF視覚的品質検証テスト
 注意: このテストはpdf2image（poppler-utils）に依存します
 """
 
-import math
 from pathlib import Path
 
 import numpy as np
@@ -19,17 +18,16 @@ from skimage.metrics import structural_similarity as ssim
 
 try:
     from pdf2image import convert_from_path
+
     PDF2IMAGE_AVAILABLE = True
 except ImportError:
     PDF2IMAGE_AVAILABLE = False
 
 from src.generators.pdf import generate_resume_pdf
 
-
 # pdf2imageが利用できない場合はテストをスキップ
 pytestmark = pytest.mark.skipif(
-    not PDF2IMAGE_AVAILABLE,
-    reason="pdf2image not available (requires poppler-utils)"
+    not PDF2IMAGE_AVAILABLE, reason="pdf2image not available (requires poppler-utils)"
 )
 
 
@@ -83,8 +81,8 @@ def _calculate_pixel_diff_rate(img1: Image.Image, img2: Image.Image, threshold: 
         img2 = img2.resize(img1.size, Image.LANCZOS)
 
     # グレースケール化（罫線のみなので色情報は不要）
-    arr1 = np.array(img1.convert('L'))
-    arr2 = np.array(img2.convert('L'))
+    arr1 = np.array(img1.convert("L"))
+    arr2 = np.array(img2.convert("L"))
 
     # 差分の絶対値
     diff = np.abs(arr1.astype(float) - arr2.astype(float))
@@ -115,8 +113,8 @@ def _calculate_ssim(img1: Image.Image, img2: Image.Image) -> float:
         img2 = img2.resize(img1.size, Image.LANCZOS)
 
     # グレースケール化
-    arr1 = np.array(img1.convert('L'))
-    arr2 = np.array(img2.convert('L'))
+    arr1 = np.array(img1.convert("L"))
+    arr2 = np.array(img2.convert("L"))
 
     # SSIM計算
     return ssim(arr1, arr2, data_range=255)
@@ -139,17 +137,15 @@ def test_visual_similarity_with_reference_pdf(generated_pdf_path, reference_pdf_
 
     # ページ1の比較
     diff_rate_1 = _calculate_pixel_diff_rate(ref_page1, gen_page1, threshold=5)
-    print(f"\nPage 1 pixel difference rate: {diff_rate_1:.4f} ({diff_rate_1*100:.2f}%)")
+    print(f"\nPage 1 pixel difference rate: {diff_rate_1:.4f} ({diff_rate_1 * 100:.2f}%)")
 
     # ページ2の比較
     diff_rate_2 = _calculate_pixel_diff_rate(ref_page2, gen_page2, threshold=5)
-    print(f"Page 2 pixel difference rate: {diff_rate_2:.4f} ({diff_rate_2*100:.2f}%)")
+    print(f"Page 2 pixel difference rate: {diff_rate_2:.4f} ({diff_rate_2 * 100:.2f}%)")
 
     # 閾値チェック（1%未満）
-    assert diff_rate_1 < 0.01, \
-        f"Page 1 diff rate {diff_rate_1:.4f} exceeds 1% threshold"
-    assert diff_rate_2 < 0.01, \
-        f"Page 2 diff rate {diff_rate_2:.4f} exceeds 1% threshold"
+    assert diff_rate_1 < 0.01, f"Page 1 diff rate {diff_rate_1:.4f} exceeds 1% threshold"
+    assert diff_rate_2 < 0.01, f"Page 2 diff rate {diff_rate_2:.4f} exceeds 1% threshold"
 
 
 def test_structural_similarity_ssim(generated_pdf_path, reference_pdf_path):
@@ -196,16 +192,18 @@ def test_save_diff_image_for_debugging(generated_pdf_path, reference_pdf_path, t
     debug_dir.mkdir(parents=True, exist_ok=True)
 
     # ページ1の差分画像を生成
-    arr1 = np.array(ref_page1.convert('L'))
-    arr2 = np.array(gen_page1.convert('L'))
+    arr1 = np.array(ref_page1.convert("L"))
+    arr2 = np.array(gen_page1.convert("L"))
 
     if arr1.shape != arr2.shape:
-        arr2 = np.array(gen_page1.resize(ref_page1.size, Image.LANCZOS).convert('L'))
+        arr2 = np.array(gen_page1.resize(ref_page1.size, Image.LANCZOS).convert("L"))
 
     diff = np.abs(arr1.astype(float) - arr2.astype(float))
 
     # 差分を強調表示（0-255の範囲に正規化）
-    diff_normalized = (diff / diff.max() * 255).astype(np.uint8) if diff.max() > 0 else diff.astype(np.uint8)
+    diff_normalized = (
+        (diff / diff.max() * 255).astype(np.uint8) if diff.max() > 0 else diff.astype(np.uint8)
+    )
     diff_img = Image.fromarray(diff_normalized)
 
     # 差分画像を保存
@@ -214,14 +212,16 @@ def test_save_diff_image_for_debugging(generated_pdf_path, reference_pdf_path, t
     gen_page1.save(debug_dir / "gen_page1.png")
 
     # ページ2の差分画像を生成
-    arr1 = np.array(ref_page2.convert('L'))
-    arr2 = np.array(gen_page2.convert('L'))
+    arr1 = np.array(ref_page2.convert("L"))
+    arr2 = np.array(gen_page2.convert("L"))
 
     if arr1.shape != arr2.shape:
-        arr2 = np.array(gen_page2.resize(ref_page2.size, Image.LANCZOS).convert('L'))
+        arr2 = np.array(gen_page2.resize(ref_page2.size, Image.LANCZOS).convert("L"))
 
     diff = np.abs(arr1.astype(float) - arr2.astype(float))
-    diff_normalized = (diff / diff.max() * 255).astype(np.uint8) if diff.max() > 0 else diff.astype(np.uint8)
+    diff_normalized = (
+        (diff / diff.max() * 255).astype(np.uint8) if diff.max() > 0 else diff.astype(np.uint8)
+    )
     diff_img = Image.fromarray(diff_normalized)
 
     diff_img.save(debug_dir / "diff_page2.png")
