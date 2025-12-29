@@ -49,6 +49,12 @@
           "minLength": 1,
           "examples": ["東京都渋谷区神南1-1-1", "大阪府大阪市北区梅田1-1-1"]
         },
+        "address_kana": {
+          "type": "string",
+          "description": "現住所（ふりがな）",
+          "pattern": "^[ぁ-んー]+$",
+          "examples": ["とうきょうとしぶやくじんなん", "おおさかふおおさかしきたくうめだ"]
+        },
         "phone": {
           "type": "string",
           "description": "電話番号（固定電話、ハイフン付き）",

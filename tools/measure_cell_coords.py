@@ -6,8 +6,6 @@
 
 from pathlib import Path
 
-from PIL import Image
-
 try:
     from pdf2image import convert_from_path
 
