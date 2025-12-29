@@ -14,21 +14,12 @@ dependencies = [
     "jsonschema>=4.20.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "ruff>=0.1.0",
-    "mypy>=1.7.0",
-    "types-pyyaml",
-]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src", "data"]
 
 # Ruff設定
 [tool.ruff]
@@ -109,6 +100,7 @@ format = "ruff format src/ tests/"
 format-check = "ruff format --check src/ tests/"
 typecheck = "mypy src/"
 check-all = ["lint", "format-check", "typecheck", "test"]
+clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg"
 
 [dependency-groups]
 dev = [
@@ -119,4 +111,6 @@ dev = [
     "ruff>=0.14.10",
     "types-jsonschema>=4.25.1.20251009",
     "types-pyyaml>=6.0.12.20250915",
+    "pypdf>=6.5.0",
+    "pymupdf>=1.24.0",
 ]

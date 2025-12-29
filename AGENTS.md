@@ -161,6 +161,9 @@ jtr-generator/
 │   ├── generators/         # PDF生成ロジック
 │   ├── validators/         # 入力データ検証
 │   └── formatters/         # 日付・テキスト整形
+├── data/                   # データファイル
+│   └── layouts/            # レイアウト定義（PDF罫線座標データ）
+│       └── resume_layout_a4.json  # A4履歴書レイアウト
 ├── schemas/                # JSON Schema定義
 │   └── resume_schema.json
 ├── examples/               # サンプルデータ
@@ -176,6 +179,11 @@ jtr-generator/
 │   │   └── ...
 │   └── chatgpt/            # ChatGPT Skills用（将来）
 │       └── ...
+├── tools/                  # 開発・デバッグ用ツール
+│   ├── extract_lines.py    # PDF罫線座標抽出（PyMuPDF使用）
+│   ├── generate_blank_resume.py  # 空白PDF生成
+│   └── verify_pdf.py       # 生成PDF検証
+├── outputs/                # 生成されたPDF出力先（git管理外）
 ├── build/                  # ビルド出力
 │   ├── claude.zip          # Claude Skillsパッケージ
 │   ├── gemini.zip          # Gemini Skillsパッケージ（将来）
@@ -184,6 +192,8 @@ jtr-generator/
 │   ├── .gitkeep
 │   └── README.md           # フォント配置方法の説明
 ├── tests/                  # テストコード
+│   ├── fixtures/           # テスト用データ
+│   └── generators/         # 自動テスト
 └── docs/                   # ドキュメント
 ```
 
