@@ -210,7 +210,12 @@ __marimo__/
 outputs/*.pdf
 outputs/*.jpg
 
+# Debug images (generated during visual testing)
+outputs/debug/
+
 # User-provided fonts (not distributed)
 fonts/*
 !fonts/.gitkeep
 !fonts/README.md
+!fonts/BIZ_UDMincho/
+!fonts/BIZ_UDMincho/*

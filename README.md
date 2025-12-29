@@ -39,14 +39,12 @@ Claude SkillsでJIS規格準拠の日本の履歴書を自動生成するカス�
    cd jtr-generator-skill
    ```
 
-3. **日本語フォントの設定（オプションだが推奨）**
+3. **日本語フォントの設定（オプション）**
 
-   **なぜフォントを自分で設定する必要があるのか:**
-   - 多くの日本語フォントは**ライセンス上、再配布が禁止**されています
-   - そのため、このSkillにはフォントファイルを同梱できません
-   - あなたが所有するフォントを設定することで、好みの見た目で履歴書を生成できます
+   **v0.1.0以降、デフォルトフォント（BIZ UDMincho）が同梱されています。**
+   フォント設定をスキップした場合、デフォルトフォントが自動的に使用されます。
 
-   **フォント設定手順:**
+   **カスタムフォントを使用する場合:**
 
    a. お好みの日本語フォントファイル（.ttf または .otf）を用意
       - 例: IPAexフォント、Notoフォント、源ノ角ゴシック等
@@ -54,20 +52,20 @@ Claude SkillsでJIS規格準拠の日本の履歴書を自動生成するカス�
 
    b. フォントファイルを`fonts/`ディレクトリに配置
       ```bash
-      mkdir -p fonts
-      cp /path/to/your/font.ttf fonts/
+      mkdir -p fonts/custom
+      cp /path/to/your/font.ttf fonts/custom/
       ```
 
    c. 設定ファイル`config.yaml`を編集
       ```yaml
       fonts:
-        main: fonts/your-font.ttf        # 本文用フォント
-        heading: fonts/your-font-bold.ttf # 見出し用フォント（オプション）
+        main: fonts/custom/your-font.ttf        # 本文用フォント
+        heading: fonts/custom/your-font-bold.ttf # 見出し用フォント（オプション）
       ```
 
-   **フォント未設定の場合:**
-   - デフォルトの日本語フォント（システムフォント）が使用されます
-   - 環境によっては文字化けや見た目が変わる可能性があります
+   **デフォルトフォント（BIZ UDMincho）について:**
+   - 設定なしでもBIZ UDMinchoが自動的に使用されます
+   - より好みに合ったフォントを使用したい場合のみカスタム設定を行ってください
 
 4. **パッケージの再圧縮**
    ```bash
@@ -440,3 +438,29 @@ A: はい、使えます。デフォルトのシステムフォントが使用�
 - [BIZ UDゴシック/明朝](https://github.com/googlefonts/morisawa-biz-ud-gothic) - モリサワ提供のユニバーサルデザインフォント
 
 各フォントのライセンス条項を必ず確認してから使用してください。
+
+## ライセンス
+
+### プロジェクトライセンス
+
+このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) を参照してください。
+
+### 同梱フォント
+
+#### BIZ UDMincho
+
+このプロジェクトには、モリサワ提供の BIZ UDMincho フォントがデフォルトフォントとして同梱されています。
+
+- **フォント名**: BIZ UDMincho Regular
+- **提供元**: Morisawa Inc.
+- **ライセンス**: SIL Open Font License, Version 1.1
+- **プロジェクトURL**: https://github.com/googlefonts/morisawa-biz-ud-mincho
+
+BIZ UDMincho は SIL Open Font License 1.1 の下で配布されており、商用利用・再配布が可能です。
+ライセンス全文は [fonts/BIZ_UDMincho/OFL.txt](fonts/BIZ_UDMincho/OFL.txt) を参照してください。
+
+**著作権表示:**
+```
+Copyright 2022 The BIZ UDMincho Project Authors
+(https://github.com/googlefonts/morisawa-biz-ud-mincho)
+```

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Resume Layout Schema",
-  "description": "JIS規格履歴書のレイアウトデータ（罫線情報）スキーマ定義（v2フォーマット）",
+  "description": "JIS規格履歴書のレイアウトデータ（罫線+テキスト）スキーマ定義（v3フォーマット）",
   "type": "object",
   "required": ["source_page_size_pt", "split_x_pt", "page1_lines", "page2_lines"],
   "properties": {
@@ -32,6 +32,20 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/line"
+      }
+    },
+    "page1_texts": {
+      "description": "ページ1（左半分）の固定テキストラベル",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/text"
+      }
+    },
+    "page2_texts": {
+      "description": "ページ2（右半分）の固定テキストラベル",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/text"
       }
     }
   },
@@ -97,6 +111,36 @@
           },
           "minItems": 3,
           "maxItems": 3
+        }
+      }
+    },
+    "text": {
+      "description": "単一の固定テキストラベル",
+      "type": "object",
+      "required": ["text", "x", "y", "font_size", "align"],
+      "properties": {
+        "text": {
+          "description": "表示するテキスト内容",
+          "type": "string",
+          "minLength": 1
+        },
+        "x": {
+          "description": "X座標（単位: pt）",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y座標（単位: pt、ReportLab座標系）",
+          "type": "number"
+        },
+        "font_size": {
+          "description": "フォントサイズ（単位: pt）",
+          "type": "number",
+          "minimum": 1.0
+        },
+        "align": {
+          "description": "テキスト配置方向",
+          "type": "string",
+          "enum": ["left", "center", "right"]
         }
       }
     }
