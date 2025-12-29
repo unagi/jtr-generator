@@ -1,10 +1,12 @@
-# Claude Skills API - 技術仕様
+# Claude Agent Skills - 技術仕様
 
 ## 概要
 
-このドキュメントは、jtr-generatorプロジェクトにおけるClaude Skills API固有の技術仕様をまとめたものです。
+このドキュメントは、jtr-generatorプロジェクトにおけるClaude Agent Skills固有の技術仕様をまとめたものです。
 
-**対象読者**: Claude Skills APIを使用してカスタムスキルを開発・デバッグする開発者
+**重要**: 2025年12月にAgent Skillsの仕様が変更されました。skill.jsonは廃止され、SKILL.md形式に移行しています。
+
+**対象読者**: Claude Agent Skillsを使用してカスタムスキルを開発・デバッグする開発者
 
 **プロジェクト全体の仕様**: [AGENTS.md](AGENTS.md)を参照してください。
 
@@ -21,34 +23,41 @@
 
 このドキュメントでは、ローカル環境でのSkills開発・デバッグ方法を説明します。
 
-## Claude Skills固有の構成
+## Claude Agent Skills固有の構成
 
 ### platforms/claude/ ディレクトリ
 
 ```
 platforms/claude/
-├── skill.json              # Claude Skills定義ファイル
+├── SKILL.md                # Agent Skills定義ファイル（YAMLフロントマター + 指示）
 ├── main.py                 # エントリーポイント
 ├── config.yaml             # ユーザー設定テンプレート
-└── README.md               # Claude固有の使用方法
+└── README.md               # エンドユーザー向け使用方法
 ```
 
-### skill.json
+### SKILL.md
 
-Claude Skills APIのメタデータ定義:
+Agent Skillsのメタデータ定義とLLM向け指示を統合したファイル:
 
-```json
-{
-  "name": "jtr-generator",
-  "version": "0.1.0",
-  "description": "日本の履歴書（JIS規格準拠）をPDF形式で生成するSkill",
-  "entry_point": "main.py",
-  "skills": ["pdf"],
-  "author": "jtr-generator contributors",
-  "license": "MIT",
-  "python_version": "3.11+"
-}
+```markdown
+---
+name: jtr-generator
+description: JIS規格準拠の日本の履歴書をPDF形式で生成するSkill。対話的な情報収集またはYAML/JSONファイルからPDF生成が可能。
+---
+
+# 日本の履歴書生成Skill
+
+## Overview
+...
+
+## Data Collection Rules
+...
 ```
+
+**重要な変更点**:
+- ~~skill.json~~ → **SKILL.md**（YAMLフロントマター形式）
+- ~~INSTRUCTION.md~~ → **SKILL.mdに統合**
+- 公式仕様: https://agentskills.io
 
 ### Progressive Disclosure
 

@@ -1,0 +1,24 @@
+# jtr-generator config.yaml
+# Claude Agent Skills環境用設定ファイル
+
+# 出力オプション
+options:
+  # 日付フォーマット: "seireki"（西暦）または "wareki"（和暦）
+  date_format: seireki
+
+  # 用紙サイズ: "A4" または "B5"（B5は将来実装予定）
+  paper_size: A4
+
+# フォント設定（オプション）
+# 未指定の場合、デフォルトフォント（BIZ UDMincho）が自動使用されます
+fonts:
+  # 本文用フォント（相対パス: jtr-generator/を基準）
+  # main: fonts/custom/your-font.ttf
+
+  # 見出し用フォント（オプション）
+  # heading: fonts/custom/your-font-bold.ttf
+
+# カスタムフォントを使用する場合:
+# 1. fonts/ディレクトリにフォントファイル（.ttf または .otf）を配置
+# 2. 上記のmainまたはheading設定をコメント解除
+# 3. ファイルパスを指定（相対パスはjtr-generator/を基準）
