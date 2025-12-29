@@ -239,6 +239,7 @@ dev = [
     { name = "pypdf" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-spec" },
     { name = "ruff" },
     { name = "types-jsonschema" },
     { name = "types-pyyaml" },
@@ -259,6 +260,7 @@ dev = [
     { name = "pypdf", specifier = ">=6.5.0" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "pytest-spec", specifier = ">=4.0.0" },
     { name = "ruff", specifier = ">=0.14.10" },
     { name = "types-jsonschema", specifier = ">=4.25.1.20251009" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20250915" },
@@ -572,6 +574,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5e/f7/c933acc76f5208b3b00089573cf6a2bc26dc80a8aece8f52bb7d6b1855ca/pytest_cov-7.0.0.tar.gz", hash = "sha256:33c97eda2e049a0c5298e91f519302a1334c26ac65c1a483d6206fd458361af1", size = 54328, upload-time = "2025-09-09T10:57:02.113Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ee/49/1377b49de7d0c1ce41292161ea0f721913fa8722c19fb9c1e3aa0367eecb/pytest_cov-7.0.0-py3-none-any.whl", hash = "sha256:3b8e9558b16cc1479da72058bdecf8073661c7f57f7d3c5f22a1c23507f2d861", size = 22424, upload-time = "2025-09-09T10:57:00.695Z" },
+]
+
+[[package]]
+name = "pytest-spec"
+version = "5.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/1d/38d5f61234217e243799406d840525b064d78b5c0b04a797c4daa67b6a81/pytest_spec-5.2.0.tar.gz", hash = "sha256:8a29edfcecd4a407036651973b254c89c0f8d6a82da4e06ab8af95ee9a9afb09", size = 1193771, upload-time = "2025-10-08T21:20:46.903Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/f7/90eb2c07b7c776ed7360c6ebe135741c8f97c4b6e69123f05a644afa7b47/pytest_spec-5.2.0-py3-none-any.whl", hash = "sha256:25e1b790c33456b0f7285429f8ccac5fc721a8a327c1dfa9bb23810a12ec8589", size = 15281, upload-time = "2025-10-08T21:20:45.381Z" },
 ]
 
 [[package]]
