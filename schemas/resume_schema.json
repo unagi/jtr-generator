@@ -81,6 +81,43 @@
       },
       "additionalProperties": false
     },
+    "contact_info": {
+      "type": "object",
+      "description": "連絡先（現住所以外に連絡を希望する場合）",
+      "properties": {
+        "postal_code": {
+          "type": "string",
+          "description": "郵便番号（ハイフン付き7桁）",
+          "pattern": "^[0-9]{3}-[0-9]{4}$",
+          "examples": ["150-0041", "100-0001"]
+        },
+        "address": {
+          "type": "string",
+          "description": "連絡先住所（都道府県から番地まで）",
+          "minLength": 1,
+          "examples": ["東京都千代田区丸の内1-1-1", "大阪府大阪市北区梅田1-1-1"]
+        },
+        "address_kana": {
+          "type": "string",
+          "description": "連絡先住所（ふりがな）",
+          "pattern": "^[ぁ-んー]+$",
+          "examples": ["とうきょうとちよだくまるのうち", "おおさかふおおさかしきたくうめだ"]
+        },
+        "phone": {
+          "type": "string",
+          "description": "連絡先電話番号（固定電話、ハイフン付き）",
+          "pattern": "^[0-9]{2,4}-[0-9]{2,4}-[0-9]{4}$",
+          "examples": ["03-1234-5678", "06-1234-5678"]
+        },
+        "mobile": {
+          "type": "string",
+          "description": "連絡先携帯電話番号（ハイフン付き）",
+          "pattern": "^0[789]0-[0-9]{4}-[0-9]{4}$",
+          "examples": ["090-1234-5678", "080-9876-5432"]
+        }
+      },
+      "additionalProperties": false
+    },
     "education": {
       "type": "array",
       "description": "学歴（時系列順）",

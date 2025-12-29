@@ -1,0 +1,180 @@
+{
+  "format_version": "v1",
+  "tolerance_pt": 1.5,
+  "defaults": {
+    "align": "left",
+    "valign": "baseline"
+  },
+  "page1_fields": {
+    "name": {
+      "align": "center",
+      "valign": "center"
+    },
+    "name_kana": {
+      "align": "center",
+      "valign": "center"
+    },
+    "birthdate_year": {
+      "align": "right",
+      "valign": "center"
+    },
+    "birthdate_month": {
+      "align": "right",
+      "valign": "center"
+    },
+    "birthdate_day": {
+      "align": "right",
+      "valign": "center"
+    },
+    "age": {
+      "align": "right",
+      "valign": "center"
+    },
+    "gender": {
+      "align": "center",
+      "valign": "center"
+    },
+    "postal_code": {
+      "align": "left",
+      "valign": "top",
+      "margin_left": 7.22,
+      "margin_top": 2.831
+    },
+    "address_kana": {
+      "align": "left",
+      "valign": "center",
+      "margin_left": 0.58
+    },
+    "address": {
+      "align": "left",
+      "valign": "bottom",
+      "margin_left": 0.58,
+      "margin_bottom": 14.969
+    },
+    "phone_block": {
+      "align": "left",
+      "valign": "top",
+      "max_lines": 2,
+      "line_height": 19.02,
+      "margin_left": 6.94,
+      "margin_top": 4.541,
+      "fields": [
+        "phone",
+        "mobile"
+      ]
+    },
+    "contact_postal_code": {
+      "align": "left",
+      "valign": "top",
+      "margin_left": 7.22,
+      "margin_top": 2.831
+    },
+    "contact_address_kana": {
+      "align": "left",
+      "valign": "center",
+      "margin_left": 0.58
+    },
+    "contact_address": {
+      "align": "left",
+      "valign": "bottom",
+      "margin_left": 0.58,
+      "margin_bottom": 14.969
+    },
+    "contact_phone_block": {
+      "align": "left",
+      "valign": "top",
+      "max_lines": 2,
+      "line_height": 19.02,
+      "margin_left": 6.94,
+      "margin_top": 4.541,
+      "fields": [
+        "contact_phone",
+        "contact_mobile"
+      ]
+    }
+  },
+  "dynamic_rows": {
+    "education_work_history_p1": {
+      "valign": "center",
+      "label": {
+        "align": "center",
+        "valign": "center"
+      },
+      "columns": {
+        "year": {
+          "align": "center",
+          "valign": "center"
+        },
+        "month": {
+          "align": "center",
+          "valign": "center"
+        },
+        "content": {
+          "align": "left",
+          "valign": "center",
+          "margin_left": 5.0
+        }
+      }
+    },
+    "education_work_history_p2": {
+      "valign": "center",
+      "label": {
+        "align": "center",
+        "valign": "center"
+      },
+      "columns": {
+        "year": {
+          "align": "center",
+          "valign": "center"
+        },
+        "month": {
+          "align": "center",
+          "valign": "center"
+        },
+        "content": {
+          "align": "left",
+          "valign": "center",
+          "margin_left": 5.0
+        }
+      }
+    },
+    "qualifications": {
+      "valign": "center",
+      "label": {
+        "align": "center",
+        "valign": "center"
+      },
+      "columns": {
+        "year": {
+          "align": "center",
+          "valign": "center"
+        },
+        "month": {
+          "align": "center",
+          "valign": "center"
+        },
+        "content": {
+          "align": "left",
+          "valign": "center",
+          "margin_left": 5.0
+        }
+      }
+    }
+  },
+  "multiline_blocks": {
+    "motivation_self_pr": {
+      "align": "left",
+      "valign": "top",
+      "margin_left": 5.51,
+      "margin_top": 5.001
+    },
+    "hope": {
+      "align": "left",
+      "valign": "center",
+      "margin_left": 5.51
+    }
+  },
+  "notes": {
+    "contact_fields": "連絡先は任意項目のため、未指定時は描画しない"
+  }
+}

@@ -332,8 +332,19 @@ def _draw_data_fields(
         date_format: 日付フォーマット（"seireki" or "wareki"）
     """
     for _field_key, field_def in field_defs.items():
+        field_type = field_def.get("type")
+
         # 動的行フィールド（学歴・職歴）はスキップ（別途処理）
-        if field_def.get("type") == "dynamic_rows":
+        if field_type == "dynamic_rows":
+            continue
+
+        # 複数行テキスト（page1にも対応）
+        if field_type == "multiline_text":
+            _draw_multiline_text(c, data, field_def, font_name)
+            continue
+
+        # 参照用フィールドなどの描画対象外
+        if field_type:
             continue
 
         # フィールド値を取得
@@ -551,6 +562,7 @@ def _draw_education_work_history(
             font_name,
             font_size,
             date_format,
+            row_config.get("label"),
         )
         current_row += 1
 
@@ -596,6 +608,7 @@ def _draw_row(
     font_name: str,
     font_size: float,
     date_format: Literal["seireki", "wareki"],
+    label_config: dict[str, Any] | None = None,
 ) -> None:
     """
     1行分のデータを描画
@@ -612,6 +625,8 @@ def _draw_row(
     c.setFont(font_name, font_size)
     c.setFillColorRGB(0, 0, 0)
 
+    is_label = bool(row_data.get("is_label"))
+
     for _col_name, col_config in columns.items():
         field_key = col_config["field_key"]
         value = row_data.get(field_key, "")
@@ -621,6 +636,17 @@ def _draw_row(
 
         x = col_config["x"]
         align = col_config["align"]
+
+        if is_label and field_key == "content" and label_config:
+            label_x = label_config.get("x", x)
+            label_align = label_config.get("align", "center")
+            if label_align == "left":
+                c.drawString(label_x, baseline_y, value)
+            elif label_align == "center":
+                c.drawCentredString(label_x, baseline_y, value)
+            elif label_align == "right":
+                c.drawRightString(label_x, baseline_y, value)
+            continue
 
         if align == "left":
             c.drawString(x, baseline_y, value)
