@@ -72,6 +72,8 @@ addopts = [
     "--strict-markers",
     "--tb=short",
 ]
+# pytest-spec設定（docstringを優先表示）
+spec_test_format = "{result} {docstring_summary}"
 
 # pytest-cov設定
 [tool.coverage.run]
