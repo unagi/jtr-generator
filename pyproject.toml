@@ -99,7 +99,7 @@ format = "ruff format src/ tests/"
 format-check = "ruff format --check src/ tests/"
 typecheck = "mypy src/"
 check-all = ["lint", "format-check", "typecheck", "test"]
-clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg"
+clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
 [dependency-groups]
 dev = [
