@@ -201,7 +201,12 @@ def test_generate_resume_with_education_and_work_history(tmp_path):
         ],
         "work_history": [
             {"date": "2010-04", "type": "入社", "company": "株式会社〇〇"},
-            {"date": "2015-03", "type": "退職", "company": "株式会社〇〇", "note": "一身上の都合により"},
+            {
+                "date": "2015-03",
+                "type": "退職",
+                "company": "株式会社〇〇",
+                "note": "一身上の都合により",
+            },
             {"date": "2015-04", "type": "入社", "company": "株式会社△△"},
         ],
         "qualifications": [],

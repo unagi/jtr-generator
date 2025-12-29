@@ -122,8 +122,12 @@ def generate_resume_pdf(
         # 学歴・職歴（page1部分）の描画と、page2への継続を管理
         if "education_work_history_p1" in layout_data["page1_data_fields"]:
             remaining_rows = _draw_education_work_history(
-                c, data, layout_data["page1_data_fields"]["education_work_history_p1"],
-                font_name, date_format, None
+                c,
+                data,
+                layout_data["page1_data_fields"]["education_work_history_p1"],
+                font_name,
+                date_format,
+                None,
             )
 
     c.showPage()
@@ -138,15 +142,23 @@ def generate_resume_pdf(
         # 学歴・職歴の続き（remaining_rowsがある場合のみ）
         if remaining_rows and "education_work_history_p2" in layout_data["page2_data_fields"]:
             _draw_education_work_history(
-                c, data, layout_data["page2_data_fields"]["education_work_history_p2"],
-                font_name, date_format, remaining_rows
+                c,
+                data,
+                layout_data["page2_data_fields"]["education_work_history_p2"],
+                font_name,
+                date_format,
+                remaining_rows,
             )
 
         # 資格・免許
         if "qualifications" in layout_data["page2_data_fields"]:
             _draw_education_work_history(
-                c, data, layout_data["page2_data_fields"]["qualifications"],
-                font_name, date_format, None
+                c,
+                data,
+                layout_data["page2_data_fields"]["qualifications"],
+                font_name,
+                date_format,
+                None,
             )
 
         # 志望動機・自己PR・本人希望（複数行テキスト）
@@ -274,9 +286,7 @@ def _format_date(
         raise ValueError(f"Invalid date_format: {date_format}. Expected 'seireki' or 'wareki'")
 
 
-def _get_field_value(
-    data: dict[str, Any], field_path: str, transform: str | None = None
-) -> str:
+def _get_field_value(data: dict[str, Any], field_path: str, transform: str | None = None) -> str:
     """
     データからフィールド値を取得し、必要に応じて変換
 
@@ -334,14 +344,33 @@ def _draw_data_fields(
 
             # 日付フィールドの特別処理
             if "format" in field_def:
-                format_map: dict[str, Literal["full", "short", "inline", "inline_spaced", "wareki_year_only", "month_only", "day_only"]] = {
+                format_map: dict[
+                    str,
+                    Literal[
+                        "full",
+                        "short",
+                        "inline",
+                        "inline_spaced",
+                        "wareki_year_only",
+                        "month_only",
+                        "day_only",
+                    ],
+                ] = {
                     "wareki_inline": "inline",
                     "wareki_inline_spaced": "inline_spaced",
                     "wareki_year_only": "wareki_year_only",
                     "month_only": "month_only",
                     "day_only": "day_only",
                 }
-                format_style: Literal["full", "short", "inline", "inline_spaced", "wareki_year_only", "month_only", "day_only"] = format_map.get(field_def["format"], "full")
+                format_style: Literal[
+                    "full",
+                    "short",
+                    "inline",
+                    "inline_spaced",
+                    "wareki_year_only",
+                    "month_only",
+                    "day_only",
+                ] = format_map.get(field_def["format"], "full")
                 value = _format_date(value, date_format, format_style)
 
             # フォント設定
@@ -499,12 +528,14 @@ def _draw_education_work_history(
                 month_str = _format_date(date_str + "-01", date_format, "month_only")
                 content = _format_content(item, content_format)
 
-                all_rows.append({
-                    "year": year_str,
-                    "month": month_str,
-                    "content": content,
-                    "is_label": False,
-                })
+                all_rows.append(
+                    {
+                        "year": year_str,
+                        "month": month_str,
+                        "content": content,
+                        "is_label": False,
+                    }
+                )
 
     # このページで描画できる行数まで描画
     rows_to_draw = all_rows[:max_rows]
