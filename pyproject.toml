@@ -69,7 +69,6 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
-    "-v",
     "--strict-markers",
     "--tb=short",
 ]
@@ -91,9 +90,9 @@ exclude_lines = [
 
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
-test = "pytest tests/"
-test-cov = "pytest tests/ --cov=src --cov-report=term-missing"
-test-watch = "pytest tests/ -f"
+test = "pytest tests/ --spec"
+test-cov = "pytest tests/ --cov=src --cov-report=term-missing --spec"
+test-watch = "pytest tests/ -f --spec"
 lint = "ruff check src/ tests/"
 lint-fix = "ruff check --fix src/ tests/"
 format = "ruff format src/ tests/"
@@ -108,6 +107,7 @@ dev = [
     "poethepoet>=0.39.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
+    "pytest-spec>=4.0.0",
     "ruff>=0.14.10",
     "types-jsonschema>=4.25.1.20251009",
     "types-pyyaml>=6.0.12.20250915",

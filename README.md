@@ -1,5 +1,10 @@
 # jtr-generator - 日本の履歴書生成Skill
 
+[![CI](https://github.com/unagi/jtr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/unagi/jtr-generator/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/unagi/jtr-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/unagi/jtr-generator)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## 概要
 
 Claude SkillsでJIS規格準拠の日本の履歴書を自動生成するカスタムSkillです。
