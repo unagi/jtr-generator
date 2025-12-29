@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Generated PDF outputs
+outputs/*.pdf
+outputs/*.jpg
+
+# User-provided fonts (not distributed)
+fonts/*
+!fonts/.gitkeep
+!fonts/README.md
