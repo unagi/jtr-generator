@@ -33,6 +33,7 @@ class FieldBounds:
             delta = self.current_baseline - expected_baseline
 
         return {
+            "key": self.key,
             "top": self.top,
             "bottom": self.bottom,
             "font_size": self.font_size,
