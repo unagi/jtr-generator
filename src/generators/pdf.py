@@ -293,13 +293,13 @@ def _get_field_value(
     """
     # ドット区切りパスからネストした値を取得
     keys = field_path.split(".")
-    value = data
+    value: Any = data
     for key in keys:
         value = value[key]
 
     # 変換処理
     if transform == "calculate_age":
-        return str(_calculate_age(value))
+        return str(_calculate_age(str(value)))
     else:
         return str(value)
 
@@ -334,14 +334,14 @@ def _draw_data_fields(
 
             # 日付フィールドの特別処理
             if "format" in field_def:
-                format_map = {
+                format_map: dict[str, Literal["full", "short", "inline", "inline_spaced", "wareki_year_only", "month_only", "day_only"]] = {
                     "wareki_inline": "inline",
                     "wareki_inline_spaced": "inline_spaced",
                     "wareki_year_only": "wareki_year_only",
                     "month_only": "month_only",
                     "day_only": "day_only",
                 }
-                format_style = format_map.get(field_def["format"], "full")
+                format_style: Literal["full", "short", "inline", "inline_spaced", "wareki_year_only", "month_only", "day_only"] = format_map.get(field_def["format"], "full")
                 value = _format_date(value, date_format, format_style)
 
             # フォント設定
