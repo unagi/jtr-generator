@@ -21,7 +21,7 @@
 
 ## 印刷検証
 
-- [ ] A4/B5用紙に正しく印刷されるか
+- [ ] A4用紙に正しく印刷されるか（B5は将来対応予定）
 - [ ] 余白が適切か
 - [ ] 文字が切れていないか
 - [ ] 実機での印刷テスト
@@ -39,17 +39,15 @@
 
 各モジュールに対するユニットテスト:
 
-- `src/models/` - データモデルの型検証
-- `src/generators/` - PDF生成ロジック
-- `src/validators/` - バリデーション機能
-- `src/formatters/` - 日付・テキスト整形
+- `skill/jtr/` - PDF生成、データ読み込み、日付変換、レイアウト関連
+- `tools/` - レイアウト検証ツール
 
 ### 統合テスト
 
 エンドツーエンドのテスト:
 
 - YAML/JSONファイルからのPDF生成
-- 各種オプション（和暦/西暦、A4/B5）の動作確認
+- 各種オプション（和暦/西暦、A4のみ、B5は将来対応予定）の動作確認
 - エラーハンドリング
 
 ### テスト実行
@@ -75,7 +73,7 @@ uv run poe test
 uv run poe test-cov
 
 # 手動で詳細確認する場合（CIと同等）
-uv run pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec
+uv run pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec
 ```
 
 ### カバレッジが低い場合の対処

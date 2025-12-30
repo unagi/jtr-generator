@@ -6,7 +6,7 @@
 
 ## 主要スクリプト
 
-- `extract_lines.py`: 参照PDFから罫線を抽出し、`data/layouts/resume_layout_a4_v2.json` を更新します。
+- `extract_lines.py`: 参照PDFから罫線を抽出し、`skill/data/a4/resume_layout.json` を更新します。
 - `font_metrics_report.py`: フォントメトリクスに基づき、氏名欄・学歴/職歴行・ふりがな欄のベースラインを一括で確認するJSONレポートを生成します。
 - `generate_blank_resume.py`: 現在のレイアウトで罫線のみのPDFを生成します。
 - `verify_pdf.py`: 生成したPDFのページサイズなどの基本情報を表示します。

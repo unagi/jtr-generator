@@ -256,7 +256,7 @@ uv run pytest tests/generators/test_pdf_visual.py::test_save_diff_image_for_debu
 
 ### スキーマ定義
 
-JSONスキーマ: `schemas/layout_schema.json`（v4フォーマット）
+JSONスキーマ: `skill/schemas/layout_schema.json`（配布パッケージでは `schemas/layout_schema.json`）
 
 バリデーション:
 ```bash
@@ -264,7 +264,7 @@ uv run python -c "
 import json
 import jsonschema
 
-with open('schemas/layout_schema.json') as f:
+with open('skill/schemas/layout_schema.json') as f:
     schema = json.load(f)
 
 with open('data/a4/resume_layout.json') as f:
@@ -279,7 +279,7 @@ print('✅ スキーマバリデーション成功')
 
 - **プロジェクト概要**: `README.md`
 - **調整履歴**: `outputs/adjustment_log.md`
-- **JSONスキーマ**: `schemas/layout_schema.json`
+- **JSONスキーマ**: `skill/schemas/layout_schema.json`
 - **参照PDF**: `tests/fixtures/R3_pdf_rirekisyo.pdf`
 
 ### ライセンス
