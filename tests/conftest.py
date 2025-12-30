@@ -26,4 +26,4 @@ def invalid_fixtures_dir(fixtures_dir: Path) -> Path:
 @pytest.fixture
 def schema_path() -> Path:
     """JSON Schemaファイルのパスを返す"""
-    return Path(__file__).parent.parent / "schemas" / "resume_schema.json"
+    return Path(__file__).parent.parent / "skill" / "schemas" / "resume_schema.json"

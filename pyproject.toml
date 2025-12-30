@@ -5,7 +5,7 @@ description = "日本の履歴書（JIS規格準拠）をPDF形式で生成す�
 authors = [
     { name = "jtr-generator contributors" }
 ]
-readme = "README.md"
+readme = "skill/README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
@@ -19,13 +19,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src", "data"]
+packages = ["skill"]
 
 # Ruff設定
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["src", "tests"]
+src = ["skill", "tests", "tools"]
 
 [tool.ruff.lint]
 select = [
@@ -42,7 +42,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["skill", "jtr"]
 
 # mypy設定
 [tool.mypy]
@@ -77,7 +77,7 @@ spec_test_format = "{result} {docstring_summary}"
 
 # pytest-cov設定
 [tool.coverage.run]
-source = ["src", "tools"]
+source = ["skill", "tools"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
@@ -93,13 +93,13 @@ exclude_lines = [
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
 test = "pytest tests/ --spec"
-test-cov = "pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec"
+test-cov = "pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec"
 test-watch = "pytest tests/ -f --spec"
-lint = "ruff check src/ tests/"
-lint-fix = "ruff check --fix src/ tests/"
-format = "ruff format src/ tests/"
-format-check = "ruff format --check src/ tests/"
-typecheck = "mypy src/"
+lint = "ruff check skill/ tests/ tools/"
+lint-fix = "ruff check --fix skill/ tests/ tools/"
+format = "ruff format skill/ tests/ tools/"
+format-check = "ruff format --check skill/ tests/ tools/"
+typecheck = "mypy skill/"
 check-all = ["lint", "format-check", "typecheck", "test-cov"]
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
@@ -107,50 +107,6 @@ clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 [tool.poe.tasks.build-skill]
 help = "Build Agent Skills package (jtr-generator.zip)"
 sequence = [
-    # 1. 一時ディレクトリのクリーンアップと作成
-    { cmd = "rm -rf build/jtr-generator build/jtr-generator.zip" },
-    { cmd = "mkdir -p build/jtr-generator" },
-
-    # 2. ルート配置ファイルのコピー（main.py以外）
-    { cmd = "cp SKILL.md build/jtr-generator/" },
-    { cmd = "cp config.yaml build/jtr-generator/" },
-    { cmd = "cp README.md build/jtr-generator/" },
-
-    # 3. src/のコピー（ディレクトリ構造を維持）
-    { cmd = "mkdir -p build/jtr-generator/src/generators" },
-    { cmd = "mkdir -p build/jtr-generator/src/validators" },
-    { cmd = "mkdir -p build/jtr-generator/src/formatters" },
-    { cmd = "mkdir -p build/jtr-generator/src/layout" },
-    { cmd = "cp src/__init__.py build/jtr-generator/src/" },
-    { cmd = "cp src/generators/__init__.py build/jtr-generator/src/generators/" },
-    { cmd = "cp src/generators/pdf.py build/jtr-generator/src/generators/" },
-    { cmd = "cp src/validators/__init__.py build/jtr-generator/src/validators/" },
-    { cmd = "cp src/validators/data.py build/jtr-generator/src/validators/" },
-    { cmd = "cp src/formatters/__init__.py build/jtr-generator/src/formatters/" },
-    { cmd = "cp src/formatters/wareki.py build/jtr-generator/src/formatters/" },
-    { cmd = "cp src/layout/__init__.py build/jtr-generator/src/layout/" },
-    { cmd = "cp src/layout/anchors.py build/jtr-generator/src/layout/" },
-    { cmd = "cp src/layout/metrics.py build/jtr-generator/src/layout/" },
-
-    # 4. data/のコピー
-    { cmd = "mkdir -p build/jtr-generator/data/layouts" },
-    { cmd = "cp data/layouts/resume_layout_a4_v2.json build/jtr-generator/data/layouts/" },
-
-    # 5. schemas/のコピー
-    { cmd = "mkdir -p build/jtr-generator/schemas" },
-    { cmd = "cp schemas/resume_schema.json build/jtr-generator/schemas/" },
-
-    # 6. fonts/のコピー
-    { cmd = "mkdir -p build/jtr-generator/fonts/BIZ_UDMincho" },
-    { cmd = "cp fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf build/jtr-generator/fonts/BIZ_UDMincho/" },
-    { cmd = "cp fonts/BIZ_UDMincho/OFL.txt build/jtr-generator/fonts/BIZ_UDMincho/" },
-
-    # 7. examples/のコピー
-    { cmd = "mkdir -p build/jtr-generator/examples" },
-    { cmd = "cp examples/sample_resume.yaml build/jtr-generator/examples/" },
-    { cmd = "cp examples/sample_resume.json build/jtr-generator/examples/" },
-
-    # 8. Pythonファイルのパス修正とzip作成
     { cmd = "python tools/build_skill.py" },
 ]
 
