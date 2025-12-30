@@ -318,7 +318,7 @@ assert pixel_diff_rate < 0.06  # マージン+0.3%
 
 **Phase 5実施内容:**
 1. テスト閾値の再設定
-2. `skill/data/a4/README.md` の作成（品質スコア・制作経緯記載）
+2. `skill/assets/data/a4/README.md` の作成（品質スコア・制作経緯記載）
 3. 一時ファイルの整理（保持 or 削除の判断）
 4. 全テストの実行と動作確認
 

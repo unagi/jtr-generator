@@ -1,6 +1,6 @@
 {
   "format_version": "v1",
-  "source_layout": "skill/data/a4/resume_layout.json",
+  "source_layout": "skill/assets/data/a4/resume_layout.json",
   "anchor_strategy": "nearest_line",
   "cluster_tolerance_pt": 0.2,
   "page1_texts": [

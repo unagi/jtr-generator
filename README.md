@@ -22,7 +22,7 @@ JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する**
 
 ### エンドユーザー向け
 - **[skill/README.md](skill/README.md)** - Skill使用方法（Claude.ai/Codexでの使い方）
-- **[サンプルデータ](skill/examples/)** - [YAML](skill/examples/sample_resume.yaml) | [PDF](skill/examples/sample_resume.pdf)
+- **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_resume.yaml) | [PDF](skill/assets/examples/sample_resume.pdf)
 
 ### 開発者向け
 - **[AGENTS.md](AGENTS.md)** - プロジェクト全体仕様（LLM非依存の設計ドキュメント）
@@ -96,7 +96,7 @@ cd jtr-generator
 uv sync --all-extras --dev
 
 # フォントのセットアップ（オプション）
-# デフォルトでskill/fonts/BIZ_UDMincho/が使用されます
+# デフォルトでskill/assets/fonts/BIZ_UDMincho/が使用されます
 ```
 
 ## 開発タスク

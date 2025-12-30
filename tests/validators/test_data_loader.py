@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from skill.jtr.resume_data import load_resume_data
+from skill.scripts.jtr.resume_data import load_resume_data
 
 jsonschema = pytest.importorskip("jsonschema")
 ValidationError = jsonschema.ValidationError

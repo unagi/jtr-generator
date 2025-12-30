@@ -1,4 +1,4 @@
-"""skill.jtr.resume_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data）"""
+"""skill.scripts.jtr.resume_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data）"""
 
 import json
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from skill.jtr.resume_data import format_validation_error_ja, validate_and_load_data
+from skill.scripts.jtr.resume_data import format_validation_error_ja, validate_and_load_data
 
 
 class TestFormatValidationErrorJa:

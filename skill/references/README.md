@@ -130,7 +130,7 @@ qualifications:
 ### config.yamlの編集
 
 同梱の `config.yaml` を編集して、デフォルト設定をカスタマイズできます。
-リポジトリ内では `skill/config.yaml` にあります。
+リポジトリ内では `skill/assets/config.yaml` にあります。
 
 ```yaml
 options:

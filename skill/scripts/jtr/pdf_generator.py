@@ -28,8 +28,9 @@ def _find_default_font() -> Path:
     Raises:
         FileNotFoundError: フォントファイルが存在しない場合
     """
-    base_dir = Path(__file__).parent.parent
-    font_dir = base_dir / "fonts/BIZ_UDMincho"
+    # scripts/jtr/ から skill/ へ移動、さらに assets/fonts/ へ
+    base_dir = Path(__file__).parent.parent.parent  # skill/ ディレクトリ
+    font_dir = base_dir / "assets" / "fonts" / "BIZ_UDMincho"
 
     # Phase 1の選定結果に基づき、.ttfファイルを検索
     # Regular/Boldどちらかが残っている前提
@@ -88,7 +89,9 @@ def generate_resume_pdf(
     """
     # レイアウトデータのJSONファイルパス（v4フォーマット）
     # TODO: options経由で指定できるようにする（A4/B5切り替え対応）
-    layout_json_path = Path(__file__).parent.parent / "data/a4/resume_layout.json"
+    # scripts/jtr/ から skill/ へ移動、さらに assets/data/ へ
+    base_dir = Path(__file__).parent.parent.parent  # skill/ ディレクトリ
+    layout_json_path = base_dir / "assets" / "data" / "a4" / "resume_layout.json"
 
     with open(layout_json_path, encoding="utf-8") as f:
         layout_data = json.load(f)

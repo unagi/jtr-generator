@@ -240,7 +240,7 @@ jtr-generator/
 ### マルチプラットフォーム対応
 
 **設計方針:**
-- **skill/jtr/**: LLM非依存の共通実装（再利用可能）
+- **skill/scripts/jtr/**: LLM非依存の共通実装（再利用可能）
 - **skill/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
 
 **詳細**: [docs/specifications.md - アーキテクチャ](docs/specifications.md)を参照してください。
@@ -262,7 +262,7 @@ def generate_resume_pdf(
     履歴書PDFを生成（LLM非依存）
 
     Args:
-        data: skill/schemas/resume_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
+        data: skill/assets/schemas/resume_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
         options: 生成オプション（LLM環境から注入される）
             - paper_size: 'A4'（B5は将来対応予定）
             - date_format: 'seireki' or 'wareki'

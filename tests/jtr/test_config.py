@@ -1,11 +1,11 @@
-"""skill.jtr.config モジュールのテスト"""
+"""skill.scripts.jtr.config モジュールのテスト"""
 
 from pathlib import Path
 
 import pytest
 import yaml
 
-from skill.jtr.config import load_config, resolve_font_paths
+from skill.scripts.jtr.config import load_config, resolve_font_paths
 
 
 class TestLoadConfig:
@@ -69,7 +69,10 @@ class TestResolveFontPaths:
 
     def test_resolve_custom_main_font(self, tmp_path: Path) -> None:
         """カスタムメインフォントの相対パスを絶対パスに解決"""
-        font_file = tmp_path / "custom.ttf"
+        # assets/ ディレクトリを作成
+        assets_dir = tmp_path / "assets"
+        assets_dir.mkdir()
+        font_file = assets_dir / "custom.ttf"
         font_file.touch()
 
         config = {"fonts": {"main": "custom.ttf"}}
@@ -79,8 +82,11 @@ class TestResolveFontPaths:
 
     def test_resolve_custom_heading_font(self, tmp_path: Path) -> None:
         """カスタム見出しフォントの相対パスを絶対パスに解決"""
-        main_font = tmp_path / "main.ttf"
-        heading_font = tmp_path / "heading.ttf"
+        # assets/ ディレクトリを作成
+        assets_dir = tmp_path / "assets"
+        assets_dir.mkdir()
+        main_font = assets_dir / "main.ttf"
+        heading_font = assets_dir / "heading.ttf"
         main_font.touch()
         heading_font.touch()
 
@@ -99,7 +105,10 @@ class TestResolveFontPaths:
 
     def test_resolve_nonexistent_heading_font(self, tmp_path: Path) -> None:
         """存在しない見出しフォントを指定するとFileNotFoundErrorが発生"""
-        main_font = tmp_path / "main.ttf"
+        # assets/ ディレクトリを作成
+        assets_dir = tmp_path / "assets"
+        assets_dir.mkdir()
+        main_font = assets_dir / "main.ttf"
         main_font.touch()
 
         config = {"fonts": {"main": "main.ttf", "heading": "nonexistent.ttf"}}
@@ -109,8 +118,8 @@ class TestResolveFontPaths:
 
     def test_resolve_default_font(self, tmp_path: Path) -> None:
         """カスタムフォントが指定されていない場合、デフォルトフォントを設定"""
-        # デフォルトフォントのディレクトリ構造を作成
-        font_dir = tmp_path / "fonts/BIZ_UDMincho"
+        # デフォルトフォントのディレクトリ構造を作成（assets/fonts/）
+        font_dir = tmp_path / "assets" / "fonts" / "BIZ_UDMincho"
         font_dir.mkdir(parents=True)
         default_font = font_dir / "BIZUDMincho-Regular.ttf"
         default_font.touch()
@@ -129,7 +138,8 @@ class TestResolveFontPaths:
 
     def test_resolve_empty_fonts_dict(self, tmp_path: Path) -> None:
         """空のfonts辞書の場合、デフォルトフォントを設定"""
-        font_dir = tmp_path / "fonts/BIZ_UDMincho"
+        # デフォルトフォントのディレクトリ構造を作成（assets/fonts/）
+        font_dir = tmp_path / "assets" / "fonts" / "BIZ_UDMincho"
         font_dir.mkdir(parents=True)
         default_font = font_dir / "BIZUDMincho-Regular.ttf"
         default_font.touch()

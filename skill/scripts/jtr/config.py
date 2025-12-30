@@ -50,7 +50,8 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
     # カスタムフォントが指定されている場合
     if "fonts" in config and config["fonts"]:
         if "main" in config["fonts"]:
-            custom_font_path = base_dir / config["fonts"]["main"]
+            # config.yaml内のパスは assets/ からの相対パスとして解決
+            custom_font_path = base_dir / "assets" / config["fonts"]["main"]
             if not custom_font_path.exists():
                 raise FileNotFoundError(
                     f"カスタムフォントファイルが見つかりません: {custom_font_path}\n"
@@ -59,7 +60,7 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
             config["fonts"]["main"] = str(custom_font_path)
 
         if "heading" in config["fonts"]:
-            heading_font_path = base_dir / config["fonts"]["heading"]
+            heading_font_path = base_dir / "assets" / config["fonts"]["heading"]
             if not heading_font_path.exists():
                 raise FileNotFoundError(
                     f"見出しフォントファイルが見つかりません: {heading_font_path}\n"
@@ -68,7 +69,9 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
             config["fonts"]["heading"] = str(heading_font_path)
     else:
         # デフォルトフォントを設定
-        default_font_path = base_dir / "fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf"
+        default_font_path = (
+            base_dir / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
+        )
         if not default_font_path.exists():
             raise FileNotFoundError(
                 f"デフォルトフォントが見つかりません: {default_font_path}\n"

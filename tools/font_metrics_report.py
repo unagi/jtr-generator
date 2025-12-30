@@ -13,7 +13,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from skill.jtr.layout.metrics import get_font_metrics, register_font
+from skill.scripts.jtr.layout.metrics import get_font_metrics, register_font
 
 
 @dataclass(frozen=True)
@@ -50,7 +50,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--font",
         type=Path,
-        default=Path("skill/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf"),
+        default=Path("skill/assets/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf"),
         help="Path to the font file used for layout calculations.",
     )
     parser.add_argument(
