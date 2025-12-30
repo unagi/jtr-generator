@@ -93,7 +93,7 @@ exclude_lines = [
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
 test = "pytest tests/ --spec"
-test-cov = "pytest tests/ --cov=src --cov=tools --cov-report=term-missing --spec"
+test-cov = "pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec"
 test-watch = "pytest tests/ -f --spec"
 lint = "ruff check src/ tests/"
 lint-fix = "ruff check --fix src/ tests/"
