@@ -44,7 +44,7 @@ def copy_skill_directory(base_dir: Path, build_dir: Path) -> None:
 
 
 def create_zip(base_dir: Path) -> Path:
-    """パッケージディレクトリをzipファイルに圧縮"""
+    """パッケージディレクトリをzipファイルに圧縮（ファイルを直接zipのルートに配置）"""
     print("📦 Creating zip archive...")
 
     package_dir = base_dir / "build/jtr-generator"
@@ -54,6 +54,10 @@ def create_zip(base_dir: Path) -> Path:
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
         for file_path in package_dir.rglob("*"):
             if file_path.is_file():
+                # __pycache__を除外
+                if "__pycache__" in file_path.parts:
+                    continue
+                # package_dirからの相対パスでzipに追加（ファイルを直接zipのルートに配置）
                 arcname = file_path.relative_to(package_dir)
                 zipf.write(file_path, arcname)
                 print(f"  + {arcname}")

@@ -7,14 +7,13 @@ JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです
 このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書PDFを生成できます。
 
 **対応プラットフォーム:**
-- Claude.ai（カスタムスキルとしてアップロード）
-- Codex（MCP経由）
+- Agent Skills対応のLLMプラットフォーム（Claude.ai、Codex等）
 
 ## 使い方
 
 ### 1. 対話的生成
 
-Claudeに直接情報を伝えて履歴書を作成します。
+LLMに直接情報を伝えて履歴書を作成します。
 
 ```
 履歴書を作成してください。
@@ -22,7 +21,7 @@ Claudeに直接情報を伝えて履歴書を作成します。
 生年月日は1990年4月1日です。
 ```
 
-不足している情報があれば、Claudeが対話的に質問します。
+不足している情報があれば、対話的に質問されます。
 
 ### 2. YAMLファイルからの生成
 
@@ -186,7 +185,7 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 1. [GitHub Releases](https://github.com/unagi/jtr-generator/releases)から最新版をダウンロード
 2. `jtr-generator-vX.X.X.zip` をダウンロード
-3. Claude.aiにアップロード、またはCodex環境に配置
+3. 使用するプラットフォーム（Claude.ai、Codex等）にアップロードまたは配置
 
 **最新版（開発版）:**
 
