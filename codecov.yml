@@ -1,9 +1,0 @@
-coverage:
-  status:
-    project:
-      default:
-        target: 80  # Align with Sonar coverage requirement
-        threshold: 2.0
-    patch:
-      default:
-        informational: true
