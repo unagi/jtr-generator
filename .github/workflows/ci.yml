@@ -47,13 +47,9 @@ jobs:
         run: |
           uv run poe typecheck
 
-      - name: Test with coverage (poe)
+      - name: Test with coverage
         run: |
           uv run poe test-cov
-
-      - name: Generate coverage.xml for Sonar/Codecov
-        run: |
-          uv run pytest tests/ --cov=src --cov=tools --cov-report=xml --spec
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4

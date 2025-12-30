@@ -100,7 +100,7 @@ lint-fix = "ruff check --fix src/ tests/"
 format = "ruff format src/ tests/"
 format-check = "ruff format --check src/ tests/"
 typecheck = "mypy src/"
-check-all = ["lint", "format-check", "typecheck", "test"]
+check-all = ["lint", "format-check", "typecheck", "test-cov"]
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
 # Claude Agent Skillsパッケージビルド
