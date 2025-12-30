@@ -1,0 +1,70 @@
+name: Release Agent Skills Package
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Build and Release Agent Skills Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras --dev
+
+      - name: Build Agent Skills package
+        run: |
+          uv run poe build-skill
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "is_tag=true" >> $GITHUB_OUTPUT
+            echo "zip_name=jtr-generator-$VERSION.zip" >> $GITHUB_OUTPUT
+          else
+            echo "version=latest" >> $GITHUB_OUTPUT
+            echo "is_tag=false" >> $GITHUB_OUTPUT
+            echo "zip_name=jtr-generator-latest.zip" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rename artifact
+        run: |
+          mv build/jtr-generator.zip build/${{ steps.version.outputs.zip_name }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6d6d44d3c5c85221c0af58cd4f2bb # v4
+        with:
+          name: jtr-generator-skill
+          path: build/${{ steps.version.outputs.zip_name }}
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.is_tag == 'true'
+        uses: softprops/action-gh-release@7b4da11513689f1a16554ba03c5d1e40d8ff0c25 # v2
+        with:
+          files: build/${{ steps.version.outputs.zip_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

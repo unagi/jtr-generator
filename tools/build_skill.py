@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Claude Agent Skillsパッケージ用にPythonファイルのパスを修正してzipを作成"""
+"""Agent Skillsパッケージ用にPythonファイルのパスを修正してzipを作成"""
 
 import re
 import zipfile
@@ -21,7 +21,7 @@ def create_requirements(base_dir: Path) -> Path:
     print("📋 Creating requirements.txt...")
 
     requirements = _requirements()
-    requirements_path = base_dir / "build/claude_skill_package/requirements.txt"
+    requirements_path = base_dir / "build/jtr-generator/requirements.txt"
     requirements_path.parent.mkdir(parents=True, exist_ok=True)
     requirements_path.write_text("\n".join(requirements) + "\n", encoding="utf-8")
 
@@ -33,8 +33,8 @@ def modify_paths(base_dir: Path) -> Path:
     """パッケージ構造に合わせてパス参照を修正"""
     print("🔧 Modifying Python files for package structure...")
 
-    source_main = base_dir / "platforms/claude/main.py"
-    target_main = base_dir / "build/claude_skill_package/main.py"
+    source_main = base_dir / "main.py"
+    target_main = base_dir / "build/jtr-generator/main.py"
     target_main.parent.mkdir(parents=True, exist_ok=True)
 
     if not source_main.exists():
@@ -71,8 +71,8 @@ def create_zip(base_dir: Path) -> Path:
     """パッケージディレクトリをzipファイルに圧縮"""
     print("📦 Creating zip archive...")
 
-    package_dir = base_dir / "build/claude_skill_package"
-    zip_path = base_dir / "build/claude.zip"
+    package_dir = base_dir / "build/jtr-generator"
+    zip_path = base_dir / "build/jtr-generator.zip"
     zip_path.parent.mkdir(parents=True, exist_ok=True)
 
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:

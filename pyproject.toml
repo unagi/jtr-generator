@@ -78,7 +78,7 @@ spec_test_format = "{result} {docstring_summary}"
 # pytest-cov設定
 [tool.coverage.run]
 source = ["src", "tools"]
-omit = ["tests/*", "platforms/*"]
+omit = ["tests/*"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -103,55 +103,55 @@ typecheck = "mypy src/"
 check-all = ["lint", "format-check", "typecheck", "test-cov"]
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
-# Claude Agent Skillsパッケージビルド
-[tool.poe.tasks.build-claude-skill]
-help = "Build Claude Agent Skills package (claude.zip)"
+# Agent Skillsパッケージビルド
+[tool.poe.tasks.build-skill]
+help = "Build Agent Skills package (jtr-generator.zip)"
 sequence = [
     # 1. 一時ディレクトリのクリーンアップと作成
-    { cmd = "rm -rf build/claude_skill_package build/claude.zip" },
-    { cmd = "mkdir -p build/claude_skill_package" },
+    { cmd = "rm -rf build/jtr-generator build/jtr-generator.zip" },
+    { cmd = "mkdir -p build/jtr-generator" },
 
-    # 2. platforms/claude/のコピー（main.py以外）
-    { cmd = "cp platforms/claude/SKILL.md build/claude_skill_package/" },
-    { cmd = "cp platforms/claude/config.yaml build/claude_skill_package/" },
-    { cmd = "cp platforms/claude/README.md build/claude_skill_package/" },
+    # 2. ルート配置ファイルのコピー（main.py以外）
+    { cmd = "cp SKILL.md build/jtr-generator/" },
+    { cmd = "cp config.yaml build/jtr-generator/" },
+    { cmd = "cp README.md build/jtr-generator/" },
 
     # 3. src/のコピー（ディレクトリ構造を維持）
-    { cmd = "mkdir -p build/claude_skill_package/src/generators" },
-    { cmd = "mkdir -p build/claude_skill_package/src/validators" },
-    { cmd = "mkdir -p build/claude_skill_package/src/formatters" },
-    { cmd = "mkdir -p build/claude_skill_package/src/layout" },
-    { cmd = "cp src/__init__.py build/claude_skill_package/src/" },
-    { cmd = "cp src/generators/__init__.py build/claude_skill_package/src/generators/" },
-    { cmd = "cp src/generators/pdf.py build/claude_skill_package/src/generators/" },
-    { cmd = "cp src/validators/__init__.py build/claude_skill_package/src/validators/" },
-    { cmd = "cp src/validators/data.py build/claude_skill_package/src/validators/" },
-    { cmd = "cp src/formatters/__init__.py build/claude_skill_package/src/formatters/" },
-    { cmd = "cp src/formatters/wareki.py build/claude_skill_package/src/formatters/" },
-    { cmd = "cp src/layout/__init__.py build/claude_skill_package/src/layout/" },
-    { cmd = "cp src/layout/anchors.py build/claude_skill_package/src/layout/" },
-    { cmd = "cp src/layout/metrics.py build/claude_skill_package/src/layout/" },
+    { cmd = "mkdir -p build/jtr-generator/src/generators" },
+    { cmd = "mkdir -p build/jtr-generator/src/validators" },
+    { cmd = "mkdir -p build/jtr-generator/src/formatters" },
+    { cmd = "mkdir -p build/jtr-generator/src/layout" },
+    { cmd = "cp src/__init__.py build/jtr-generator/src/" },
+    { cmd = "cp src/generators/__init__.py build/jtr-generator/src/generators/" },
+    { cmd = "cp src/generators/pdf.py build/jtr-generator/src/generators/" },
+    { cmd = "cp src/validators/__init__.py build/jtr-generator/src/validators/" },
+    { cmd = "cp src/validators/data.py build/jtr-generator/src/validators/" },
+    { cmd = "cp src/formatters/__init__.py build/jtr-generator/src/formatters/" },
+    { cmd = "cp src/formatters/wareki.py build/jtr-generator/src/formatters/" },
+    { cmd = "cp src/layout/__init__.py build/jtr-generator/src/layout/" },
+    { cmd = "cp src/layout/anchors.py build/jtr-generator/src/layout/" },
+    { cmd = "cp src/layout/metrics.py build/jtr-generator/src/layout/" },
 
     # 4. data/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/data/layouts" },
-    { cmd = "cp data/layouts/resume_layout_a4_v2.json build/claude_skill_package/data/layouts/" },
+    { cmd = "mkdir -p build/jtr-generator/data/layouts" },
+    { cmd = "cp data/layouts/resume_layout_a4_v2.json build/jtr-generator/data/layouts/" },
 
     # 5. schemas/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/schemas" },
-    { cmd = "cp schemas/resume_schema.json build/claude_skill_package/schemas/" },
+    { cmd = "mkdir -p build/jtr-generator/schemas" },
+    { cmd = "cp schemas/resume_schema.json build/jtr-generator/schemas/" },
 
     # 6. fonts/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/fonts/BIZ_UDMincho" },
-    { cmd = "cp fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf build/claude_skill_package/fonts/BIZ_UDMincho/" },
-    { cmd = "cp fonts/BIZ_UDMincho/OFL.txt build/claude_skill_package/fonts/BIZ_UDMincho/" },
+    { cmd = "mkdir -p build/jtr-generator/fonts/BIZ_UDMincho" },
+    { cmd = "cp fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf build/jtr-generator/fonts/BIZ_UDMincho/" },
+    { cmd = "cp fonts/BIZ_UDMincho/OFL.txt build/jtr-generator/fonts/BIZ_UDMincho/" },
 
     # 7. examples/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/examples" },
-    { cmd = "cp examples/sample_resume.yaml build/claude_skill_package/examples/" },
-    { cmd = "cp examples/sample_resume.json build/claude_skill_package/examples/" },
+    { cmd = "mkdir -p build/jtr-generator/examples" },
+    { cmd = "cp examples/sample_resume.yaml build/jtr-generator/examples/" },
+    { cmd = "cp examples/sample_resume.json build/jtr-generator/examples/" },
 
     # 8. Pythonファイルのパス修正とzip作成
-    { cmd = "python tools/build_skill_package.py" },
+    { cmd = "python tools/build_skill.py" },
 ]
 
 [dependency-groups]

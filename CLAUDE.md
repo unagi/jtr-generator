@@ -1,12 +1,20 @@
-# Claude Agent Skills - 技術仕様
+# Agent Skills - 技術仕様
+
+## ⚠️ 重要な変更（2025年12月）
+
+**ディレクトリ構成が変更されました:**
+
+- **変更前**: `platforms/claude/` ディレクトリに配置
+- **変更後**: **ルート直下に統一配置** (`SKILL.md`, `main.py`, `config.yaml`, `README.md`)
+- **理由**: Codexでも同一のzipファイルが動作することが確認されたため、プラットフォーム分離を廃止
+
+**このドキュメントは、Agent Skills固有の技術仕様（Beta API、Files API等）をまとめたものです。**
+
+詳細な経緯は[AGENTS.md - Agent Skills仕様準拠](AGENTS.md#agent-skills仕様準拠)を参照してください。
 
 ## 概要
 
-このドキュメントは、jtr-generatorプロジェクトにおけるClaude Agent Skills固有の技術仕様をまとめたものです。
-
-**重要**: 2025年12月にAgent Skillsの仕様が変更されました。skill.jsonは廃止され、SKILL.md形式に移行しています。
-
-**対象読者**: Claude Agent Skillsを使用してカスタムスキルを開発・デバッグする開発者
+**対象読者**: Agent Skillsを使用してカスタムスキルを開発・デバッグする開発者
 
 **プロジェクト全体の仕様**: [AGENTS.md](AGENTS.md)を参照してください。
 
@@ -23,16 +31,36 @@
 
 このドキュメントでは、ローカル環境でのSkills開発・デバッグ方法を説明します。
 
-## Claude Agent Skills固有の構成
+## Agent Skills構成
 
-### platforms/claude/ ディレクトリ
+### ルート配置ファイル
 
 ```
-platforms/claude/
+jtr-generator/
 ├── SKILL.md                # Agent Skills定義ファイル（YAMLフロントマター + 指示）
 ├── main.py                 # エントリーポイント
 ├── config.yaml             # ユーザー設定テンプレート
-└── README.md               # エンドユーザー向け使用方法
+├── README.md               # エンドユーザー向け使用方法
+├── src/                    # 共通実装
+├── data/                   # レイアウトデータ
+├── schemas/                # JSON Schema
+├── examples/               # サンプルデータ
+└── fonts/                  # デフォルトフォント
+```
+
+**ビルド成果物** (`build/jtr-generator.zip`):
+```
+jtr-generator.zip/
+├── SKILL.md
+├── main.py
+├── config.yaml
+├── README.md
+├── requirements.txt        # 自動生成
+├── src/                    # 必要なモジュールのみ
+├── data/                   # レイアウトデータ
+├── schemas/
+├── fonts/
+└── examples/
 ```
 
 ### SKILL.md

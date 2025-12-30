@@ -278,10 +278,73 @@ def load_resume_data(file_path: Path) -> Dict[str, Any]:
 - ファイルパスはバリデーション（パストラバーサル対策）
 - 機密情報（APIキー等）は含めない
 
+## Agent Skills仕様準拠
+
+### 概要
+
+このプロジェクトは[Agent Skills公式仕様](https://agentskills.io)に準拠したスキルとして配布されます。
+
+**重要な変更（2025年12月）:**
+- `platforms/` ディレクトリを廃止し、Agent Skillsとして単一のアーティファクトビルドに統一
+- ルート直下に `SKILL.md`, `main.py`, `config.yaml`, `README.md` を配置
+- ビルド成果物: `build/jtr-generator.zip`（GitHub Releasesで配布）
+
+### SKILL.md仕様
+
+`SKILL.md` は以下の要件を満たす必要があります:
+
+**必須フィールド（YAMLフロントマター）:**
+```yaml
+---
+name: jtr-generator
+description: JIS規格準拠の日本の履歴書をPDF形式で生成するSkill。対話的な情報収集またはYAML/JSONファイルからPDF生成が可能。
+---
+```
+
+**推奨セクション構成（Progressive Disclosure）:**
+1. **Overview**: 機能概要と使用場面
+2. **Details**: 技術仕様、データスキーマ、Agent実行指示
+3. **Examples**: 具体的な使用例（ユーザー入力とAgent動作）
+4. **Guidelines**: エラーハンドリング、セキュリティ、実行環境要件
+
+詳細は[Agent Skills公式仕様](https://agentskills.io)と[Anthropic公式サンプル](https://github.com/anthropics/skills)を参照してください。
+
+### ビルドとリリース
+
+**ローカルビルド:**
+```bash
+uv run poe build-skill
+```
+
+**成果物:**
+- `build/jtr-generator.zip` - 配布用アーカイブ
+
+**自動リリース（GitHub Actions）:**
+- PRマージ時: `jtr-generator-latest.zip` を Artifacts に保存
+- タグプッシュ時: `jtr-generator-{version}.zip` を GitHub Releases に添付
+
+**ワークフロー:** [.github/workflows/release.yml](.github/workflows/release.yml)
+
+### プラットフォーム廃止の経緯
+
+**以前の構成:**
+- `platforms/claude/` - Claude Agent Skills固有の実装
+- プラットフォーム別に分離された構成
+
+**現在の構成:**
+- ルート直下に統一配置
+- Agent Skillsとして単一のビルドプロセス
+- Codex（MCP経由）とClaude.ai（zipアップロード）の両方で動作確認済み
+
+**理由:**
+- Codexでも同一のzipファイルが動作することが確認されたため
+- プラットフォーム分離の必要性がなくなった
+- Agent Skillsとしての汎用性を高めるため
+
 ## 関連ドキュメント
 
 - **詳細仕様**: [docs/specifications.md](docs/specifications.md)
 - **検証・テスト**: [docs/testing.md](docs/testing.md)
 - **開発計画**: [docs/roadmap.md](docs/roadmap.md)
 - **レイアウト調整**: [docs/layout_alignment.md](docs/layout_alignment.md)
-- **Claude Skills固有**: [CLAUDE.md](CLAUDE.md)
+- **Agent Skills固有技術仕様**: [CLAUDE.md](CLAUDE.md)
