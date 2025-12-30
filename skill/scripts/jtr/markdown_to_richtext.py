@@ -6,7 +6,6 @@ Markdownテキストをreportlab Flowablesに変換するモジュール。
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 from reportlab.lib.styles import ParagraphStyle
@@ -85,7 +84,7 @@ def markdown_to_flowables(
                 # #の後の文字がスペースまたはタブかチェック
                 next_char = stripped[hash_count]
                 if next_char in (" ", "\t"):
-                    text = stripped[hash_count + 1:]
+                    text = stripped[hash_count + 1 :]
 
                     # 太字をReportLab形式に変換
                     text = _convert_bold(text)
@@ -146,13 +145,13 @@ def _convert_bold(text: str) -> str:
     result = []
     i = 0
     while i < len(text):
-        if i < len(text) - 3 and text[i:i+2] == "**":
+        if i < len(text) - 3 and text[i : i + 2] == "**":
             # 閉じの ** を探す
             end = text.find("**", i + 2)
             if end != -1:
                 # 太字として変換
                 result.append("<b>")
-                result.append(text[i+2:end])
+                result.append(text[i + 2 : end])
                 result.append("</b>")
                 i = end + 2
             else:
