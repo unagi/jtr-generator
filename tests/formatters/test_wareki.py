@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.formatters.wareki import convert_to_wareki
+from skill.jtr.japanese_era import convert_to_wareki
 
 
 class TestConvertToWareki:

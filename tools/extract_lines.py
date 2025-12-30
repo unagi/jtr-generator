@@ -332,7 +332,7 @@ if __name__ == "__main__":
     from pathlib import Path
 
     pdf_path = Path(__file__).parent.parent / "tests/fixtures/R3_pdf_rirekisyo.pdf"
-    output_path = Path(__file__).parent.parent / "data/a4/resume_layout.json"
+    output_path = Path(__file__).parent.parent / "skill/data/a4/resume_layout.json"
 
     data = extract_lines_a3_to_a4x2(str(pdf_path))
     with open(output_path, "w", encoding="utf-8") as f:

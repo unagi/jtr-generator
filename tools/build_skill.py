@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Agent Skillsパッケージ用にPythonファイルのパスを修正してzipを作成"""
+"""Agent Skillsパッケージをskill/ディレクトリからビルドしてzipを作成"""
 
-import re
+import shutil
 import zipfile
-from collections.abc import Iterable
 from pathlib import Path
 
 
@@ -16,55 +15,32 @@ def _requirements() -> list[str]:
     ]
 
 
-def create_requirements(base_dir: Path) -> Path:
+def create_requirements(build_dir: Path) -> Path:
     """requirements.txtを生成して保存する"""
     print("📋 Creating requirements.txt...")
 
     requirements = _requirements()
-    requirements_path = base_dir / "build/jtr-generator/requirements.txt"
-    requirements_path.parent.mkdir(parents=True, exist_ok=True)
+    requirements_path = build_dir / "requirements.txt"
     requirements_path.write_text("\n".join(requirements) + "\n", encoding="utf-8")
 
     print(f"  + requirements.txt ({len(requirements)} packages)")
     return requirements_path
 
 
-def modify_paths(base_dir: Path) -> Path:
-    """パッケージ構造に合わせてパス参照を修正"""
-    print("🔧 Modifying Python files for package structure...")
+def copy_skill_directory(base_dir: Path, build_dir: Path) -> None:
+    """skill/ディレクトリの内容をビルドディレクトリにコピー"""
+    print("📂 Copying skill/ directory...")
 
-    source_main = base_dir / "main.py"
-    target_main = base_dir / "build/jtr-generator/main.py"
-    target_main.parent.mkdir(parents=True, exist_ok=True)
+    skill_dir = base_dir / "skill"
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"{skill_dir} not found")
 
-    if not source_main.exists():
-        raise FileNotFoundError(f"{source_main} not found")
+    # skill/の内容をbuild/jtr-generator/にコピー
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
 
-    print(f"  - {source_main.relative_to(base_dir)}")
-    main_py = source_main.read_text(encoding="utf-8")
-
-    replacements: Iterable[tuple[str, str]] = [
-        (
-            r'Path\(__file__\)\.parent\.parent\.parent / "src"',
-            r'Path(__file__).parent / "src"',
-        ),
-        (
-            r"base_dir = Path\(__file__\)\.parent\.parent\.parent  # jtr-generator/",
-            r"base_dir = Path(__file__).parent  # パッケージルート",
-        ),
-        (
-            r'Path\(__file__\)\.parent\.parent\.parent / "schemas"',
-            r'Path(__file__).parent / "schemas"',
-        ),
-    ]
-    for pattern, repl in replacements:
-        main_py = re.sub(pattern, repl, main_py)
-
-    target_main.write_text(main_py, encoding="utf-8")
-
-    print("  - src/ files: No modification needed (parent.parent.parent works correctly)")
-    print("✅ Python files modified for package structure")
-    return target_main
+    shutil.copytree(skill_dir, build_dir)
+    print(f"  ✅ Copied {skill_dir} → {build_dir}")
 
 
 def create_zip(base_dir: Path) -> Path:
@@ -88,10 +64,12 @@ def create_zip(base_dir: Path) -> Path:
 
 
 def main(base_dir: Path | None = None) -> None:
-    """パス修正、requirements.txt生成、zip作成を実行"""
+    """skill/ディレクトリをコピーして、requirements.txt生成、zip作成を実行"""
     resolved_base = base_dir or Path(__file__).resolve().parent.parent
-    create_requirements(resolved_base)
-    modify_paths(resolved_base)
+    build_dir = resolved_base / "build/jtr-generator"
+
+    copy_skill_directory(resolved_base, build_dir)
+    create_requirements(build_dir)
     create_zip(resolved_base)
 
 

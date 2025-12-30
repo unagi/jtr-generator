@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.layout.anchors import build_text_anchors
+from skill.jtr.layout.anchors import build_text_anchors
 
 
 def _parse_args() -> argparse.Namespace:
@@ -12,7 +12,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--layout",
         type=Path,
-        default=Path("data/a4/resume_layout.json"),
+        default=Path("skill/data/a4/resume_layout.json"),
         help="Input layout JSON with absolute positions.",
     )
     parser.add_argument(

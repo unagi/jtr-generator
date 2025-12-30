@@ -9,7 +9,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from src.generators.pdf import generate_resume_pdf
+from skill.jtr.pdf_generator import generate_resume_pdf
 
 
 def test_generate_resume_pdf_basic(tmp_path: Path) -> None:

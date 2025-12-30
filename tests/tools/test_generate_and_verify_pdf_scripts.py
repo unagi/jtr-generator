@@ -12,22 +12,23 @@ def test_generate_blank_resume_script(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.chdir(tmp_path)
     repo_root = Path(__file__).resolve().parents[2]
 
-    # Stub generate_resume_pdf to write a tiny PDF
+    # Stub generate_resume_pdf to write a tiny PDF (2 pages like real resume)
     def _stub_generate_resume_pdf(_data, _options, output_path: Path) -> None:
         writer = pypdf.PdfWriter()
+        writer.add_blank_page(width=100, height=200)
         writer.add_blank_page(width=100, height=200)
         with open(output_path, "wb") as f:
             writer.write(f)
 
     dummy_module = types.SimpleNamespace(generate_resume_pdf=_stub_generate_resume_pdf)
-    monkeypatch.setitem(sys.modules, "src.generators.pdf", dummy_module)
+    monkeypatch.setitem(sys.modules, "skill.jtr.pdf_generator", dummy_module)
 
     runpy.run_path(repo_root / "tools/generate_blank_resume.py", run_name="__main__")
 
     pdf_path = tmp_path / "outputs/test_resume_lines_only.pdf"
     assert pdf_path.exists()
     reader = pypdf.PdfReader(pdf_path)
-    assert len(reader.pages) == 1
+    assert len(reader.pages) == 2
 
 
 def test_verify_pdf_script(monkeypatch, tmp_path: Path) -> None:

@@ -9,9 +9,7 @@ import jsonschema
 import yaml
 
 # 共通実装をインポート
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-from generators.pdf import generate_resume_pdf  # noqa: E402
-from validators.data import load_resume_data  # noqa: E402
+from jtr import generate_resume_pdf, load_resume_data
 
 
 def load_claude_config() -> dict[str, Any]:
@@ -50,7 +48,7 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
     Raises:
         FileNotFoundError: カスタムフォントファイルが存在しない場合
     """
-    base_dir = Path(__file__).parent.parent.parent  # jtr-generator/
+    base_dir = Path(__file__).parent  # skill/
 
     # カスタムフォントが指定されている場合
     if "fonts" in config and config["fonts"]:

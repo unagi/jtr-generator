@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.layout.metrics import get_font_metrics, register_font
+from skill.jtr.layout.metrics import get_font_metrics, register_font
 
 
 def _parse_args() -> argparse.Namespace:
@@ -11,19 +11,19 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--layout",
         type=Path,
-        default=Path("data/a4/resume_layout.json"),
+        default=Path("skill/data/a4/resume_layout.json"),
         help="Layout JSON with absolute positions.",
     )
     parser.add_argument(
         "--rules",
         type=Path,
-        default=Path("data/a4/rules/field_alignment.json"),
+        default=Path("skill/data/a4/rules/field_alignment.json"),
         help="Data field alignment rule JSON.",
     )
     parser.add_argument(
         "--font",
         type=Path,
-        default=Path("fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf"),
+        default=Path("skill/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf"),
         help="Font file path used for metrics.",
     )
     parser.add_argument(
