@@ -1,6 +1,6 @@
 # jtr-generator - エージェント向けガイド
 
-## ⚠️ 最重要: コード品質要件（CI/CD準拠）
+## ⚠️ [IMPORTANT] 最重要: コード品質要件（CI/CD準拠）
 
 <a id="code-quality"></a>
 

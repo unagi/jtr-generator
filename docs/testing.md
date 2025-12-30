@@ -55,14 +55,11 @@
 ### テスト実行
 
 ```bash
-# すべてのテストを実行
-uv run poe test
-
-# カバレッジ付きテスト実行
+# すべてのテストを実行（CIと同等のカバレッジ付き）
 uv run poe test-cov
 
-# 詳細なカバレッジレポート
-uv run pytest tests/ --cov=src --cov-report=term-missing
+# すばやく実行（カバレッジなし、開発時用）
+uv run poe test
 ```
 
 ### カバレッジ要件
@@ -74,11 +71,11 @@ uv run pytest tests/ --cov=src --cov-report=term-missing
 ### カバレッジレポートの確認方法
 
 ```bash
-# カバレッジレポート生成
+# カバレッジレポート生成（推奨: CIと完全一致）
 uv run poe test-cov
 
-# 詳細レポート確認（ターミナル表示）
-uv run pytest tests/ --cov=src --cov-report=term-missing
+# 手動で詳細確認する場合（CIと同等）
+uv run pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec
 ```
 
 ### カバレッジが低い場合の対処
