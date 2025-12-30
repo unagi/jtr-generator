@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def _install_layout_metrics_stub(monkeypatch) -> None:
-    metrics_module = types.ModuleType("src.layout.metrics")
+    metrics_module = types.ModuleType("skill.jtr.layout.metrics")
 
     def register_font(font_path: Path) -> str:
         return font_path.stem
@@ -20,12 +20,14 @@ def _install_layout_metrics_stub(monkeypatch) -> None:
     metrics_module.get_font_metrics = get_font_metrics
 
     # package placeholders
-    src_module = types.ModuleType("src")
-    layout_module = types.ModuleType("src.layout")
+    skill_module = types.ModuleType("skill")
+    jtr_module = types.ModuleType("skill.jtr")
+    layout_module = types.ModuleType("skill.jtr.layout")
 
-    monkeypatch.setitem(sys.modules, "src", src_module)
-    monkeypatch.setitem(sys.modules, "src.layout", layout_module)
-    monkeypatch.setitem(sys.modules, "src.layout.metrics", metrics_module)
+    monkeypatch.setitem(sys.modules, "skill", skill_module)
+    monkeypatch.setitem(sys.modules, "skill.jtr", jtr_module)
+    monkeypatch.setitem(sys.modules, "skill.jtr.layout", layout_module)
+    monkeypatch.setitem(sys.modules, "skill.jtr.layout.metrics", metrics_module)
 
 
 def _reload_fmr(monkeypatch):

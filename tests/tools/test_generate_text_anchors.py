@@ -27,13 +27,18 @@ def test_generate_text_anchors(monkeypatch, tmp_path: Path) -> None:
     stubbed = [{"text": "stub", "line": 0}]
     monkeypatch.setitem(
         sys.modules,
-        "src",
-        types.ModuleType("src"),
+        "skill",
+        types.ModuleType("skill"),
     )
     monkeypatch.setitem(
         sys.modules,
-        "src.layout",
-        types.ModuleType("src.layout"),
+        "skill.jtr",
+        types.ModuleType("skill.jtr"),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "skill.jtr.layout",
+        types.ModuleType("skill.jtr.layout"),
     )
     monkeypatch.setattr(
         "tools.layout.generate_text_anchors.build_text_anchors",

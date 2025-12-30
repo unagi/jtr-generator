@@ -81,9 +81,10 @@ def _install_metric_stubs(monkeypatch) -> None:
         register_font=lambda _path: "stub-font",
         get_font_metrics=lambda *_args, **_kwargs: _stub_metrics(),
     )
-    monkeypatch.setitem(sys.modules, "src", types.ModuleType("src"))
-    monkeypatch.setitem(sys.modules, "src.layout", types.ModuleType("src.layout"))
-    monkeypatch.setitem(sys.modules, "src.layout.metrics", metrics_module)
+    monkeypatch.setitem(sys.modules, "skill", types.ModuleType("skill"))
+    monkeypatch.setitem(sys.modules, "skill.jtr", types.ModuleType("skill.jtr"))
+    monkeypatch.setitem(sys.modules, "skill.jtr.layout", types.ModuleType("skill.jtr.layout"))
+    monkeypatch.setitem(sys.modules, "skill.jtr.layout.metrics", metrics_module)
     monkeypatch.setattr(
         "tools.layout.analyze_text_alignment.register_font",
         metrics_module.register_font,
