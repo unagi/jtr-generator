@@ -218,8 +218,11 @@ outputs/validation/
 outputs/debug/
 
 # User-provided fonts (not distributed)
-fonts/*
-!fonts/.gitkeep
-!fonts/README.md
-!fonts/BIZ_UDMincho/
-!fonts/BIZ_UDMincho/*
+# デフォルトフォント（BIZ_UDMincho）とREADME.mdは含める
+skill/assets/fonts/*
+!skill/assets/fonts/README.md
+!skill/assets/fonts/BIZ_UDMincho/
+!skill/assets/fonts/BIZ_UDMincho/*
+
+# Serena MCP cache (local only)
+.serena/
