@@ -162,3 +162,53 @@ class TestMarkdownToFlowables:
 
         # 空白のみ → 空リスト
         assert flowables == []
+
+    def test_heading_with_multiple_spaces(self, sample_styles: dict[str, ParagraphStyle]) -> None:
+        """複数スペースを含む見出しの処理"""
+        markdown = "##  見出し"
+        flowables = markdown_to_flowables(markdown, sample_styles)
+
+        assert len(flowables) == 2
+        assert isinstance(flowables[0], Paragraph)
+        # 余分なスペースは内部的に渡されるが、ReportLabが自動トリム
+        assert "見出し" in flowables[0].text
+
+    def test_heading_without_space(self, sample_styles: dict[str, ParagraphStyle]) -> None:
+        """スペースなしの見出し（無効）"""
+        markdown = "#見出し"
+        flowables = markdown_to_flowables(markdown, sample_styles)
+
+        # 見出しとして認識されず、通常の段落として扱われる
+        assert len(flowables) == 1
+        assert isinstance(flowables[0], Paragraph)
+        assert flowables[0].style.name == "BodyText"
+
+    def test_heading_with_indent(self, sample_styles: dict[str, ParagraphStyle]) -> None:
+        """インデント付き見出し（CommonMark準拠）"""
+        markdown = "   # 見出し"
+        flowables = markdown_to_flowables(markdown, sample_styles)
+
+        # 先頭3スペースまで許容
+        assert len(flowables) == 2
+        assert isinstance(flowables[0], Paragraph)
+        assert flowables[0].style.name == "Heading1"
+
+    def test_heading_with_too_much_indent(self, sample_styles: dict[str, ParagraphStyle]) -> None:
+        """過剰インデント（4スペース以上は無効）"""
+        markdown = "    # 見出し"
+        flowables = markdown_to_flowables(markdown, sample_styles)
+
+        # 見出しとして認識されず、通常の段落として扱われる
+        assert len(flowables) == 1
+        assert isinstance(flowables[0], Paragraph)
+        assert flowables[0].style.name == "BodyText"
+
+    def test_bold_with_unclosed_marker(self, sample_styles: dict[str, ParagraphStyle]) -> None:
+        """未閉じの太字マーカー"""
+        markdown = "これは**未閉じの太字です"
+        flowables = markdown_to_flowables(markdown, sample_styles)
+
+        # 閉じがない場合は変換されない
+        assert len(flowables) == 1
+        assert isinstance(flowables[0], Paragraph)
+        assert "**" in flowables[0].text

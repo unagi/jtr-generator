@@ -67,29 +67,43 @@ def markdown_to_flowables(
             continue
 
         # 見出し（# H1, ## H2, ### H3, #### H4）
-        if line.startswith("#"):
-            heading_match = re.match(r"^(#{1,4})\s(.*)$", line)
-            if heading_match:
-                level = len(heading_match.group(1))
-                text = heading_match.group(2)
+        # CommonMark準拠: 先頭3スペースまでのインデント許容
+        stripped = line.lstrip(" ")
+        indent_len = len(line) - len(stripped)
 
-                # 太字をReportLab形式に変換
-                text = _convert_bold(text)
+        if indent_len <= 3 and stripped.startswith("#"):
+            # #の連続をカウント
+            hash_count = 0
+            for char in stripped:
+                if char == "#":
+                    hash_count += 1
+                else:
+                    break
 
-                # スタイル選択
-                if level == 1:
-                    style = styles["Heading1"]
-                elif level == 2:
-                    style = styles["Heading2"]
-                elif level == 3:
-                    style = styles["Heading3"]
-                else:  # level == 4
-                    style = styles["Heading4"]
+            # H1-H4の範囲チェック
+            if 1 <= hash_count <= 4 and len(stripped) > hash_count:
+                # #の後の文字がスペースまたはタブかチェック
+                next_char = stripped[hash_count]
+                if next_char in (" ", "\t"):
+                    text = stripped[hash_count + 1:]
 
-                flowables.append(Paragraph(text, style))
-                flowables.append(Spacer(1, 2 * mm))
-                i += 1
-                continue
+                    # 太字をReportLab形式に変換
+                    text = _convert_bold(text)
+
+                    # スタイル選択
+                    if hash_count == 1:
+                        style = styles["Heading1"]
+                    elif hash_count == 2:
+                        style = styles["Heading2"]
+                    elif hash_count == 3:
+                        style = styles["Heading3"]
+                    else:  # hash_count == 4
+                        style = styles["Heading4"]
+
+                    flowables.append(Paragraph(text, style))
+                    flowables.append(Spacer(1, 2 * mm))
+                    i += 1
+                    continue
 
         # 箇条書き（行頭の "- "）
         if line.startswith("- "):
@@ -128,5 +142,24 @@ def _convert_bold(text: str) -> str:
         ReportLab形式に変換されたテキスト
     """
     # **bold** → <b>bold</b>
-    # 貪欲マッチを避けるため、非貪欲マッチ .*? を使用
-    return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
+    # ReDoS対策: 正規表現を使わず、文字列パースで実装
+    result = []
+    i = 0
+    while i < len(text):
+        if i < len(text) - 3 and text[i:i+2] == "**":
+            # 閉じの ** を探す
+            end = text.find("**", i + 2)
+            if end != -1:
+                # 太字として変換
+                result.append("<b>")
+                result.append(text[i+2:end])
+                result.append("</b>")
+                i = end + 2
+            else:
+                # 閉じがない場合はそのまま
+                result.append(text[i])
+                i += 1
+        else:
+            result.append(text[i])
+            i += 1
+    return "".join(result)
