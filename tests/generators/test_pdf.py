@@ -99,3 +99,75 @@ def test_font_not_found_error(tmp_path: Path) -> None:
 
     with pytest.raises(FileNotFoundError):
         generate_resume_pdf(data, options, output_path)
+
+
+def test_layout_file_not_found_error(tmp_path: Path, monkeypatch) -> None:
+    """レイアウトファイルが存在しない場合のエラーハンドリング"""
+    output_path = tmp_path / "test_layout_error.pdf"
+
+    # get_layout_pathをモックして存在しないパスを返す
+    def mock_get_layout_path(*args, **kwargs):
+        return tmp_path / "nonexistent_layout.json"
+
+    monkeypatch.setattr("skill.scripts.jtr.pdf_generator.get_layout_path", mock_get_layout_path)
+
+    data = {}
+    options = {"paper_size": "A4"}
+
+    with pytest.raises(FileNotFoundError, match="レイアウトファイルが見つかりません"):
+        generate_resume_pdf(data, options, output_path)
+
+
+def test_layout_file_invalid_json_error(tmp_path: Path, monkeypatch) -> None:
+    """レイアウトファイルが不正なJSON形式の場合のエラーハンドリング"""
+    output_path = tmp_path / "test_invalid_json.pdf"
+
+    # 不正なJSONファイルを作成
+    invalid_json_path = tmp_path / "invalid_layout.json"
+    invalid_json_path.write_text("{ invalid json ]", encoding="utf-8")
+
+    # get_layout_pathをモックして不正なJSONファイルを返す
+    monkeypatch.setattr(
+        "skill.scripts.jtr.pdf_generator.get_layout_path", lambda *args, **kwargs: invalid_json_path
+    )
+
+    data = {}
+    options = {"paper_size": "A4"}
+
+    with pytest.raises(ValueError, match="レイアウトファイルの形式が不正です"):
+        generate_resume_pdf(data, options, output_path)
+
+
+@pytest.mark.skipif(
+    __import__("os").name == "nt", reason="Windowsではchmodでの読み取り禁止が保証されない"
+)
+def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
+    """レイアウトファイルの読み込み権限がない場合のエラーハンドリング"""
+    import os
+
+    output_path = tmp_path / "test_permission_error.pdf"
+
+    # 読み取り権限のないファイルを作成
+    no_read_path = tmp_path / "no_read_layout.json"
+    no_read_path.write_text('{"test": "data"}', encoding="utf-8")
+    os.chmod(no_read_path, 0o000)
+
+    # chmod が機能しない環境（root等）ではスキップ
+    if os.access(no_read_path, os.R_OK):
+        os.chmod(no_read_path, 0o644)  # クリーンアップ
+        pytest.skip("読み取り権限が落ちない環境のためスキップ")
+
+    # get_layout_pathをモックして権限のないファイルを返す
+    monkeypatch.setattr(
+        "skill.scripts.jtr.pdf_generator.get_layout_path", lambda *args, **kwargs: no_read_path
+    )
+
+    data = {}
+    options = {"paper_size": "A4"}
+
+    try:
+        with pytest.raises(PermissionError, match="レイアウトファイルの読み込み権限がありません"):
+            generate_resume_pdf(data, options, output_path)
+    finally:
+        # クリーンアップ: 権限を戻してファイル削除できるようにする
+        os.chmod(no_read_path, 0o644)

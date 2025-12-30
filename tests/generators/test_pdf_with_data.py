@@ -118,6 +118,18 @@ def test_format_date_wareki_gannen():
     assert result == "令和元年5月1日"
 
 
+def test_format_date_inline_spaced():
+    """inline_spaced形式のテスト（スペース区切りの和暦）"""
+    result = _format_date("2023-04-01", "wareki", "inline_spaced")
+    # "令和 5 年 4 月 1 日"のような形式を期待
+    assert "令和" in result
+    assert " 5 " in result
+    assert " 4 " in result
+    assert " 1 " in result
+    # スペースが含まれていることを確認
+    assert result.count(" ") >= 4
+
+
 def test_format_date_invalid_format():
     """無効な日付フォーマットでValueErrorが発生すること"""
     with pytest.raises(ValueError, match="Invalid date format"):

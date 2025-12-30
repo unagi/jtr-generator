@@ -222,6 +222,7 @@ outputs/debug/
 skill/assets/fonts/*
 !skill/assets/fonts/README.md
 !skill/assets/fonts/BIZ_UDMincho/
+!skill/assets/fonts/BIZ_UDMincho/*
 
 # Serena MCP cache (local only)
 .serena/
