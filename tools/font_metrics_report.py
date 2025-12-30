@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 from src.layout.metrics import get_font_metrics, register_font
 

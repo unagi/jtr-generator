@@ -3,8 +3,8 @@
 
 import re
 import zipfile
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 
 def _requirements() -> list[str]:
