@@ -7,3 +7,6 @@ coverage:
     patch:
       default:
         informational: true
+
+ignore:
+  - "tools/build_skill.py"  # Build script tested via CI artifact generation
