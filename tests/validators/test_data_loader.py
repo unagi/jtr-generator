@@ -6,6 +6,7 @@ import pytest
 
 jsonschema = pytest.importorskip("jsonschema")
 from src.validators.data import load_resume_data
+
 ValidationError = jsonschema.ValidationError
 
 
