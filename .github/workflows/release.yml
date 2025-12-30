@@ -54,7 +54,7 @@ jobs:
           mv build/jtr-generator.zip build/${{ steps.version.outputs.zip_name }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@ea165f8d65b6d6d44d3c5c85221c0af58cd4f2bb # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: jtr-generator-skill
           path: build/${{ steps.version.outputs.zip_name }}
