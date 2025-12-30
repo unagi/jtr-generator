@@ -8,5 +8,11 @@ coverage:
       default:
         informational: true
 
+  # 個別ファイルのカバレッジ最低値（ローカルではtools/check_coverage_per_file.pyで検証）
+  precision: 2
+  round: down
+
 ignore:
   - "tools/build_skill.py"  # Build script tested via CI artifact generation
+  - "tools/check_coverage_per_file.py"  # Coverage check script itself
+  - "**/__init__.py"  # Import-only files

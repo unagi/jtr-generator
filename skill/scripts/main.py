@@ -31,8 +31,10 @@ from pathlib import Path
 from typing import Any
 
 from jtr import (
+    generate_career_sheet_pdf,
     generate_resume_pdf,
     load_config,
+    load_validated_data,
     resolve_font_paths,
     validate_and_load_data,
 )
@@ -43,6 +45,9 @@ def main(
     input_data: str | Path,
     session_options: dict[str, Any] | None = None,
     output_path: Path | str | None = None,
+    document_type: str = "resume",
+    markdown_content: str | Path | None = None,
+    additional_info: str | Path | None = None,
 ) -> Path:
     """
     Claude Agent Skills環境から呼び出されるメイン関数
@@ -50,7 +55,10 @@ def main(
     Args:
         input_data: ユーザーが提供したYAML/JSONデータ（文字列またはファイルパス）
         session_options: セッション固有のオプション（和暦/西暦、用紙サイズ等）
-        output_path: 出力PDFファイルのパス（Noneの場合はカレントディレクトリに rirekisho.pdf を生成）
+        output_path: 出力PDFファイルのパス（Noneの場合は document_type に応じたデフォルト名）
+        document_type: ドキュメントタイプ（"resume" または "career_sheet"）
+        markdown_content: 職務経歴書本文（Markdown形式、文字列またはファイルパス）
+        additional_info: 追加情報（YAML/JSON形式、文字列またはファイルパス）
 
     Returns:
         生成されたPDFファイルのパス
@@ -73,20 +81,51 @@ def main(
         if "paper_size" in session_options:
             config["options"]["paper_size"] = session_options["paper_size"]
 
-    # 4. データ読み込み・バリデーション
-    data = validate_and_load_data(input_data)
-
-    # 5. PDF生成（フォント設定を含める）
+    # 4. PDF生成オプション
     options = dict(config.get("options", {}))
     options["fonts"] = config.get("fonts", {})
 
-    # 出力パスの決定
-    if output_path is None:
-        final_output_path = Path("rirekisho.pdf")
-    else:
-        final_output_path = Path(output_path)
+    # 5. document_typeで分岐
+    if document_type == "resume":
+        # 履歴書生成
+        data = validate_and_load_data(input_data)
+        final_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
+        generate_resume_pdf(data, options, final_output_path)
 
-    generate_resume_pdf(data, options, final_output_path)
+    elif document_type == "career_sheet":
+        # 職務経歴書生成
+        if markdown_content is None:
+            raise ValueError("職務経歴書生成には markdown_content が必要です")
+        if additional_info is None:
+            raise ValueError("職務経歴書生成には additional_info が必要です")
+
+        # 履歴書データの読み込み（resume_schema.jsonでバリデーション）
+        resume_data = load_validated_data(input_data, "resume_schema.json")
+
+        # Markdownコンテンツの読み込み
+        if isinstance(markdown_content, (str, Path)):
+            markdown_path = Path(markdown_content)
+            if markdown_path.exists():
+                markdown_text = markdown_path.read_text(encoding="utf-8")
+            else:
+                # ファイルが存在しない場合は、文字列として扱う
+                markdown_text = str(markdown_content)
+        else:
+            markdown_text = markdown_content
+
+        # 追加情報の読み込み（additional_info_schema.jsonでバリデーション）
+        additional_data = load_validated_data(additional_info, "additional_info_schema.json")
+
+        # 出力パス決定
+        final_output_path = Path(output_path) if output_path else Path("career_sheet.pdf")
+
+        # PDF生成
+        generate_career_sheet_pdf(
+            resume_data, markdown_text, additional_data, options, final_output_path
+        )
+
+    else:
+        raise ValueError(f"不明な document_type: {document_type}")
 
     return final_output_path
 

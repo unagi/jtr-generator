@@ -89,6 +89,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+fail_under = 80
 
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
@@ -100,8 +101,19 @@ lint-fix = "ruff check --fix skill/ tests/ tools/"
 format = "ruff format skill/ tests/ tools/"
 format-check = "ruff format --check skill/ tests/ tools/"
 typecheck = "mypy skill/"
-check-all = ["lint", "format-check", "typecheck", "test-cov"]
+check-coverage = "python tools/check_coverage_per_file.py"
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
+
+# check-allは順次実行（test-cov完了後にcheck-coverageを実行）
+[tool.poe.tasks.check-all]
+help = "Run all quality checks"
+sequence = [
+    "lint",
+    "format-check",
+    "typecheck",
+    "test-cov",
+    "check-coverage"
+]
 
 # Agent Skillsパッケージビルド
 [tool.poe.tasks.build-skill]

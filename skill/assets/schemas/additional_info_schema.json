@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/unagi/jtr-generator/refs/heads/main/skill/assets/schemas/additional_info_schema.json",
+  "title": "Additional Information for Career Sheet",
+  "description": "職務経歴書に必要な追加情報（履歴書データに含まれない項目）",
+  "type": "object",
+  "required": ["email"],
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "メールアドレス",
+      "examples": ["yamada.taro@example.com"]
+    }
+  },
+  "additionalProperties": false
+}

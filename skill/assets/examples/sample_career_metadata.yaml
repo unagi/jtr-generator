@@ -1,0 +1,7 @@
+# 職務経歴書メタデータサンプル
+# オプション: 応募企業情報等のカスタマイズ用
+
+metadata:
+  format_type: "reverse_chronological"  # 逆時系列（推奨）
+  target_company: "株式会社サンプル"
+  job_description: "データアナリスト（機械学習・AWS経験者歓迎）"
