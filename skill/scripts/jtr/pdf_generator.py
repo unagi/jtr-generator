@@ -11,67 +11,11 @@ from pathlib import Path
 from typing import Any, Literal
 
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+from .fonts import find_default_font, register_font
 from .japanese_era import convert_to_wareki
-
-
-def _find_default_font() -> Path:
-    """
-    デフォルトフォント（BIZ UDMincho）のパスを取得
-
-    Returns:
-        デフォルトフォントの絶対パス
-
-    Raises:
-        FileNotFoundError: フォントファイルが存在しない場合
-    """
-    # scripts/jtr/ から skill/ へ移動、さらに assets/fonts/ へ
-    base_dir = Path(__file__).parent.parent.parent  # skill/ ディレクトリ
-    font_dir = base_dir / "assets" / "fonts" / "BIZ_UDMincho"
-
-    # Phase 1の選定結果に基づき、.ttfファイルを検索
-    # Regular/Boldどちらかが残っている前提
-    candidates = list(font_dir.glob("*.ttf"))
-
-    if not candidates:
-        raise FileNotFoundError(
-            f"Default font not found in {font_dir}\n"
-            "Please ensure BIZ UDMincho font is installed or configure custom font in options['fonts']."
-        )
-
-    # 最初に見つかったフォントを使用
-    return candidates[0]
-
-
-def _register_font(font_path: Path | None = None) -> str:
-    """
-    TrueTypeフォントをReportLabに登録
-
-    Args:
-        font_path: フォントファイルのパス（Noneの場合はデフォルト使用）
-
-    Returns:
-        登録されたフォント名
-
-    Raises:
-        FileNotFoundError: フォントファイルが存在しない場合
-    """
-    if font_path is None:
-        font_path = _find_default_font()
-
-    if not font_path.exists():
-        raise FileNotFoundError(
-            f"Font file not found: {font_path}\n"
-            "Please ensure the font file exists or configure custom font in options['fonts']."
-        )
-
-    # フォント名はファイル名から生成（拡張子除く）
-    font_name = font_path.stem
-    pdfmetrics.registerFont(TTFont(font_name, str(font_path)))
-    return font_name
+from .paths import get_layout_path
 
 
 def generate_resume_pdf(
@@ -88,23 +32,30 @@ def generate_resume_pdf(
         output_path: 出力先PDFファイルパス
     """
     # レイアウトデータのJSONファイルパス（v4フォーマット）
-    # TODO: options経由で指定できるようにする（A4/B5切り替え対応）
-    # scripts/jtr/ から skill/ へ移動、さらに assets/data/ へ
-    base_dir = Path(__file__).parent.parent.parent  # skill/ ディレクトリ
-    layout_json_path = base_dir / "assets" / "data" / "a4" / "resume_layout.json"
+    layout_json_path = get_layout_path("a4", "resume_layout.json")
 
-    with open(layout_json_path, encoding="utf-8") as f:
-        layout_data = json.load(f)
+    try:
+        with open(layout_json_path, encoding="utf-8") as f:
+            layout_data = json.load(f)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"レイアウトファイルが見つかりません: {layout_json_path}") from e
+    except json.JSONDecodeError as e:
+        raise ValueError(f"レイアウトファイルの形式が不正です: {layout_json_path}") from e
+    except PermissionError as e:
+        raise PermissionError(
+            f"レイアウトファイルの読み込み権限がありません: {layout_json_path}"
+        ) from e
 
     # A4サイズのCanvasを作成
     c = canvas.Canvas(str(output_path), pagesize=A4)
 
     # フォント登録（options['fonts']['main']を優先、未指定時はデフォルト）
-    custom_font_path = None
     if "fonts" in options and "main" in options["fonts"]:
-        custom_font_path = Path(options["fonts"]["main"])
+        font_path = Path(options["fonts"]["main"])
+    else:
+        font_path = find_default_font()
 
-    font_name = _register_font(custom_font_path)
+    font_name = register_font(font_path)
 
     # 後方互換性: dataが空ならブランク履歴書
     is_blank = not data or all(not v for v in data.values())

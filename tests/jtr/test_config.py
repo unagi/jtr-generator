@@ -1,6 +1,7 @@
 """skill.scripts.jtr.config モジュールのテスト"""
 
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -76,7 +77,10 @@ class TestResolveFontPaths:
         font_file.touch()
 
         config = {"fonts": {"main": "custom.ttf"}}
-        result = resolve_font_paths(config, tmp_path)
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.return_value = font_file
+            result = resolve_font_paths(config)
 
         assert result["fonts"]["main"] == str(font_file)
 
@@ -91,17 +95,24 @@ class TestResolveFontPaths:
         heading_font.touch()
 
         config = {"fonts": {"main": "main.ttf", "heading": "heading.ttf"}}
-        result = resolve_font_paths(config, tmp_path)
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.side_effect = lambda x: assets_dir / x
+            result = resolve_font_paths(config)
 
         assert result["fonts"]["main"] == str(main_font)
         assert result["fonts"]["heading"] == str(heading_font)
 
     def test_resolve_nonexistent_main_font(self, tmp_path: Path) -> None:
         """存在しないメインフォントを指定するとFileNotFoundErrorが発生"""
+        assets_dir = tmp_path / "assets"
+        assets_dir.mkdir()
         config = {"fonts": {"main": "nonexistent.ttf"}}
 
-        with pytest.raises(FileNotFoundError, match="カスタムフォントファイルが見つかりません"):
-            resolve_font_paths(config, tmp_path)
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.return_value = assets_dir / "nonexistent.ttf"
+            with pytest.raises(FileNotFoundError, match="カスタムフォントファイルが見つかりません"):
+                resolve_font_paths(config)
 
     def test_resolve_nonexistent_heading_font(self, tmp_path: Path) -> None:
         """存在しない見出しフォントを指定するとFileNotFoundErrorが発生"""
@@ -113,8 +124,15 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"main": "main.ttf", "heading": "nonexistent.ttf"}}
 
-        with pytest.raises(FileNotFoundError, match="見出しフォントファイルが見つかりません"):
-            resolve_font_paths(config, tmp_path)
+        def mock_side_effect(x):
+            if x == "main.ttf":
+                return main_font
+            return assets_dir / "nonexistent.ttf"
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.side_effect = mock_side_effect
+            with pytest.raises(FileNotFoundError, match="見出しフォントファイルが見つかりません"):
+                resolve_font_paths(config)
 
     def test_resolve_default_font(self, tmp_path: Path) -> None:
         """カスタムフォントが指定されていない場合、デフォルトフォントを設定"""
@@ -125,16 +143,23 @@ class TestResolveFontPaths:
         default_font.touch()
 
         config: dict[str, str] = {}
-        result = resolve_font_paths(config, tmp_path)
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.return_value = default_font
+            result = resolve_font_paths(config)
 
         assert result["fonts"]["main"] == str(default_font)
 
     def test_resolve_default_font_not_found(self, tmp_path: Path) -> None:
         """デフォルトフォントが存在しない場合、FileNotFoundErrorが発生"""
+        font_dir = tmp_path / "assets" / "fonts" / "BIZ_UDMincho"
+        font_dir.mkdir(parents=True)
         config: dict[str, str] = {}
 
-        with pytest.raises(FileNotFoundError, match="デフォルトフォントが見つかりません"):
-            resolve_font_paths(config, tmp_path)
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.return_value = font_dir / "BIZUDMincho-Regular.ttf"  # 存在しない
+            with pytest.raises(FileNotFoundError, match="デフォルトフォントが見つかりません"):
+                resolve_font_paths(config)
 
     def test_resolve_empty_fonts_dict(self, tmp_path: Path) -> None:
         """空のfonts辞書の場合、デフォルトフォントを設定"""
@@ -145,6 +170,9 @@ class TestResolveFontPaths:
         default_font.touch()
 
         config = {"fonts": {}}
-        result = resolve_font_paths(config, tmp_path)
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.return_value = default_font
+            result = resolve_font_paths(config)
 
         assert result["fonts"]["main"] == str(default_font)

@@ -1,19 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 
+# 共通実装を再エクスポート（tools/からの参照互換性維持）
+from ..fonts import register_font
 
-def register_font(font_path: Path) -> str:
-    if not font_path.exists():
-        raise FileNotFoundError(f"Font file not found: {font_path}")
-
-    font_name = font_path.stem
-    if font_name not in pdfmetrics.getRegisteredFontNames():
-        pdfmetrics.registerFont(TTFont(font_name, str(font_path)))
-    return font_name
+__all__ = ["register_font", "get_font_metrics"]
 
 
 def get_font_metrics(font_name: str, font_size: float) -> dict[str, float]:

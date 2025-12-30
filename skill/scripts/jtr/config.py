@@ -5,6 +5,8 @@ from typing import Any
 
 import yaml
 
+from .paths import get_assets_path
+
 
 def load_config(config_path: Path | None = None) -> dict[str, Any]:
     """
@@ -33,13 +35,12 @@ def load_config(config_path: Path | None = None) -> dict[str, Any]:
         raise ValueError(f"config.yamlの読み込みに失敗しました: {e}") from e
 
 
-def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]:
+def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
     """
     相対パスを絶対パスに解決し、デフォルトフォントを設定
 
     Args:
         config: 設定辞書（相対パス含む）
-        base_dir: ベースディレクトリ（フォントの相対パス起点）
 
     Returns:
         設定辞書（絶対パス、デフォルトフォント設定済み）
@@ -51,7 +52,7 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
     if "fonts" in config and config["fonts"]:
         if "main" in config["fonts"]:
             # config.yaml内のパスは assets/ からの相対パスとして解決
-            custom_font_path = base_dir / "assets" / config["fonts"]["main"]
+            custom_font_path = get_assets_path(config["fonts"]["main"])
             if not custom_font_path.exists():
                 raise FileNotFoundError(
                     f"カスタムフォントファイルが見つかりません: {custom_font_path}\n"
@@ -60,7 +61,7 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
             config["fonts"]["main"] = str(custom_font_path)
 
         if "heading" in config["fonts"]:
-            heading_font_path = base_dir / "assets" / config["fonts"]["heading"]
+            heading_font_path = get_assets_path(config["fonts"]["heading"])
             if not heading_font_path.exists():
                 raise FileNotFoundError(
                     f"見出しフォントファイルが見つかりません: {heading_font_path}\n"
@@ -69,9 +70,7 @@ def resolve_font_paths(config: dict[str, Any], base_dir: Path) -> dict[str, Any]
             config["fonts"]["heading"] = str(heading_font_path)
     else:
         # デフォルトフォントを設定
-        default_font_path = (
-            base_dir / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
-        )
+        default_font_path = get_assets_path("fonts", "BIZ_UDMincho", "BIZUDMincho-Regular.ttf")
         if not default_font_path.exists():
             raise FileNotFoundError(
                 f"デフォルトフォントが見つかりません: {default_font_path}\n"

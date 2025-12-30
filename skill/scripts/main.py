@@ -36,6 +36,7 @@ from jtr import (
     resolve_font_paths,
     validate_and_load_data,
 )
+from jtr.paths import get_assets_path
 
 
 def main(
@@ -59,13 +60,11 @@ def main(
         ValueError: データ形式エラー、バリデーションエラー
     """
     # 1. 設定読み込み（config.yaml）
-    # scripts/ から skill/ へ移動、さらに assets/ へ
-    base_dir = Path(__file__).parent.parent  # skill/ ディレクトリ
-    config_path = base_dir / "assets" / "config.yaml"
+    config_path = get_assets_path("config.yaml")
     config = load_config(config_path if config_path.exists() else None)
 
-    # 2. フォントパス解決（base_dir = skill/）
-    config = resolve_font_paths(config, base_dir)
+    # 2. フォントパス解決
+    config = resolve_font_paths(config)
 
     # 3. セッションオプションで上書き（例: 「和暦で表記してください」）
     if session_options:

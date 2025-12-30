@@ -8,6 +8,8 @@ from typing import Any, cast
 import jsonschema
 import yaml
 
+from .paths import get_schema_path
+
 
 def _normalize_dates(data: Any) -> Any:
     """
@@ -72,8 +74,7 @@ def load_resume_data(file_path: Path) -> dict[str, Any]:
         raise ValueError(f"Failed to parse JSON file: {e}") from e
 
     # スキーマバリデーション
-    # scripts/jtr/ から skill/ へ移動、さらに assets/schemas/ へ
-    schema_path = Path(__file__).parent.parent.parent / "assets" / "schemas" / "resume_schema.json"
+    schema_path = get_schema_path("resume_schema.json")
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
@@ -190,10 +191,7 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
             raise ValueError(f"YAML/JSONのパースに失敗しました: {e}") from e
 
     # スキーマバリデーション
-    # scripts/jtr/ から skill/ へ移動、さらに assets/schemas/ へ
-    schema_path = (
-        Path(__file__).resolve().parent.parent.parent / "assets" / "schemas" / "resume_schema.json"
-    )
+    schema_path = get_schema_path("resume_schema.json")
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
