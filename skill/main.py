@@ -38,13 +38,18 @@ from jtr import (
 )
 
 
-def main(input_data: str | Path, session_options: dict[str, Any] | None = None) -> Path:
+def main(
+    input_data: str | Path,
+    session_options: dict[str, Any] | None = None,
+    output_path: Path | str | None = None,
+) -> Path:
     """
     Claude Agent Skills環境から呼び出されるメイン関数
 
     Args:
         input_data: ユーザーが提供したYAML/JSONデータ（文字列またはファイルパス）
         session_options: セッション固有のオプション（和暦/西暦、用紙サイズ等）
+        output_path: 出力PDFファイルのパス（Noneの場合はカレントディレクトリに rirekisho.pdf を生成）
 
     Returns:
         生成されたPDFファイルのパス
@@ -74,10 +79,16 @@ def main(input_data: str | Path, session_options: dict[str, Any] | None = None) 
     # 5. PDF生成（フォント設定を含める）
     options = dict(config.get("options", {}))
     options["fonts"] = config.get("fonts", {})
-    output_path = Path("/tmp/rirekisho.pdf")
-    generate_resume_pdf(data, options, output_path)
 
-    return output_path
+    # 出力パスの決定
+    if output_path is None:
+        final_output_path = Path("rirekisho.pdf")
+    else:
+        final_output_path = Path(output_path)
+
+    generate_resume_pdf(data, options, final_output_path)
+
+    return final_output_path
 
 
 if __name__ == "__main__":

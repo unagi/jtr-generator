@@ -165,6 +165,40 @@ uv run poe test-cov     # カバレッジ付きテスト
 - `coverage.xml`が生成されているか確認
 - Codecov Webコンソールでアップロード履歴を確認
 
+### 出力ファイルパス仕様
+
+**Agent Skillsにおける出力ファイル指定**:
+
+`skill/main.py`の`main()`関数は`output_path`パラメータで出力先を指定できます。
+
+**パラメータ**:
+```python
+output_path: Path | str | None = None
+```
+
+**動作**:
+- `None`（デフォルト）: カレントディレクトリに`rirekisho.pdf`を生成
+- ファイル名のみ（例: `"yamada.pdf"`）: カレントディレクトリに指定ファイル名で生成
+- 相対パス（例: `"outputs/resume.pdf"`）: カレントディレクトリ基準の相対パスに生成
+- 絶対パス（例: `"/tmp/result.pdf"`）: 指定された絶対パスに生成
+
+**Agent Skills実行環境**:
+- 各リクエストは独立したコンテナで実行されるため、ファイル名の競合は発生しない
+- Files APIがカレントディレクトリのファイルを自動検出し、`file_id`を生成
+- ハードコーディングされた固定パスは不要（柔軟性のため廃止）
+
+**使用例**:
+```python
+# デフォルト
+main(data)  # → rirekisho.pdf
+
+# カスタムファイル名
+main(data, output_path="yamada_resume.pdf")
+
+# サブディレクトリ指定
+main(data, output_path="outputs/2025_resume.pdf")
+```
+
 ### ディレクトリ構成変更時の更新チェックリスト
 
 モジュール名やディレクトリ構成を変更した場合、以下のファイルを確認:
