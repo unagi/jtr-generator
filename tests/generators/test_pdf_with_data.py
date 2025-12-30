@@ -8,6 +8,9 @@ from datetime import date
 
 import pytest
 
+# reportlabがない環境ではスキップ
+pytest.importorskip("reportlab")
+
 from src.generators.pdf import (
     _calculate_age,
     _format_date,

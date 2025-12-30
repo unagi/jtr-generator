@@ -2,6 +2,9 @@ import json
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("fitz")
+
 from tools.extract_lines import extract_lines_a3_to_a4x2
 
 from src.layout.anchors import resolve_texts_from_anchors

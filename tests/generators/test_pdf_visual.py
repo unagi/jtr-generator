@@ -22,8 +22,14 @@ PDF視覚的品質検証テスト
 
 from pathlib import Path
 
-import numpy as np
 import pytest
+
+# 依存ライブラリが無い環境ではスキップ
+pytest.importorskip("numpy")
+pytest.importorskip("PIL")
+pytest.importorskip("skimage.metrics")
+
+import numpy as np
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 

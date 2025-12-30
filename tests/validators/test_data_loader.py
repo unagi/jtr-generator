@@ -3,9 +3,10 @@
 from pathlib import Path
 
 import pytest
-from jsonschema import ValidationError
 
+jsonschema = pytest.importorskip("jsonschema")
 from src.validators.data import load_resume_data
+ValidationError = jsonschema.ValidationError
 
 
 class TestLoadResumeData:

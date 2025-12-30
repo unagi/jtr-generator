@@ -14,8 +14,9 @@ import math
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import jsonschema
 import pytest
+
+jsonschema = pytest.importorskip("jsonschema")
 
 
 @pytest.fixture

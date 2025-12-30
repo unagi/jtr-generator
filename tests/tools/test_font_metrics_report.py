@@ -1,13 +1,42 @@
 from __future__ import annotations
 
+import importlib
 import json
 import sys
+import types
 from pathlib import Path
 
-from tools import font_metrics_report as fmr
+
+def _install_layout_metrics_stub(monkeypatch) -> None:
+    metrics_module = types.ModuleType("src.layout.metrics")
+
+    def register_font(font_path: Path) -> str:
+        return font_path.stem
+
+    def get_font_metrics(_: str, font_size: float) -> dict[str, float]:
+        return {"ascent": font_size * 0.8, "descent": -font_size * 0.2, "height": font_size}
+
+    metrics_module.register_font = register_font
+    metrics_module.get_font_metrics = get_font_metrics
+
+    # package placeholders
+    src_module = types.ModuleType("src")
+    layout_module = types.ModuleType("src.layout")
+
+    monkeypatch.setitem(sys.modules, "src", src_module)
+    monkeypatch.setitem(sys.modules, "src.layout", layout_module)
+    monkeypatch.setitem(sys.modules, "src.layout.metrics", metrics_module)
 
 
-def test_build_report_contains_expected_fields() -> None:
+def _reload_fmr(monkeypatch):
+    _install_layout_metrics_stub(monkeypatch)
+    if "tools.font_metrics_report" in sys.modules:
+        del sys.modules["tools.font_metrics_report"]
+    return importlib.import_module("tools.font_metrics_report")
+
+
+def test_build_report_contains_expected_fields(monkeypatch) -> None:
+    fmr = _reload_fmr(monkeypatch)
     font_path = Path("fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf")
     report = fmr.build_report(font_path)
 
@@ -23,6 +52,7 @@ def test_build_report_contains_expected_fields() -> None:
 
 
 def test_main_writes_report(tmp_path, monkeypatch) -> None:
+    fmr = _reload_fmr(monkeypatch)
     font_path = Path("fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf")
     output = tmp_path / "report.json"
 
