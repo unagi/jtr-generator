@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/unagi/jtr-generator/schemas/resume_schema.json",
+  "$id": "https://raw.githubusercontent.com/unagi/jtr-generator/refs/heads/main/skill/assets/schemas/resume_schema.json",
   "title": "Japanese Traditional Resume",
   "description": "日本の伝統的な履歴書データのスキーマ定義",
   "type": "object",

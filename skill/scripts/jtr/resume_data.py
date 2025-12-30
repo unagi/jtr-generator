@@ -84,6 +84,69 @@ def load_resume_data(file_path: Path) -> dict[str, Any]:
     return cast(dict[str, Any], data)
 
 
+def load_validated_data(
+    file_path: str | Path,
+    schema_name: str,
+) -> dict[str, Any]:
+    """
+    YAML/JSONファイルから任意のデータを読み込み、指定されたスキーマで検証を行う
+
+    Args:
+        file_path: YAMLまたはJSONファイルのパス（またはYAML/JSON文字列）
+        schema_name: スキーマファイル名（例: "resume_schema.json", "additional_info_schema.json"）
+
+    Returns:
+        検証済みデータ
+
+    Raises:
+        FileNotFoundError: ファイルやスキーマが存在しない場合
+        ValueError: ファイル形式が非対応、またはYAML/JSONパースエラー
+        jsonschema.ValidationError: スキーマバリデーション失敗時
+    """
+    # 文字列の場合はYAML/JSONとしてパース
+    if isinstance(file_path, str) and not Path(file_path).exists():
+        # YAML/JSON文字列として解釈
+        try:
+            data = yaml.safe_load(file_path)
+            data = _normalize_dates(data)
+        except yaml.YAMLError:
+            # YAMLでパース失敗したらJSONとして試行
+            try:
+                data = json.loads(file_path)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Failed to parse data string: {e}") from e
+    else:
+        # ファイルパスとして処理
+        path = Path(file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"File not found: {path}")
+
+        suffix = path.suffix.lower()
+        if suffix not in {".yaml", ".yml", ".json"}:
+            raise ValueError(
+                f"Unsupported file format: {suffix}. Only .yaml, .yml, or .json files are supported."
+            )
+
+        with open(path, encoding="utf-8") as f:
+            if suffix == ".json":
+                data = json.load(f)
+            else:  # .yaml or .yml
+                data = yaml.safe_load(f)
+                data = _normalize_dates(data)
+
+    # スキーマバリデーション
+    schema_path = get_schema_path(schema_name)
+    if not schema_path.exists():
+        raise FileNotFoundError(f"Schema file not found: {schema_path}")
+
+    with open(schema_path, encoding="utf-8") as f:
+        schema = json.load(f)
+
+    jsonschema.validate(instance=data, schema=schema)
+
+    return cast(dict[str, Any], data)
+
+
 def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
     """
     JSON Schemaバリデーションエラーを日本語で整形
