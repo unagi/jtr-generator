@@ -4,6 +4,7 @@
 BIZ UD明朝フォントを前提に、レイアウト調整で参照したい
 主要フィールドのベースラインを一か所で確認できるようにします。
 """
+
 from __future__ import annotations
 
 import argparse
@@ -80,7 +81,9 @@ def _education_rows() -> list[FieldBounds]:
     ]
 
 
-def _report_rule_aligned_fields(metrics: dict[float, dict[str, float]]) -> list[dict[str, float | str]]:
+def _report_rule_aligned_fields(
+    metrics: dict[float, dict[str, float]],
+) -> list[dict[str, float | str]]:
     # ふりがな欄はセル下端罫線にbaselineを合わせる設計
     return [
         {

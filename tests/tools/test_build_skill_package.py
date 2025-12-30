@@ -10,10 +10,10 @@ def _write_source_main(base_dir: Path) -> Path:
     source_main = base_dir / "platforms/claude/main.py"
     source_main.parent.mkdir(parents=True, exist_ok=True)
     source_main.write_text(
-        '\n'.join(
+        "\n".join(
             [
                 "from pathlib import Path",
-                'SRC = Path(__file__).parent.parent.parent / \"src\"',
+                'SRC = Path(__file__).parent.parent.parent / "src"',
                 "base_dir = Path(__file__).parent.parent.parent  # jtr-generator/",
                 'schema_path = Path(__file__).parent.parent.parent / "schemas"',
             ]

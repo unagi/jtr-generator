@@ -184,9 +184,7 @@ def main() -> None:
                 if valign == "center":
                     expected_y = center - (metrics["ascent"] + metrics["descent"]) / 2
                     status = (
-                        "ok"
-                        if abs(text["y"] - expected_y) <= entry_tolerance
-                        else "needs_review"
+                        "ok" if abs(text["y"] - expected_y) <= entry_tolerance else "needs_review"
                     )
                 elif valign == "top":
                     expected_y = top - metrics["ascent"]
@@ -260,14 +258,10 @@ def main() -> None:
         ]
 
         block_texts = [
-            text_lookup[rule["text"]]
-            for rule in block_rules
-            if rule.get("text") in text_lookup
+            text_lookup[rule["text"]] for rule in block_rules if rule.get("text") in text_lookup
         ]
         title_texts = [
-            text_lookup[rule["text"]]
-            for rule in title_rules
-            if rule.get("text") in text_lookup
+            text_lookup[rule["text"]] for rule in title_rules if rule.get("text") in text_lookup
         ]
 
         manual_block = {

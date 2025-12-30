@@ -7,9 +7,7 @@ from src.layout.metrics import get_font_metrics, register_font
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Analyze data field alignment using font metrics."
-    )
+    parser = argparse.ArgumentParser(description="Analyze data field alignment using font metrics.")
     parser.add_argument(
         "--layout",
         type=Path,
