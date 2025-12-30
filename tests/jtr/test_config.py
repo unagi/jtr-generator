@@ -94,9 +94,7 @@ class TestResolveFontPaths:
         """存在しないメインフォントを指定するとFileNotFoundErrorが発生"""
         config = {"fonts": {"main": "nonexistent.ttf"}}
 
-        with pytest.raises(
-            FileNotFoundError, match="カスタムフォントファイルが見つかりません"
-        ):
+        with pytest.raises(FileNotFoundError, match="カスタムフォントファイルが見つかりません"):
             resolve_font_paths(config, tmp_path)
 
     def test_resolve_nonexistent_heading_font(self, tmp_path: Path) -> None:
@@ -106,9 +104,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"main": "main.ttf", "heading": "nonexistent.ttf"}}
 
-        with pytest.raises(
-            FileNotFoundError, match="見出しフォントファイルが見つかりません"
-        ):
+        with pytest.raises(FileNotFoundError, match="見出しフォントファイルが見つかりません"):
             resolve_font_paths(config, tmp_path)
 
     def test_resolve_default_font(self, tmp_path: Path) -> None:

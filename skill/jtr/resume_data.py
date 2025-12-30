@@ -178,11 +178,13 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
             raise ValueError(f"データの読み込みに失敗しました: {e}") from e
 
     # 文字列の場合（YAML/JSON）
+    # input_dataはここまでに来た時点でstr型確定（Path型の場合は上のif is_file_pathで処理済み）
+    input_str = str(input_data)  # 型チェッカーのために明示的に変換
     try:
-        data = yaml.safe_load(input_data)
+        data = yaml.safe_load(input_str)
     except yaml.YAMLError:
         try:
-            data = json.loads(input_data)
+            data = json.loads(input_str)
         except json.JSONDecodeError as e:
             raise ValueError(f"YAML/JSONのパースに失敗しました: {e}") from e
 
