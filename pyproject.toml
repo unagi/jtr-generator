@@ -101,7 +101,8 @@ lint-fix = "ruff check --fix skill/ tests/ tools/"
 format = "ruff format skill/ tests/ tools/"
 format-check = "ruff format --check skill/ tests/ tools/"
 typecheck = "mypy skill/"
-check-all = ["lint", "format-check", "typecheck", "test-cov"]
+check-coverage = "python tools/check_coverage_per_file.py"
+check-all = ["lint", "format-check", "typecheck", "test-cov", "check-coverage"]
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
 # Agent Skillsパッケージビルド
