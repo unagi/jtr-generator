@@ -68,7 +68,7 @@ def markdown_to_flowables(
 
         # 見出し（# H1, ## H2, ### H3, #### H4）
         if line.startswith("#"):
-            heading_match = re.match(r"^(#{1,4})\s+(.*)$", line)
+            heading_match = re.match(r"^(#{1,4})\s(.*)$", line)
             if heading_match:
                 level = len(heading_match.group(1))
                 text = heading_match.group(2)
