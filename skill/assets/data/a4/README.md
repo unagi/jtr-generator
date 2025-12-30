@@ -235,7 +235,7 @@ uv run python tools/layout/analyze_data_field_alignment.py
 
 ```python
 from pathlib import Path
-from skill.jtr.pdf_generator import generate_resume_pdf
+from skill.scripts.jtr.pdf_generator import generate_resume_pdf
 
 output_path = Path("outputs/rirekisho.pdf")
 generate_resume_pdf({}, {"paper_size": "A4"}, output_path)
@@ -256,7 +256,7 @@ uv run pytest tests/generators/test_pdf_visual.py::test_save_diff_image_for_debu
 
 ### スキーマ定義
 
-JSONスキーマ: `skill/schemas/layout_schema.json`（配布パッケージでは `schemas/layout_schema.json`）
+JSONスキーマ: `skill/assets/schemas/layout_schema.json`（配布パッケージでは `schemas/layout_schema.json`）
 
 バリデーション:
 ```bash
@@ -264,10 +264,10 @@ uv run python -c "
 import json
 import jsonschema
 
-with open('skill/schemas/layout_schema.json') as f:
+with open('skill/assets/schemas/layout_schema.json') as f:
     schema = json.load(f)
 
-with open('data/a4/resume_layout.json') as f:
+with open('skill/assets/data/a4/resume_layout.json') as f:
     layout = json.load(f)
 
 jsonschema.validate(layout, schema)
@@ -279,7 +279,7 @@ print('✅ スキーマバリデーション成功')
 
 - **プロジェクト概要**: `README.md`
 - **調整履歴**: `outputs/adjustment_log.md`
-- **JSONスキーマ**: `skill/schemas/layout_schema.json`
+- **JSONスキーマ**: `skill/assets/schemas/layout_schema.json`
 - **参照PDF**: `tests/fixtures/R3_pdf_rirekisyo.pdf`
 
 ### ライセンス

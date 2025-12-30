@@ -28,7 +28,7 @@ Agent Skillsパッケージは `skill/` を基点にビルドされます。
 
 ### モジュール分割方針
 
-**skill/jtr/** - 共通実装
+**skill/scripts/jtr/** - 共通実装
 - `pdf_generator.py`: ReportLabによるPDF生成
 - `resume_data.py`: YAML/JSON読み込み・JSON Schemaバリデーション
 - `japanese_era.py`: 和暦変換（西暦 ↔ 令和/平成/昭和）
@@ -36,7 +36,7 @@ Agent Skillsパッケージは `skill/` を基点にビルドされます。
 
 ### 設定ファイル（config.yaml）
 
-リポジトリでは `skill/config.yaml` に配置（ビルド成果物ではルート直下）:
+リポジトリでは `skill/assets/config.yaml` に配置（ビルド成果物ではルート直下）:
 
 ```yaml
 options:
@@ -129,8 +129,8 @@ additional_info:    # 志望動機・自己PR
 ### 詳細仕様
 
 データモデルの詳細は **JSON Schema** で定義されています:
-- **スキーマファイル**: [skill/schemas/resume_schema.json](../skill/schemas/resume_schema.json)
-- **サンプルデータ**: [skill/examples/sample_resume.yaml](../skill/examples/sample_resume.yaml) および [skill/examples/sample_resume.json](../skill/examples/sample_resume.json)
+- **スキーマファイル**: [skill/assets/schemas/resume_schema.json](../skill/assets/schemas/resume_schema.json)
+- **サンプルデータ**: [skill/assets/examples/sample_resume.yaml](../skill/assets/examples/sample_resume.yaml) および [skill/assets/examples/sample_resume.json](../skill/assets/examples/sample_resume.json)
 
 ### データ形式要件
 

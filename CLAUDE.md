@@ -465,7 +465,7 @@ for file_id in file_ids:
 
 - [README.md](README.md) - エンドユーザー向け使い方ガイド
 - [AGENTS.md](AGENTS.md) - プロジェクト全体仕様（LLM非依存）
-- [skill/schemas/resume_schema.json](skill/schemas/resume_schema.json) - データスキーマ定義
+- [skill/assets/schemas/resume_schema.json](skill/assets/schemas/resume_schema.json) - データスキーマ定義
 
 ## 今後のAPI変更
 

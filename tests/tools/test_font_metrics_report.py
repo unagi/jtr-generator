@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def _install_layout_metrics_stub(monkeypatch) -> None:
-    metrics_module = types.ModuleType("skill.jtr.layout.metrics")
+    metrics_module = types.ModuleType("skill.scripts.jtr.layout.metrics")
 
     def register_font(font_path: Path) -> str:
         return font_path.stem
@@ -21,13 +21,13 @@ def _install_layout_metrics_stub(monkeypatch) -> None:
 
     # package placeholders
     skill_module = types.ModuleType("skill")
-    jtr_module = types.ModuleType("skill.jtr")
-    layout_module = types.ModuleType("skill.jtr.layout")
+    jtr_module = types.ModuleType("skill.scripts.jtr")
+    layout_module = types.ModuleType("skill.scripts.jtr.layout")
 
     monkeypatch.setitem(sys.modules, "skill", skill_module)
-    monkeypatch.setitem(sys.modules, "skill.jtr", jtr_module)
-    monkeypatch.setitem(sys.modules, "skill.jtr.layout", layout_module)
-    monkeypatch.setitem(sys.modules, "skill.jtr.layout.metrics", metrics_module)
+    monkeypatch.setitem(sys.modules, "skill.scripts.jtr", jtr_module)
+    monkeypatch.setitem(sys.modules, "skill.scripts.jtr.layout", layout_module)
+    monkeypatch.setitem(sys.modules, "skill.scripts.jtr.layout.metrics", metrics_module)
 
 
 def _reload_fmr(monkeypatch):
@@ -39,7 +39,7 @@ def _reload_fmr(monkeypatch):
 
 def test_build_report_contains_expected_fields(monkeypatch) -> None:
     fmr = _reload_fmr(monkeypatch)
-    font_path = Path("skill/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf")
+    font_path = Path("skill") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
     report = fmr.build_report(font_path)
 
     assert report["font"]["name"] == font_path.stem
@@ -55,7 +55,7 @@ def test_build_report_contains_expected_fields(monkeypatch) -> None:
 
 def test_main_writes_report(tmp_path, monkeypatch) -> None:
     fmr = _reload_fmr(monkeypatch)
-    font_path = Path("skill/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf")
+    font_path = Path("skill") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
     output = tmp_path / "report.json"
 
     monkeypatch.setattr(

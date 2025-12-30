@@ -1,8 +1,8 @@
-"""skill.jtr.layout.anchors モジュールのテスト"""
+"""skill.scripts.jtr.layout.anchors モジュールのテスト"""
 
 import pytest
 
-from skill.jtr.layout.anchors import (
+from skill.scripts.jtr.layout.anchors import (
     _cluster_positions,
     _collect_line_positions,
     _nearest_position,

@@ -32,13 +32,13 @@ def test_generate_text_anchors(monkeypatch, tmp_path: Path) -> None:
     )
     monkeypatch.setitem(
         sys.modules,
-        "skill.jtr",
-        types.ModuleType("skill.jtr"),
+        "skill.scripts.jtr",
+        types.ModuleType("skill.scripts.jtr"),
     )
     monkeypatch.setitem(
         sys.modules,
-        "skill.jtr.layout",
-        types.ModuleType("skill.jtr.layout"),
+        "skill.scripts.jtr.layout",
+        types.ModuleType("skill.scripts.jtr.layout"),
     )
     monkeypatch.setattr(
         "tools.layout.generate_text_anchors.build_text_anchors",

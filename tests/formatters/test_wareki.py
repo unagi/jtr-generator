@@ -2,7 +2,7 @@
 
 import pytest
 
-from skill.jtr.japanese_era import convert_to_wareki
+from skill.scripts.jtr.japanese_era import convert_to_wareki
 
 
 class TestConvertToWareki:

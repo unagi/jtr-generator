@@ -22,7 +22,14 @@ jsonschema = pytest.importorskip("jsonschema")
 @pytest.fixture
 def layout_data():
     """v2レイアウトデータを読み込む"""
-    layout_path = Path(__file__).parent.parent.parent / "skill/data/a4/resume_layout.json"
+    layout_path = (
+        Path(__file__).parent.parent.parent
+        / "skill"
+        / "assets"
+        / "data"
+        / "a4"
+        / "resume_layout.json"
+    )
     with open(layout_path, encoding="utf-8") as f:
         return json.load(f)
 
@@ -30,7 +37,9 @@ def layout_data():
 @pytest.fixture
 def layout_schema():
     """レイアウトスキーマを読み込む"""
-    schema_path = Path(__file__).parent.parent.parent / "skill/schemas/layout_schema.json"
+    schema_path = (
+        Path(__file__).parent.parent.parent / "skill" / "assets" / "schemas" / "layout_schema.json"
+    )
     with open(schema_path, encoding="utf-8") as f:
         return json.load(f)
 

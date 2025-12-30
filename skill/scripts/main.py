@@ -59,11 +59,12 @@ def main(
         ValueError: データ形式エラー、バリデーションエラー
     """
     # 1. 設定読み込み（config.yaml）
-    config_path = Path(__file__).parent / "config.yaml"
+    # scripts/ から skill/ へ移動、さらに assets/ へ
+    base_dir = Path(__file__).parent.parent  # skill/ ディレクトリ
+    config_path = base_dir / "assets" / "config.yaml"
     config = load_config(config_path if config_path.exists() else None)
 
-    # 2. フォントパス解決
-    base_dir = Path(__file__).parent
+    # 2. フォントパス解決（base_dir = skill/）
     config = resolve_font_paths(config, base_dir)
 
     # 3. セッションオプションで上書き（例: 「和暦で表記してください」）

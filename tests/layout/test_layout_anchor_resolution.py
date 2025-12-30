@@ -7,7 +7,7 @@ pytest.importorskip("fitz")
 
 from tools.extract_lines import extract_lines_a3_to_a4x2
 
-from skill.jtr.layout.anchors import resolve_texts_from_anchors
+from skill.scripts.jtr.layout.anchors import resolve_texts_from_anchors
 
 TOLERANCE_PT = 1.0
 
