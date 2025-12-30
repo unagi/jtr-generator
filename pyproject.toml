@@ -77,7 +77,7 @@ spec_test_format = "{result} {docstring_summary}"
 
 # pytest-cov設定
 [tool.coverage.run]
-source = ["src"]
+source = ["src", "tools"]
 omit = ["tests/*", "platforms/*"]
 
 [tool.coverage.report]
@@ -93,7 +93,7 @@ exclude_lines = [
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
 test = "pytest tests/ --spec"
-test-cov = "pytest tests/ --cov=src --cov-report=term-missing --spec"
+test-cov = "pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec"
 test-watch = "pytest tests/ -f --spec"
 lint = "ruff check src/ tests/"
 lint-fix = "ruff check --fix src/ tests/"
@@ -151,7 +151,7 @@ sequence = [
     { cmd = "cp examples/sample_resume.json build/claude_skill_package/examples/" },
 
     # 8. Pythonファイルのパス修正とzip作成
-    { cmd = "python scripts/build_skill_package.py" },
+    { cmd = "python tools/build_skill_package.py" },
 ]
 
 [dependency-groups]

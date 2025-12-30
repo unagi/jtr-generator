@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pytest
 
+# reportlabがない環境ではスキップ
+pytest.importorskip("reportlab")
+
 from src.generators.pdf import generate_resume_pdf
 
 

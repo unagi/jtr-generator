@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    name: Test (Python 3.11)
+  build-and-test:
+    name: Build, Lint, Test, Coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -35,11 +35,25 @@ jobs:
         run: |
           uv sync --all-extras --dev
 
-      - name: Run tests with coverage
+      - name: Lint (ruff)
+        run: |
+          uv run poe lint
+
+      - name: Format check (ruff)
+        run: |
+          uv run poe format-check
+
+      - name: Type check (mypy)
+        run: |
+          uv run poe typecheck
+
+      - name: Test with coverage (poe)
         run: |
           uv run poe test-cov
-          # Generate XML format for SonarCloud
-          uv run pytest tests/ --cov=src --cov-report=xml
+
+      - name: Generate coverage.xml for Sonar/Codecov
+        run: |
+          uv run pytest tests/ --cov=src --cov=tools --cov-report=xml --spec
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
@@ -50,101 +64,11 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.11"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "pyproject.toml"
-
-      - name: Install dependencies
-        run: |
-          uv sync --all-extras --dev
-
-      - name: Run lint
-        run: |
-          uv run poe lint
-
-      - name: Run format check
-        run: |
-          uv run poe format-check
-
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.11"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "pyproject.toml"
-
-      - name: Install dependencies
-        run: |
-          uv sync --all-extras --dev
-
-      - name: Run type check
-        run: |
-          uv run poe typecheck
-
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest
-    needs: [test, lint, typecheck]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.11"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "pyproject.toml"
-
-      - name: Install poppler (for pdf2image)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y poppler-utils
-
-      - name: Install dependencies
-        run: |
-          uv sync --all-extras --dev
-
-      - name: Run tests with coverage for SonarCloud
-        run: |
-          uv run pytest tests/ --cov=src --cov-report=xml
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage.xml
