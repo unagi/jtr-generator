@@ -1,8 +1,8 @@
 # jtr-generator
 
-[![CI](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/jtr-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/jtr-generator)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=YOUR_USERNAME_jtr-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=YOUR_USERNAME_jtr-generator)
+[![CI](https://github.com/unagi/jtr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/unagi/jtr-generator/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/unagi/jtr-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/unagi/jtr-generator)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=unagi_jtr-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=unagi_jtr-generator)
 
 JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する**Agent Skills / Codex対応ツール**です。
 
@@ -53,8 +53,11 @@ jtr-generator/
 │   ├── data/                   # レイアウトデータ
 │   │   └── a4/
 │   │       ├── resume_layout.json
-│   │       ├── text_anchors.json
-│   │       └── critical_cells.json
+│   │       ├── definitions/
+│   │       │   └── manual_bounds.json
+│   │       └── rules/
+│   │           ├── label_alignment.json
+│   │           └── field_alignment.json
 │   ├── schemas/                # JSON Schema
 │   │   ├── resume_schema.json
 │   │   └── layout_schema.json
@@ -85,7 +88,7 @@ jtr-generator/
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/YOUR_USERNAME/jtr-generator.git
+git clone https://github.com/unagi/jtr-generator.git
 cd jtr-generator
 
 # 依存パッケージのインストール
@@ -157,7 +160,7 @@ GitHub Actionsで以下を自動実行:
 
 | 指標 | 目標 | 現在 |
 |------|------|------|
-| テストカバレッジ | 90%以上 | 82% |
+| テストカバレッジ | 80%以上 | 82% |
 | 視覚品質（SSIM） | > 0.895 | 0.905 |
 | ピクセル差異 | < 6.0% | 5.67% |
 

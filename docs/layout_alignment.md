@@ -4,10 +4,10 @@
 座標の正当性は、罫線（セル境界）とフォントメトリクスに基づく計算で判断します。
 
 ## 対象ファイル
-- `data/layouts/resume_layout_a4_v2.json`: 罫線・ラベル・データフィールドの絶対座標
-- `data/layouts/resume_layout_a4_v2_text_anchors.json`: ラベルの相対アンカー（罫線基準）
-- `data/layouts/resume_layout_a4_v2_text_alignment.json`: ラベル配置のルール/手動ブロック
-- `data/layouts/resume_layout_a4_v2_data_field_alignment.json`: 入力データの配置ルール
+- `skill/data/a4/resume_layout.json`: 罫線・ラベル・データフィールドの絶対座標
+- `skill/data/a4/rules/label_alignment.json`: ラベル配置のルール/手動ブロック
+- `skill/data/a4/rules/field_alignment.json`: 入力データの配置ルール
+- `skill/data/a4/definitions/manual_bounds.json`: 手動で測定した境界座標
 
 ## 用語と定義
 
@@ -55,8 +55,8 @@ bottom_baseline = cell_bottom - descent + margin_bottom
 
 ## 再現手順
 
-1. 罫線・ラベル・データフィールドの位置を `resume_layout_a4_v2.json` で調整
-2. ラベルアンカーを再生成
+1. 罫線・ラベル・データフィールドの位置を `skill/data/a4/resume_layout.json` で調整
+2. ラベルアンカーを再生成（`tests/fixtures/a4_text_anchors.json` に出力）
 ```
 uv run python tools/layout/generate_text_anchors.py
 ```

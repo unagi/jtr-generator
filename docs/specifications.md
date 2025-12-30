@@ -8,65 +8,53 @@
 
 ### ビルドプロセス
 
-各プラットフォームのパッケージ（例: `build/claude.zip`）は以下を含む:
-1. `src/` の共通実装
-2. `schemas/` のスキーマ定義
-3. `platforms/{platform}/` の固有ファイル
-4. ユーザーが配置した `fonts/`（オプション）
+Agent Skillsパッケージは `skill/` を基点にビルドされます。
 
-### プラットフォーム別の責務
+1. `tools/build_skill.py` が `skill/` を `build/jtr-generator/` にコピー
+2. `requirements.txt` を生成
+3. `build/jtr-generator.zip` を作成
 
-| コンポーネント | 説明 | 共通 | Claude | Gemini | ChatGPT |
-|---------------|------|------|--------|--------|---------|
-| src/* | 実装ロジック | ✅ | - | - | - |
-| schemas/* | データ定義 | ✅ | - | - | - |
-| skill.json | メタデータ | - | ✅ | ✅ | ✅ |
-| main.py | エントリーポイント | - | ✅ | ✅ | ✅ |
-| config.yaml | 設定テンプレート | - | ✅ | ✅ | ✅ |
+### 配布パッケージの構成
+
+| コンポーネント | 説明 |
+|---------------|------|
+| jtr/* | 共通実装（PDF生成、検証、日付処理など） |
+| schemas/* | データスキーマ |
+| data/* | レイアウトデータ |
+| main.py | エントリーポイント |
+| config.yaml | 設定テンプレート |
+| SKILL.md | LLM向け指示 |
+| README.md | エンドユーザー向けガイド |
 
 ### モジュール分割方針
 
-**src/models/** - データモデル定義
-- Python dataclassesまたはPydanticを使用
-- 型安全性を重視
-- JSON Schemaとの整合性を保つ
-
-**src/generators/** - PDF生成ロジック
-- ReportLabを使用した高品質PDF生成
-- JIS規格準拠のレイアウト実装
-- フォント設定は外部から注入
-
-**src/validators/** - バリデーション
-- JSON Schema突合
-- 必須項目チェック
-- フォーマット検証
-
-**src/formatters/** - ユーティリティ
-- 和暦変換（西暦 ↔ 令和/平成/昭和）
-- 正式名称変換
-- 日付フォーマット
+**skill/jtr/** - 共通実装
+- `pdf_generator.py`: ReportLabによるPDF生成
+- `resume_data.py`: YAML/JSON読み込み・JSON Schemaバリデーション
+- `japanese_era.py`: 和暦変換（西暦 ↔ 令和/平成/昭和）
+- `layout/`: レイアウト計算・フォントメトリクス関連
 
 ### 設定ファイル（config.yaml）
 
-プラットフォーム固有ディレクトリ（例: `platforms/claude/config.yaml`）に配置:
+リポジトリでは `skill/config.yaml` に配置（ビルド成果物ではルート直下）:
 
 ```yaml
 options:
   date_format: seireki    # 'seireki' or 'wareki'
-  paper_size: A4          # 'A4' or 'B5'
+  paper_size: A4          # 'A4'（B5は将来対応予定）
 
 fonts:
   main: fonts/main.ttf           # 本文用フォント（相対パス）
   heading: fonts/heading.ttf     # 見出し用フォント（相対パス、optional）
 ```
 
-**注意**: フォントパスは相対パスで記述し、各プラットフォームの実装（main.py）で絶対パスに解決します。
+**注意**: フォントパスは相対パスで記述し、`main.py` で絶対パスに解決します。
 
 ## ドメイン知識：日本の履歴書仕様
 
 ### 用紙・レイアウト規格
 
-- **用紙サイズ**: A4（297mm × 210mm）またはB5（257mm × 182mm）
+- **用紙サイズ**: A4（297mm × 210mm）対応（B5は将来対応予定）
 - **印刷**: 片面印刷、縦方向
 - **余白**: 上下左右それぞれ10-15mm程度
 - **フォント**: 明朝体が基本、見出しはゴシック体も可
@@ -141,8 +129,8 @@ additional_info:    # 志望動機・自己PR
 ### 詳細仕様
 
 データモデルの詳細は **JSON Schema** で定義されています:
-- **スキーマファイル**: [schemas/resume_schema.json](../schemas/resume_schema.json)
-- **サンプルデータ**: [examples/sample_resume.yaml](../examples/sample_resume.yaml) および [examples/sample_resume.json](../examples/sample_resume.json)
+- **スキーマファイル**: [skill/schemas/resume_schema.json](../skill/schemas/resume_schema.json)
+- **サンプルデータ**: [skill/examples/sample_resume.yaml](../skill/examples/sample_resume.yaml) および [skill/examples/sample_resume.json](../skill/examples/sample_resume.json)
 
 ### データ形式要件
 
@@ -157,7 +145,7 @@ additional_info:    # 志望動機・自己PR
 
 ### PDF形式（.pdf）
 
-- **ページサイズ**: A4/B5
+- **ページサイズ**: A4（B5は将来対応予定）
 - **フォント埋め込み**: 必須（印刷互換性のため）
 - **解像度**: 300dpi以上推奨
 - **証明写真エリア**: 縦40mm × 横30mm（画像は手動配置）
@@ -174,7 +162,7 @@ additional_info:    # 志望動機・自己PR
 
 ### 技術的制約
 
-- **フォント**: ライセンス上の理由により非同梱、ユーザー提供必須
+- **フォント**: BIZ UDMincho（OFL 1.1）を同梱。カスタムフォントはユーザー提供で上書き可能
 - **生成時間**: LLM Skills APIの仕様により1-2分程度かかる
 - **ファイルサイズ**: 生成PDFは通常1MB以下
 

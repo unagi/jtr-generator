@@ -2,9 +2,6 @@
 
 JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです。
 
-[![CI](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml)
-[![Release](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/release.yml/badge.svg)](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/release.yml)
-
 ## 概要
 
 このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書PDFを生成できます。
@@ -133,12 +130,13 @@ qualifications:
 
 ### config.yamlの編集
 
-`platforms/claude/config.yaml` を編集して、デフォルト設定をカスタマイズできます。
+同梱の `config.yaml` を編集して、デフォルト設定をカスタマイズできます。
+リポジトリ内では `skill/config.yaml` にあります。
 
 ```yaml
 options:
   date_format: seireki  # or wareki
-  paper_size: A4        # or B5（将来実装予定）
+  paper_size: A4        # B5は将来実装予定
 
 fonts:
   main: fonts/custom/your-font.ttf  # カスタムフォント
@@ -186,20 +184,20 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 **GitHub Releases（推奨）:**
 
-1. [GitHub Releases](https://github.com/YOUR_USERNAME/jtr-generator/releases)から最新版をダウンロード
+1. [GitHub Releases](https://github.com/unagi/jtr-generator/releases)から最新版をダウンロード
 2. `jtr-generator-vX.X.X.zip` をダウンロード
 3. Claude.aiにアップロード、またはCodex環境に配置
 
 **最新版（開発版）:**
 
-[GitHub Actions Artifacts](https://github.com/YOUR_USERNAME/jtr-generator/actions)から `jtr-generator-latest.zip` をダウンロード
+[GitHub Actions Artifacts](https://github.com/unagi/jtr-generator/actions)から `jtr-generator-latest.zip` をダウンロード
 
 ### ローカル開発・デバッグ
 
 開発者向けのローカルテスト:
 
 ```bash
-cd /path/to/jtr-generator
+cd /path/to/jtr-generator/skill
 python main.py examples/sample_resume.yaml --date-format wareki
 ```
 
@@ -214,7 +212,7 @@ uv run poe build-skill
 
 - **用紙サイズ**: 現在はA4のみサポート（B5は将来実装予定）
 - **証明写真**: 画像エリアは表示されますが、自動埋め込みは未実装
-- **出力先**: `/tmp/rirekisho.pdf` に固定
+- **出力先**: カレントディレクトリに `rirekisho.pdf` を生成（`output_path` 指定で変更可）
 
 ## ライセンス
 

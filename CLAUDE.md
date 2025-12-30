@@ -5,7 +5,8 @@
 **ディレクトリ構成が変更されました:**
 
 - **変更前**: `platforms/claude/` ディレクトリに配置
-- **変更後**: **ルート直下に統一配置** (`SKILL.md`, `main.py`, `config.yaml`, `README.md`)
+- **変更後**: リポジトリでは `skill/` 配下に統一配置（`SKILL.md`, `main.py`, `config.yaml`, `README.md`）
+- **ビルド成果物**: これらがルート直下に展開される
 - **理由**: Codexでも同一のzipファイルが動作することが確認されたため、プラットフォーム分離を廃止
 
 **このドキュメントは、Agent Skills固有の技術仕様（Beta API、Files API等）をまとめたものです。**
@@ -33,19 +34,20 @@
 
 ## Agent Skills構成
 
-### ルート配置ファイル
+### ルート配置ファイル（リポジトリ）
 
 ```
 jtr-generator/
-├── SKILL.md                # Agent Skills定義ファイル（YAMLフロントマター + 指示）
-├── main.py                 # エントリーポイント
-├── config.yaml             # ユーザー設定テンプレート
-├── README.md               # エンドユーザー向け使用方法
-├── src/                    # 共通実装
-├── data/                   # レイアウトデータ
-├── schemas/                # JSON Schema
-├── examples/               # サンプルデータ
-└── fonts/                  # デフォルトフォント
+├── skill/                  # 配布パッケージのルート相当
+│   ├── SKILL.md            # Agent Skills定義ファイル（YAMLフロントマター + 指示）
+│   ├── main.py             # エントリーポイント
+│   ├── config.yaml         # ユーザー設定テンプレート
+│   ├── README.md           # エンドユーザー向け使用方法
+│   ├── jtr/                # 共通実装
+│   ├── data/               # レイアウトデータ
+│   ├── schemas/            # JSON Schema
+│   ├── examples/           # サンプルデータ
+│   └── fonts/              # デフォルトフォント
 ```
 
 **ビルド成果物** (`build/jtr-generator.zip`):
@@ -56,7 +58,7 @@ jtr-generator.zip/
 ├── config.yaml
 ├── README.md
 ├── requirements.txt        # 自動生成
-├── src/                    # 必要なモジュールのみ
+├── jtr/                    # 必要なモジュールのみ
 ├── data/                   # レイアウトデータ
 ├── schemas/
 ├── fonts/
@@ -102,7 +104,7 @@ JIS規格準拠の日本の履歴書をPDF形式で生成します。
 
 Details:
 - 入力形式: チャットテキスト、YAML、JSON
-- 出力形式: PDF（A4/B5、和暦/西暦切り替え可能）
+- 出力形式: PDF（A4のみ、和暦/西暦切り替え可能）
 - カスタムフォント対応
 - JSON Schema準拠のバリデーション
 
@@ -114,7 +116,7 @@ Examples:
    [YAMLファイルを添付] 「このファイルから履歴書を生成してください。」
 
 3. オプション指定:
-   「B5サイズ、和暦で履歴書を作成してください。」
+   「A4サイズ、和暦で履歴書を作成してください。」
 """
 ```
 
@@ -125,92 +127,51 @@ Examples:
 Claude Skills環境から値を取得し、共通インターフェースに注入します:
 
 ```python
-import os
-import sys
 from pathlib import Path
-import yaml
+from typing import Any
 
-# 共通実装のインポート
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
-from generators.pdf import generate_resume_pdf
-from validators.data import load_resume_data
+from jtr import (
+    generate_resume_pdf,
+    load_config,
+    resolve_font_paths,
+    validate_and_load_data,
+)
 
-def load_claude_config() -> dict:
-    """
-    Claude Skills環境からconfig.yamlを読み込み
 
-    Returns:
-        設定辞書
-    """
-    config_path = Path(__file__).parent / 'config.yaml'
-
-    if not config_path.exists():
-        # デフォルト設定
-        return {
-            'options': {
-                'date_format': 'seireki',
-                'paper_size': 'A4'
-            },
-            'fonts': {}
-        }
-
-    with open(config_path, 'r', encoding='utf-8') as f:
-        return yaml.safe_load(f)
-
-def resolve_font_paths(config: dict) -> dict:
-    """
-    Claude Skills環境で相対パスを絶対パスに解決
-
-    Args:
-        config: 設定辞書（相対パス含む）
-
-    Returns:
-        設定辞書（絶対パス）
-    """
-    base_dir = Path(__file__).parent.parent.parent  # jtr-generator/
-
-    if 'fonts' in config and config['fonts']:
-        if 'main' in config['fonts']:
-            config['fonts']['main'] = str(base_dir / config['fonts']['main'])
-        if 'heading' in config['fonts']:
-            config['fonts']['heading'] = str(base_dir / config['fonts']['heading'])
-
-    return config
-
-def main(input_data: str, user_message: str) -> Path:
+def main(
+    input_data: str | Path,
+    session_options: dict[str, Any] | None = None,
+    output_path: Path | str | None = None,
+) -> Path:
     """
     Claude Skills環境から呼び出されるメイン関数
 
     Args:
-        input_data: ユーザーが提供したYAML/JSONデータ（文字列）
-        user_message: ユーザーのチャットメッセージ
+        input_data: ユーザーが提供したYAML/JSONデータ（文字列またはファイルパス）
+        session_options: セッション固有のオプション（和暦/西暦、用紙サイズ等）
+        output_path: 出力PDFファイルのパス（Noneの場合はカレントにrirekisho.pdf）
 
     Returns:
         生成されたPDFファイルのパス
     """
-    # 1. Claude環境固有の設定取得
-    config = load_claude_config()
-    config = resolve_font_paths(config)
+    config_path = Path(__file__).parent / "config.yaml"
+    config = load_config(config_path if config_path.exists() else None)
+    config = resolve_font_paths(config, Path(__file__).parent)
 
-    # 2. 共通インターフェースでデータ読み込み
-    data = load_resume_data(input_data)
+    if session_options:
+        if "date_format" in session_options:
+            config["options"]["date_format"] = session_options["date_format"]
+        if "paper_size" in session_options:
+            config["options"]["paper_size"] = session_options["paper_size"]
 
-    # 3. 共通インターフェースでPDF生成
-    output_path = Path('/tmp/rirekisho.pdf')
-    generate_resume_pdf(data, config['options'], output_path)
+    data = validate_and_load_data(input_data)
 
-    return output_path
+    options = dict(config.get("options", {}))
+    options["fonts"] = config.get("fonts", {})
 
-if __name__ == '__main__':
-    # Claude Skills環境での実行
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data', required=True)
-    parser.add_argument('--message', required=True)
-    args = parser.parse_args()
-
-    result = main(args.data, args.message)
-    print(f"Generated: {result}")
+    final_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
+    generate_resume_pdf(data, options, final_output_path)
+    return final_output_path
 ```
 
 ### 設定注入パターン
@@ -504,7 +465,7 @@ for file_id in file_ids:
 
 - [README.md](README.md) - エンドユーザー向け使い方ガイド
 - [AGENTS.md](AGENTS.md) - プロジェクト全体仕様（LLM非依存）
-- [schemas/resume_schema.json](schemas/resume_schema.json) - データスキーマ定義
+- [skill/schemas/resume_schema.json](skill/schemas/resume_schema.json) - データスキーマ定義
 
 ## 今後のAPI変更
 

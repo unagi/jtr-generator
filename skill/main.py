@@ -11,7 +11,7 @@ JIS規格準拠の日本の履歴書をPDF形式で生成します。
 
 Details:
 - 入力形式: チャットテキスト、YAML、JSON
-- 出力形式: PDF（A4/B5、和暦/西暦切り替え可能）
+- 出力形式: PDF（A4のみ、和暦/西暦切り替え可能）
 - カスタムフォント対応
 - JSON Schema準拠のバリデーション
 
@@ -23,7 +23,7 @@ Examples:
    [YAMLファイルを添付] 「このファイルから履歴書を生成してください。」
 
 3. オプション指定:
-   「B5サイズ、和暦で履歴書を作成してください。」
+   「A4サイズ、和暦で履歴書を作成してください。」
 """
 
 import sys
@@ -100,7 +100,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--date-format", choices=["seireki", "wareki"], default="seireki", help="日付形式"
     )
-    parser.add_argument("--paper-size", choices=["A4", "B5"], default="A4", help="用紙サイズ")
+    parser.add_argument(
+        "--paper-size", choices=["A4", "B5"], default="A4", help="用紙サイズ（B5は将来対応予定）"
+    )
     args = parser.parse_args()
 
     session_options = {"date_format": args.date_format, "paper_size": args.paper_size}

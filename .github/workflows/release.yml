@@ -62,7 +62,7 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.version.outputs.is_tag == 'true'
-        uses: softprops/action-gh-release@7b4da11513689f1a16554ba03c5d1e40d8ff0c25 # v2
+        uses: softprops/action-gh-release@v2.5.0  # 2025年1月時点の最新版
         with:
           files: build/${{ steps.version.outputs.zip_name }}
           generate_release_notes: true

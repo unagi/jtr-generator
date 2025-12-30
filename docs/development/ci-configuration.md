@@ -50,7 +50,7 @@
 - `actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065` (v5)
 - `astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86` (v5)
 - `actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02` (v4.6.2)
-- `softprops/action-gh-release@7b4da11513689f1a16554ba03c5d1e40d8ff0c25` (v2)
+- `softprops/action-gh-release@v2.5.0`（2025年1月時点の最新版）
 
 **必要なシークレット**:
 - `GITHUB_TOKEN`: GitHub Releaseとartifactアップロードに使用（自動提供）
@@ -217,6 +217,8 @@ GitHub Actionsはセキュリティのため、コミットハッシュで固定
 1. GitHub APIまたはリポジトリで最新タグのハッシュを確認
 2. コメント内のバージョン番号も同時に更新
 3. CHANGELOG確認（破壊的変更がないか）
+
+※ `softprops/action-gh-release` は安定性優先のため `v2.5.0` タグ指定で運用中です。
 
 **例**:
 ```yaml

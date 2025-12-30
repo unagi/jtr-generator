@@ -151,7 +151,7 @@ LLM Skills機能を使用して、日本の伝統的な履歴書フォーマッ�
 ### 主要機能
 
 1. **JIS規格準拠の履歴書レイアウト生成**
-   - A4/B5用紙サイズ対応（既定値: A4）
+   - A4用紙サイズ対応（既定値: A4、B5は将来対応予定）
    - 和暦/西暦表記切り替え（既定値: 西暦）
    - 正式名称による記載（略語禁止）
 
@@ -168,7 +168,7 @@ LLM Skills機能を使用して、日本の伝統的な履歴書フォーマッ�
 | オプション | 既定値 | 設定方法 |
 |-----------|--------|---------|
 | 和暦/西暦 | 西暦 | セッション: 「和暦で表記してください」<br>恒久: `config.yaml` で `date_format: wareki` |
-| 用紙サイズ | A4 | セッション: 「B5サイズで作成してください」<br>恒久: `config.yaml` で `paper_size: B5` |
+| 用紙サイズ | A4 | B5は将来対応予定（現状はA4固定。`config.yaml`の`paper_size`は予約済み） |
 
 ## アーキテクチャ方針
 
@@ -184,17 +184,17 @@ LLM Skills機能を使用して、日本の伝統的な履歴書フォーマッ�
 
 ```
 jtr-generator/
-├── src/                    # 共通実装（LLM非依存）
-│   ├── models/             # データモデル定義
-│   ├── generators/         # PDF生成ロジック
-│   ├── validators/         # 入力データ検証
-│   └── formatters/         # 日付・テキスト整形
-├── data/layouts/           # レイアウト定義（PDF罫線座標データ）
-├── schemas/                # JSON Schema定義
-├── examples/               # サンプルデータ
-├── platforms/              # プラットフォーム別実装
-│   ├── claude/             # Claude Skills用
-│   └── ...
+├── skill/                  # 配布パッケージのルート相当
+│   ├── SKILL.md            # LLM向け指示
+│   ├── README.md           # エンドユーザー向け
+│   ├── main.py             # エントリーポイント
+│   ├── config.yaml         # 設定テンプレート
+│   ├── jtr/                # 共通実装（LLM非依存）
+│   ├── data/               # レイアウトデータ（A4）
+│   ├── schemas/            # JSON Schema
+│   ├── examples/           # サンプルデータ
+│   └── fonts/              # デフォルトフォント
+├── tools/                  # レイアウト検証・抽出ツール
 ├── tests/                  # テストコード
 └── docs/                   # 詳細ドキュメント
 ```
@@ -202,8 +202,8 @@ jtr-generator/
 ### マルチプラットフォーム対応
 
 **設計方針:**
-- **src/**: LLM非依存の共通実装（再利用可能）
-- **platforms/**: 各LLMプラットフォーム固有の統合コード
+- **skill/jtr/**: LLM非依存の共通実装（再利用可能）
+- **skill/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
 
 **詳細**: [docs/specifications.md - アーキテクチャ](docs/specifications.md)を参照してください。
 
@@ -224,9 +224,9 @@ def generate_resume_pdf(
     履歴書PDFを生成（LLM非依存）
 
     Args:
-        data: schemas/resume_schema.jsonに準拠した履歴書データ
+        data: skill/schemas/resume_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
         options: 生成オプション（LLM環境から注入される）
-            - paper_size: 'A4' or 'B5'
+            - paper_size: 'A4'（B5は将来対応予定）
             - date_format: 'seireki' or 'wareki'
             - fonts: フォント設定（LLM環境依存）
                 - main: 本文フォントの絶対パス
@@ -286,7 +286,8 @@ def load_resume_data(file_path: Path) -> Dict[str, Any]:
 
 **重要な変更（2025年12月）:**
 - `platforms/` ディレクトリを廃止し、Agent Skillsとして単一のアーティファクトビルドに統一
-- ルート直下に `SKILL.md`, `main.py`, `config.yaml`, `README.md` を配置
+- リポジトリでは `skill/` 配下に `SKILL.md`, `main.py`, `config.yaml`, `README.md` を配置
+- ビルド成果物ではそれらがルート直下に展開される
 - ビルド成果物: `build/jtr-generator.zip`（GitHub Releasesで配布）
 
 ### SKILL.md仕様
@@ -328,11 +329,10 @@ uv run poe build-skill
 ### プラットフォーム廃止の経緯
 
 **以前の構成:**
-- `platforms/claude/` - Claude Agent Skills固有の実装
-- プラットフォーム別に分離された構成
+- `platforms/claude/` など、プラットフォーム別に分離された構成
 
 **現在の構成:**
-- ルート直下に統一配置
+- `skill/` 配下に統一配置（ビルド時にルート直下へ展開）
 - Agent Skillsとして単一のビルドプロセス
 - Codex（MCP経由）とClaude.ai（zipアップロード）の両方で動作確認済み
 
