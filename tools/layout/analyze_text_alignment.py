@@ -15,13 +15,13 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--layout",
         type=Path,
-        default=Path("data/layouts/resume_layout_a4_v2.json"),
+        default=Path("data/a4/resume_layout.json"),
         help="Layout JSON with absolute positions.",
     )
     parser.add_argument(
         "--rules",
         type=Path,
-        default=Path("data/layouts/resume_layout_a4_v2_text_alignment.json"),
+        default=Path("data/a4/rules/label_alignment.json"),
         help="Alignment rule JSON.",
     )
     parser.add_argument(
@@ -33,8 +33,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--critical-cells",
         type=Path,
-        default=Path("data/critical_cells.json"),
-        help="Critical cells JSON for special bounds.",
+        default=Path("data/a4/definitions/manual_bounds.json"),
+        help="Manual bounds JSON for special cells.",
     )
     parser.add_argument(
         "--tolerance",
@@ -45,7 +45,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("outputs/debug/text_alignment_report.json"),
+        default=Path("outputs/validation/label_alignment_report.json"),
         help="Output report JSON path.",
     )
     return parser.parse_args()

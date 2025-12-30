@@ -211,6 +211,9 @@ __marimo__/
 outputs/*.pdf
 outputs/*.jpg
 
+# Validation reports (generated during layout verification)
+outputs/validation/
+
 # Debug images (generated during visual testing)
 outputs/debug/
 

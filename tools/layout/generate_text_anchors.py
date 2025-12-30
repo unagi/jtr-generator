@@ -12,13 +12,13 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--layout",
         type=Path,
-        default=Path("data/layouts/resume_layout_a4_v2.json"),
+        default=Path("data/a4/resume_layout.json"),
         help="Input layout JSON with absolute positions.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("data/layouts/resume_layout_a4_v2_text_anchors.json"),
+        default=Path("tests/fixtures/a4_text_anchors.json"),
         help="Output anchor JSON path.",
     )
     parser.add_argument(

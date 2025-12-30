@@ -15,7 +15,7 @@ TOLERANCE_PT = 1.0
 @pytest.fixture
 def anchor_data():
     anchor_path = (
-        Path(__file__).parent.parent.parent / "data/layouts/resume_layout_a4_v2_text_anchors.json"
+        Path(__file__).parent.parent / "fixtures/a4_text_anchors.json"
     )
     with open(anchor_path, encoding="utf-8") as f:
         return json.load(f)

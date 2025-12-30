@@ -88,7 +88,7 @@ def generate_resume_pdf(
     """
     # レイアウトデータのJSONファイルパス（v4フォーマット）
     # TODO: options経由で指定できるようにする（A4/B5切り替え対応）
-    layout_json_path = Path(__file__).parent.parent.parent / "data/layouts/resume_layout_a4_v2.json"
+    layout_json_path = Path(__file__).parent.parent.parent / "data/a4/resume_layout.json"
 
     with open(layout_json_path, encoding="utf-8") as f:
         layout_data = json.load(f)
