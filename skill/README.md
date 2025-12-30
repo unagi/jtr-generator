@@ -1,10 +1,17 @@
-# jtr-generator - Claude Agent Skill
+# jtr-generator - Agent Skill
 
-JIS規格準拠の日本の履歴書をPDF形式で生成するClaude Agent Skillです。
+JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです。
+
+[![CI](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/ci.yml)
+[![Release](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/release.yml/badge.svg)](https://github.com/YOUR_USERNAME/jtr-generator/actions/workflows/release.yml)
 
 ## 概要
 
 このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書PDFを生成できます。
+
+**対応プラットフォーム:**
+- Claude.ai（カスタムスキルとしてアップロード）
+- Codex（MCP経由）
 
 ## 使い方
 
@@ -175,13 +182,32 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 **対処法**: デフォルトフォント（BIZ UDMincho）が正しく配置されているか確認してください。
 
-### デバッグモード
+### ダウンロード
 
-ローカル環境でテストする場合:
+**GitHub Releases（推奨）:**
+
+1. [GitHub Releases](https://github.com/YOUR_USERNAME/jtr-generator/releases)から最新版をダウンロード
+2. `jtr-generator-vX.X.X.zip` をダウンロード
+3. Claude.aiにアップロード、またはCodex環境に配置
+
+**最新版（開発版）:**
+
+[GitHub Actions Artifacts](https://github.com/YOUR_USERNAME/jtr-generator/actions)から `jtr-generator-latest.zip` をダウンロード
+
+### ローカル開発・デバッグ
+
+開発者向けのローカルテスト:
 
 ```bash
 cd /path/to/jtr-generator
-python platforms/claude/main.py examples/sample_resume.yaml --date-format wareki
+python main.py examples/sample_resume.yaml --date-format wareki
+```
+
+ビルド:
+
+```bash
+uv run poe build-skill
+# 成果物: build/jtr-generator.zip
 ```
 
 ## 制約事項

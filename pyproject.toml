@@ -5,7 +5,7 @@ description = "日本の履歴書（JIS規格準拠）をPDF形式で生成す�
 authors = [
     { name = "jtr-generator contributors" }
 ]
-readme = "README.md"
+readme = "skill/README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
@@ -19,13 +19,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src", "data"]
+packages = ["skill"]
 
 # Ruff設定
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["src", "tests"]
+src = ["skill", "tests", "tools"]
 
 [tool.ruff.lint]
 select = [
@@ -42,7 +42,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["skill", "jtr"]
 
 # mypy設定
 [tool.mypy]
@@ -77,8 +77,8 @@ spec_test_format = "{result} {docstring_summary}"
 
 # pytest-cov設定
 [tool.coverage.run]
-source = ["src", "tools"]
-omit = ["tests/*", "platforms/*"]
+source = ["skill", "tools"]
+omit = ["tests/*"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -93,65 +93,21 @@ exclude_lines = [
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
 test = "pytest tests/ --spec"
-test-cov = "pytest tests/ --cov=src --cov=tools --cov-report=term-missing --cov-report=xml --spec"
+test-cov = "pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec"
 test-watch = "pytest tests/ -f --spec"
-lint = "ruff check src/ tests/"
-lint-fix = "ruff check --fix src/ tests/"
-format = "ruff format src/ tests/"
-format-check = "ruff format --check src/ tests/"
-typecheck = "mypy src/"
+lint = "ruff check skill/ tests/ tools/"
+lint-fix = "ruff check --fix skill/ tests/ tools/"
+format = "ruff format skill/ tests/ tools/"
+format-check = "ruff format --check skill/ tests/ tools/"
+typecheck = "mypy skill/"
 check-all = ["lint", "format-check", "typecheck", "test-cov"]
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
-# Claude Agent Skillsパッケージビルド
-[tool.poe.tasks.build-claude-skill]
-help = "Build Claude Agent Skills package (claude.zip)"
+# Agent Skillsパッケージビルド
+[tool.poe.tasks.build-skill]
+help = "Build Agent Skills package (jtr-generator.zip)"
 sequence = [
-    # 1. 一時ディレクトリのクリーンアップと作成
-    { cmd = "rm -rf build/claude_skill_package build/claude.zip" },
-    { cmd = "mkdir -p build/claude_skill_package" },
-
-    # 2. platforms/claude/のコピー（main.py以外）
-    { cmd = "cp platforms/claude/SKILL.md build/claude_skill_package/" },
-    { cmd = "cp platforms/claude/config.yaml build/claude_skill_package/" },
-    { cmd = "cp platforms/claude/README.md build/claude_skill_package/" },
-
-    # 3. src/のコピー（ディレクトリ構造を維持）
-    { cmd = "mkdir -p build/claude_skill_package/src/generators" },
-    { cmd = "mkdir -p build/claude_skill_package/src/validators" },
-    { cmd = "mkdir -p build/claude_skill_package/src/formatters" },
-    { cmd = "mkdir -p build/claude_skill_package/src/layout" },
-    { cmd = "cp src/__init__.py build/claude_skill_package/src/" },
-    { cmd = "cp src/generators/__init__.py build/claude_skill_package/src/generators/" },
-    { cmd = "cp src/generators/pdf.py build/claude_skill_package/src/generators/" },
-    { cmd = "cp src/validators/__init__.py build/claude_skill_package/src/validators/" },
-    { cmd = "cp src/validators/data.py build/claude_skill_package/src/validators/" },
-    { cmd = "cp src/formatters/__init__.py build/claude_skill_package/src/formatters/" },
-    { cmd = "cp src/formatters/wareki.py build/claude_skill_package/src/formatters/" },
-    { cmd = "cp src/layout/__init__.py build/claude_skill_package/src/layout/" },
-    { cmd = "cp src/layout/anchors.py build/claude_skill_package/src/layout/" },
-    { cmd = "cp src/layout/metrics.py build/claude_skill_package/src/layout/" },
-
-    # 4. data/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/data/layouts" },
-    { cmd = "cp data/layouts/resume_layout_a4_v2.json build/claude_skill_package/data/layouts/" },
-
-    # 5. schemas/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/schemas" },
-    { cmd = "cp schemas/resume_schema.json build/claude_skill_package/schemas/" },
-
-    # 6. fonts/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/fonts/BIZ_UDMincho" },
-    { cmd = "cp fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf build/claude_skill_package/fonts/BIZ_UDMincho/" },
-    { cmd = "cp fonts/BIZ_UDMincho/OFL.txt build/claude_skill_package/fonts/BIZ_UDMincho/" },
-
-    # 7. examples/のコピー
-    { cmd = "mkdir -p build/claude_skill_package/examples" },
-    { cmd = "cp examples/sample_resume.yaml build/claude_skill_package/examples/" },
-    { cmd = "cp examples/sample_resume.json build/claude_skill_package/examples/" },
-
-    # 8. Pythonファイルのパス修正とzip作成
-    { cmd = "python tools/build_skill_package.py" },
+    { cmd = "python tools/build_skill.py" },
 ]
 
 [dependency-groups]

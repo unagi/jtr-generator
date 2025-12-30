@@ -9,9 +9,7 @@ import jsonschema
 import yaml
 
 # 共通実装をインポート
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-from generators.pdf import generate_resume_pdf  # noqa: E402
-from validators.data import load_resume_data  # noqa: E402
+from jtr import generate_resume_pdf, load_resume_data
 
 
 def load_claude_config() -> dict[str, Any]:
@@ -32,7 +30,10 @@ def load_claude_config() -> dict[str, Any]:
 
     try:
         with open(config_path, encoding="utf-8") as f:
-            return yaml.safe_load(f)  # type: ignore[no-any-return]
+            loaded = yaml.safe_load(f)
+            if not isinstance(loaded, dict):
+                return {"options": {}, "fonts": {}}
+            return loaded
     except yaml.YAMLError as e:
         raise ValueError(f"config.yamlの読み込みに失敗しました: {e}") from e
 
@@ -50,7 +51,7 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
     Raises:
         FileNotFoundError: カスタムフォントファイルが存在しない場合
     """
-    base_dir = Path(__file__).parent.parent.parent  # jtr-generator/
+    base_dir = Path(__file__).parent  # skill/
 
     # カスタムフォントが指定されている場合
     if "fonts" in config and config["fonts"]:
@@ -97,34 +98,34 @@ def _format_validation_error_ja(error: jsonschema.ValidationError) -> str:
     field_path = ".".join(str(p) for p in error.path) if error.path else "（ルート）"
 
     # よくあるエラーパターンを日本語化
-    if error.validator == "required":
+    if error.validator == "required":  # type: ignore[comparison-overlap]
         missing_field = error.message.split("'")[1]
         return (
             f"必須フィールド '{missing_field}' が不足しています。\n"
             f"対象: {field_path}\n"
             f"examples/sample_resume.yamlを参考にデータを追加してください。"
         )
-    elif error.validator == "pattern":
-        expected_pattern = error.schema.get("pattern", "")
-        examples = error.schema.get("examples", [])
+    elif error.validator == "pattern":  # type: ignore[comparison-overlap]
+        expected_pattern = error.schema.get("pattern", "")  # type: ignore[union-attr]
+        examples = error.schema.get("examples", [])  # type: ignore[union-attr]
         example_str = f"\n例: {examples[0]}" if examples else ""
         return (
             f"フィールド '{field_path}' の形式が不正です。\n"
             f"期待される形式: {expected_pattern}{example_str}"
         )
-    elif error.validator == "enum":
-        allowed_values = error.schema.get("enum", [])
+    elif error.validator == "enum":  # type: ignore[comparison-overlap]
+        allowed_values = error.schema.get("enum", [])  # type: ignore[union-attr]
         return (
             f"フィールド '{field_path}' の値が不正です。\n"
             f"許可される値: {', '.join(str(v) for v in allowed_values)}"
         )
-    elif error.validator == "format" and error.schema.get("format") == "date":
+    elif error.validator == "format" and error.schema.get("format") == "date":  # type: ignore[comparison-overlap, union-attr]
         return (
             f"フィールド '{field_path}' の日付形式が不正です。\n"
             f"期待される形式: YYYY-MM-DD（例: 1990-04-01）"
         )
-    elif error.validator == "minItems":
-        min_items = error.schema.get("minItems", 0)
+    elif error.validator == "minItems":  # type: ignore[comparison-overlap]
+        min_items = error.schema.get("minItems", 0)  # type: ignore[union-attr]
         return (
             f"フィールド '{field_path}' は最低{min_items}件の要素が必要です。\n"
             f"現在の要素数: {len(error.instance) if isinstance(error.instance, list) else 0}"
@@ -152,9 +153,7 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
         ValueError: データ形式エラー、パースエラー、バリデーションエラー
     """
     # ファイルパスの場合
-    if isinstance(input_data, Path) or (
-        isinstance(input_data, str) and Path(input_data).exists()
-    ):
+    if isinstance(input_data, Path) or (isinstance(input_data, str) and Path(input_data).exists()):
         file_path = Path(input_data)
         try:
             return load_resume_data(file_path)
@@ -176,7 +175,7 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
             raise ValueError(f"YAML/JSONのパースに失敗しました: {e}") from e
 
     # スキーマバリデーション
-    schema_path = Path(__file__).parent.parent.parent / "schemas" / "resume_schema.json"
+    schema_path = Path(__file__).resolve().parent / "schemas" / "resume_schema.json"
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
@@ -186,7 +185,8 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
         ja_message = _format_validation_error_ja(e)
         raise ValueError(ja_message) from e
 
-    return data  # type: ignore[return-value]
+    # バリデーション済みなのでdict[str, Any]として返す
+    return data  # type: ignore[no-any-return]
 
 
 def main(input_data: str | Path, session_options: dict[str, Any] | None = None) -> Path:
@@ -220,9 +220,11 @@ def main(input_data: str | Path, session_options: dict[str, Any] | None = None) 
     # 4. データ読み込み・バリデーション
     data = validate_and_load_data(input_data)
 
-    # 5. PDF生成
+    # 5. PDF生成（フォント設定を含める）
+    options = dict(config.get("options", {}))
+    options["fonts"] = config.get("fonts", {})
     output_path = Path("/tmp/rirekisho.pdf")
-    generate_resume_pdf(data, config["options"], output_path)
+    generate_resume_pdf(data, options, output_path)
 
     return output_path
 
@@ -236,9 +238,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--date-format", choices=["seireki", "wareki"], default="seireki", help="日付形式"
     )
-    parser.add_argument(
-        "--paper-size", choices=["A4", "B5"], default="A4", help="用紙サイズ"
-    )
+    parser.add_argument("--paper-size", choices=["A4", "B5"], default="A4", help="用紙サイズ")
     args = parser.parse_args()
 
     session_options = {"date_format": args.date_format, "paper_size": args.paper_size}

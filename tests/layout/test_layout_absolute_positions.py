@@ -8,7 +8,7 @@ TOLERANCE_PT = 1.0
 
 @pytest.fixture
 def layout_data():
-    layout_path = Path(__file__).parent.parent.parent / "data/layouts/resume_layout_a4_v2.json"
+    layout_path = Path(__file__).parent.parent.parent / "skill/data/a4/resume_layout.json"
     with open(layout_path, encoding="utf-8") as f:
         return json.load(f)
 

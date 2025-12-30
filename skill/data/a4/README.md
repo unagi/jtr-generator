@@ -1,8 +1,20 @@
-# レイアウトデータ仕様
+# A4サイズレイアウトデータ
 
-## resume_layout_a4_v2.json
+## ディレクトリ構成
 
-JIS規格履歴書（A4 x 2ページ）のレイアウトデータ（v3フォーマット）。
+```
+data/a4/
+├── resume_layout.json              # 最終レイアウトデータ（配布必須）
+├── definitions/
+│   └── manual_bounds.json          # 手動測定した境界座標
+└── rules/
+    ├── label_alignment.json        # 固定ラベルの配置ルール
+    └── field_alignment.json        # データフィールドの配置ルール
+```
+
+## resume_layout.json
+
+JIS規格履歴書（A4 x 2ページ）の最終レイアウトデータ（v4フォーマット）。
 
 ### データ構造
 
@@ -102,7 +114,7 @@ uv run python tools/extract_all_missing_texts.py
 uv run python tools/merge_text_to_layout.py
 ```
 
-出力: `data/layouts/resume_layout_a4_v2.json`（最終版）
+出力: `data/a4/resume_layout.json`（最終版）
 
 ### 視覚品質（Phase 4e完了時）
 
@@ -155,9 +167,51 @@ uv run python tools/merge_text_to_layout.py
 
 これ以上の改善は参照PDFと同一フォントを使用しない限り困難。
 
-### 検証履歴
+### Phase 4: レイアウト検証
 
-#### Phase 4: 視覚品質調整（2025-12-29）
+#### 検証データフロー
+
+```
+[入力]
+├── resume_layout.json              ← 検証対象の最終レイアウトデータ
+├── definitions/manual_bounds.json  ← 手動測定した境界座標（写真エリア、満〇歳セル）
+└── rules/*.json                    ← 配置ルール定義（align/valign/margin）
+
+[検証ツール]
+├── tools/layout/analyze_text_alignment.py        ← 固定ラベルの配置検証
+└── tools/layout/analyze_data_field_alignment.py  ← データフィールドの配置検証
+
+[出力]
+└── outputs/validation/
+    ├── label_alignment_report.json    ← 固定ラベルの検証レポート
+    └── field_alignment_report.json    ← データフィールドの検証レポート
+```
+
+#### 検証コマンド
+
+```bash
+# 固定ラベルの配置検証
+uv run python tools/layout/analyze_text_alignment.py
+
+# データフィールドの配置検証
+uv run python tools/layout/analyze_data_field_alignment.py
+```
+
+#### 検証ファイルの役割
+
+**definitions/manual_bounds.json:**
+- 写真エリア・満〇歳セルなど、罫線から計算できない特殊セルの境界座標
+- ルールベースの計算では求められない実測値を定義
+
+**rules/label_alignment.json:**
+- 固定ラベルの配置ルール（align/valign、margin、bounds指定）
+- フォントメトリクスと組み合わせて期待座標を計算
+
+**rules/field_alignment.json:**
+- データフィールドの配置ルール（align/valign、margin）
+- page1_fields、multiline_blocks、dynamic_rowsの定義
+
+#### 検証履歴（2025-12-29）
 
 - **Phase 4a**: セル単位比較ツール実装
 - **Phase 4b**: 写真エリア・満〇歳セルのテキスト抽出
@@ -202,7 +256,7 @@ uv run pytest tests/generators/test_pdf_visual.py::test_save_diff_image_for_debu
 
 ### スキーマ定義
 
-JSONスキーマ: `schemas/layout_schema.json`（v3フォーマット）
+JSONスキーマ: `schemas/layout_schema.json`（v4フォーマット）
 
 バリデーション:
 ```bash
@@ -213,7 +267,7 @@ import jsonschema
 with open('schemas/layout_schema.json') as f:
     schema = json.load(f)
 
-with open('data/layouts/resume_layout_a4_v2.json') as f:
+with open('data/a4/resume_layout.json') as f:
     layout = json.load(f)
 
 jsonschema.validate(layout, schema)

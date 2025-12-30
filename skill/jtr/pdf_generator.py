@@ -15,7 +15,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-from src.formatters.wareki import convert_to_wareki
+from .japanese_era import convert_to_wareki
 
 
 def _find_default_font() -> Path:
@@ -28,7 +28,7 @@ def _find_default_font() -> Path:
     Raises:
         FileNotFoundError: フォントファイルが存在しない場合
     """
-    base_dir = Path(__file__).parent.parent.parent
+    base_dir = Path(__file__).parent.parent
     font_dir = base_dir / "fonts/BIZ_UDMincho"
 
     # Phase 1の選定結果に基づき、.ttfファイルを検索
@@ -88,7 +88,7 @@ def generate_resume_pdf(
     """
     # レイアウトデータのJSONファイルパス（v4フォーマット）
     # TODO: options経由で指定できるようにする（A4/B5切り替え対応）
-    layout_json_path = Path(__file__).parent.parent.parent / "data/a4/resume_layout.json"
+    layout_json_path = Path(__file__).parent.parent / "data/a4/resume_layout.json"
 
     with open(layout_json_path, encoding="utf-8") as f:
         layout_data = json.load(f)
