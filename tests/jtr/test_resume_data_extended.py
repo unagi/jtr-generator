@@ -1,4 +1,4 @@
-"""skill.scripts.jtr.resume_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data）"""
+"""skill.scripts.jtr.resume_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data, load_validated_data）"""
 
 import json
 from pathlib import Path
@@ -6,7 +6,11 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from skill.scripts.jtr.resume_data import format_validation_error_ja, validate_and_load_data
+from skill.scripts.jtr.resume_data import (
+    format_validation_error_ja,
+    load_validated_data,
+    validate_and_load_data,
+)
 
 
 class TestFormatValidationErrorJa:
@@ -221,3 +225,93 @@ class TestValidateAndLoadData:
 
         with pytest.raises(ValueError, match="データの読み込みに失敗しました"):
             validate_and_load_data(yaml_file)
+
+    def test_load_json_string_fallback_after_yaml_parse_failure(
+        self, sample_data_dict: dict
+    ) -> None:
+        """YAML解析失敗後にJSON文字列としてfallbackする"""
+        # YAMLとして不正だがJSONとして有効な文字列
+        json_str = json.dumps(sample_data_dict, ensure_ascii=False)
+
+        result = validate_and_load_data(json_str)
+
+        assert result["personal_info"]["name"] == "山田太郎"
+
+    def test_load_from_json_file_directly(self, tmp_path: Path, sample_data_dict: dict) -> None:
+        """JSONファイルを直接読み込む（line 131-132をカバー）"""
+        json_file = tmp_path / "resume.json"
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(sample_data_dict, f, ensure_ascii=False)
+
+        result = validate_and_load_data(json_file)
+
+        assert result["personal_info"]["name"] == "山田太郎"
+        assert len(result["education"]) == 1
+
+
+class TestLoadValidatedData:
+    """load_validated_data関数のテスト（汎用スキーマ対応版）"""
+
+    @pytest.fixture
+    def sample_data_dict(self) -> dict:
+        """サンプル履歴書データ"""
+        return {
+            "personal_info": {
+                "name": "山田太郎",
+                "name_kana": "やまだたろう",
+                "birthdate": "1990-04-01",
+                "gender": "男性",
+                "postal_code": "150-0041",
+                "address": "東京都渋谷区神南1-1-1",
+                "phone": "03-1234-5678",
+                "email": "yamada@example.com",
+            },
+            "education": [
+                {
+                    "date": "2009-04",
+                    "school": "○○大学",
+                    "type": "入学",
+                }
+            ],
+            "work_history": [],
+        }
+
+    def test_load_yaml_string_with_schema(self, sample_data_dict: dict) -> None:
+        """YAML文字列を指定スキーマで読み込む（line 107-111カバー）"""
+        import yaml
+
+        yaml_str = yaml.dump(sample_data_dict, allow_unicode=True)
+
+        result = load_validated_data(yaml_str, "resume_schema.json")
+
+        assert result["personal_info"]["name"] == "山田太郎"
+
+    def test_load_json_string_with_schema(self, sample_data_dict: dict) -> None:
+        """JSON文字列を指定スキーマで読み込む（line 114-117カバー）"""
+        json_str = json.dumps(sample_data_dict, ensure_ascii=False)
+
+        result = load_validated_data(json_str, "resume_schema.json")
+
+        assert result["personal_info"]["name"] == "山田太郎"
+
+    def test_load_json_file_with_schema(self, tmp_path: Path, sample_data_dict: dict) -> None:
+        """JSONファイルを指定スキーマで読み込む（line 131-132カバー）"""
+        json_file = tmp_path / "resume.json"
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(sample_data_dict, f, ensure_ascii=False)
+
+        result = load_validated_data(json_file, "resume_schema.json")
+
+        assert result["personal_info"]["name"] == "山田太郎"
+
+    def test_load_yaml_file_with_schema(self, tmp_path: Path, sample_data_dict: dict) -> None:
+        """YAMLファイルを指定スキーマで読み込む（line 134-135カバー）"""
+        import yaml
+
+        yaml_file = tmp_path / "resume.yaml"
+        with open(yaml_file, "w", encoding="utf-8") as f:
+            yaml.dump(sample_data_dict, f, allow_unicode=True)
+
+        result = load_validated_data(yaml_file, "resume_schema.json")
+
+        assert result["personal_info"]["name"] == "山田太郎"

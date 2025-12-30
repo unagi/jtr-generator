@@ -104,15 +104,30 @@ def load_validated_data(
         jsonschema.ValidationError: スキーマバリデーション失敗時
     """
     # 文字列の場合はYAML/JSONとしてパース
-    if isinstance(file_path, str) and not Path(file_path).exists():
-        # YAML/JSON文字列として解釈
+    is_string_data = False
+    if isinstance(file_path, str):
+        # 改行を含む場合は確実に文字列データ
+        if "\n" in file_path:
+            is_string_data = True
+        else:
+            # 改行を含まない場合はファイルパスかもしれないので確認
+            try:
+                if not Path(file_path).exists():
+                    is_string_data = True
+            except OSError:
+                # パスとして不正な場合（長すぎる等）は文字列データとして扱う
+                is_string_data = True
+
+    if is_string_data:
+        # YAML/JSON文字列として解釈（型チェッカーのためにstr型として明示）
+        input_str = str(file_path)
         try:
-            data = yaml.safe_load(file_path)
+            data = yaml.safe_load(input_str)
             data = _normalize_dates(data)
         except yaml.YAMLError:
             # YAMLでパース失敗したらJSONとして試行
             try:
-                data = json.loads(file_path)
+                data = json.loads(input_str)
             except json.JSONDecodeError as e:
                 raise ValueError(f"Failed to parse data string: {e}") from e
     else:

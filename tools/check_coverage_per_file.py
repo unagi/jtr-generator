@@ -9,30 +9,34 @@ from __future__ import annotations
 
 import sys
 import xml.etree.ElementTree as ET
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 def check_file_coverage(
     coverage_xml_path: Path,
     min_coverage: float = 80.0,
-    exclude_files: list[str] | None = None,
-) -> tuple[bool, list[tuple[str, float]]]:
+    exclude_filenames: set[str] | None = None,
+) -> list[tuple[str, float]]:
     """
     coverage.xmlを解析して個別ファイルのカバレッジをチェック
 
     Args:
         coverage_xml_path: coverage.xmlファイルのパス
         min_coverage: 最低カバレッジ率（デフォルト: 80.0%）
-        exclude_files: 除外するファイルパターンのリスト
+        exclude_filenames: 除外するファイル名のセット（完全一致）
 
     Returns:
-        (全ファイルが基準を満たしているか, 基準未達のファイルリスト)
+        基準未達のファイルリスト [(filepath, coverage_percent), ...]
+
+    Raises:
+        FileNotFoundError: coverage.xmlが存在しない場合
+        ET.ParseError: XMLパースに失敗した場合
+        ValueError: 無効なXML構造の場合
     """
     if not coverage_xml_path.exists():
-        print(f"エラー: {coverage_xml_path} が見つかりません", file=sys.stderr)
-        return False, []
+        raise FileNotFoundError(f"{coverage_xml_path} が見つかりません")
 
-    exclude_files = exclude_files or []
+    exclude_filenames = exclude_filenames or set()
     tree = ET.parse(coverage_xml_path)
     root = tree.getroot()
 
@@ -42,19 +46,28 @@ def check_file_coverage(
     for package in root.findall(".//package"):
         for cls in package.findall("classes/class"):
             filename = cls.get("filename", "")
-            line_rate = float(cls.get("line-rate", "0"))
+            line_rate_str = cls.get("line-rate")
+
+            if not line_rate_str:
+                continue
+
+            try:
+                line_rate = float(line_rate_str)
+            except ValueError:
+                continue
+
             coverage_percent = line_rate * 100
 
-            # 除外パターンチェック
-            should_exclude = any(pattern in filename for pattern in exclude_files)
-            if should_exclude:
+            # 除外判定（ファイル名の完全一致）
+            file_basename = PurePosixPath(filename).name
+            if file_basename in exclude_filenames:
                 continue
 
             # 最低基準未達をリストに追加
             if coverage_percent < min_coverage:
                 failing_files.append((filename, coverage_percent))
 
-    return len(failing_files) == 0, failing_files
+    return failing_files
 
 
 def main() -> int:
@@ -62,16 +75,20 @@ def main() -> int:
     coverage_xml = Path("coverage.xml")
     min_coverage = 80.0
 
-    # __init__.pyとチェックスクリプト自身を除外
-    exclude_patterns = ["__init__.py", "check_coverage_per_file.py"]
+    # __init__.pyとチェックスクリプト自身を除外（ファイル名完全一致）
+    exclude_filenames = {"__init__.py", "check_coverage_per_file.py"}
 
-    all_passed, failing_files = check_file_coverage(coverage_xml, min_coverage, exclude_patterns)
+    try:
+        failing_files = check_file_coverage(coverage_xml, min_coverage, exclude_filenames)
+    except (FileNotFoundError, ET.ParseError, ValueError, OSError) as exc:
+        print(f"エラー: {exc}", file=sys.stderr)
+        return 2
 
-    if all_passed:
-        print(f"✅ 全ファイルが最低カバレッジ {min_coverage}% を満たしています")
+    if not failing_files:
+        print(f"OK: 全ファイルが最低カバレッジ {min_coverage}% を満たしています")
         return 0
 
-    print(f"❌ 以下のファイルがカバレッジ {min_coverage}% を下回っています:\n")
+    print(f"NG: 以下のファイルがカバレッジ {min_coverage}% を下回っています:\n")
     for filename, coverage in sorted(failing_files, key=lambda x: x[1]):
         print(f"  {filename}: {coverage:.2f}%")
 
