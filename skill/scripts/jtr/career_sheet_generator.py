@@ -24,19 +24,13 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from .config import resolve_style_colors
 from .fonts import register_font
 from .generation_context import get_generation_context, init_generation_context
 from .layout.career_sheet import load_career_sheet_spacing_rules
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
 
 __all__ = ["generate_career_sheet_pdf"]
-
-_DEFAULT_COLOR_TOKENS = {
-    "body_text": "#050315",
-    "main": "#6761af",
-    "sub": "#cdc69c",
-    "accent": "#e36162",
-}
 
 
 _SPACING_MM_VALUES, _SPACING_PT, _INDENT_MM_VALUES = load_career_sheet_spacing_rules()
@@ -158,14 +152,8 @@ def generate_career_sheet_pdf(
 
 def _resolve_color_palette(options: dict[str, Any]) -> dict[str, colors.Color]:
     """カラー設定を解決（未指定はデフォルト）"""
-    configured = options.get("styles", {}).get("colors", {})
-    palette: dict[str, colors.Color] = {}
-    for key, fallback in _DEFAULT_COLOR_TOKENS.items():
-        value = configured.get(key, fallback)
-        if not isinstance(value, str) or not value:
-            value = fallback
-        palette[key] = colors.HexColor(value)
-    return palette
+    resolved = resolve_style_colors(options.get("styles"))
+    return {key: colors.HexColor(value) for key, value in resolved.items()}
 
 
 def _create_styles(

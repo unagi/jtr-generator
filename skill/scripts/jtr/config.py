@@ -7,6 +7,13 @@ import yaml
 
 from .paths import get_assets_path
 
+DEFAULT_STYLE_COLORS = {
+    "body_text": "#050315",
+    "main": "#6761af",
+    "sub": "#cdc69c",
+    "accent": "#e36162",
+}
+
 
 def load_config(config_path: Path | None = None) -> dict[str, Any]:
     """
@@ -91,3 +98,18 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
         config["fonts"]["career_sheet_main"] = config["fonts"]["main"]
 
     return config
+
+
+def resolve_style_colors(styles: dict[str, Any] | None) -> dict[str, str]:
+    """スタイルカラー設定を解決（未指定はデフォルト）"""
+    configured = {}
+    if styles and isinstance(styles, dict):
+        colors = styles.get("colors")
+        if isinstance(colors, dict):
+            configured = colors
+
+    resolved: dict[str, str] = {}
+    for key, fallback in DEFAULT_STYLE_COLORS.items():
+        value = configured.get(key, fallback)
+        resolved[key] = value if isinstance(value, str) and value else fallback
+    return resolved
