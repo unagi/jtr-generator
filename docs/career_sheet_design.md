@@ -51,22 +51,67 @@ skill/
    - 個人情報（氏名、生年月日、電話、メール）
    - 免許・資格
    - これらは履歴書データから自動生成し、Markdownには含めない
-3. **PDF生成**: LLMがMarkdownからリッチテキストに変換してPDF化
-4. **デザイン**: Web調査とベストプラクティスに基づく標準的なレイアウト
+3. **レイアウト分離**:
+   - 構造データ領域（プロフィール/免許・資格）とMarkdown領域を明確に分離
+   - Markdownのトップレベル見出しは **H2（##）** として扱う（`#`はH2に正規化）
+4. **PDF生成**: LLMがMarkdownからリッチテキストに変換してPDF化
+5. **デザイン**: Web調査とベストプラクティスに基づく標準的なレイアウト
 
-### 対応するMarkdown構文
+### デザインルール（現行）
 
-以下の基本構文を優先的にサポート：
+- **配色**: モノクロ + 追加3色（本文/メイン/サブ/アクセント）
+  - 設定は `skill/assets/config.yaml` の `styles.colors` で管理
+  - サブカラーは背景・罫線などの加飾専用（文字色には使用しない）
+- **整列**: 左寄せを基本、日付のみ右寄せ
+- **余白**: 2mm基準のトークンで統一
+- **箇条書き**: ぶら下げインデントで視認性を確保
 
-- **見出し**: `#` (H1), `##` (H2), `###` (H3)
-- **箇条書き**: `- item`
-- **太字**: `**bold**`
-- **段落**: 空行で区切り
+### DOCX参照解析（デザイン抽出）
 
-**将来拡張候補**:
-- 表（テーブル）
-- リンク
-- コードブロック
+- 参照DOCX（`tests/fixtures/resume_sample.docx`）を解析し、ReportLab用の加飾定義の素案を抽出
+- 解析スクリプト: `tools/analyze_docx_styles.py`
+- 出力: `skill/assets/data/career_sheet/docx_style_report.json`
+
+### HTML媒介アプローチの比較（職務経歴書）
+
+#### 方針
+- **OS非依存のPDF生成ライブラリ**を前提に選定する（Agent Skillsの制約）。
+
+#### 候補A: ReportLab Flowables（現行）
+- **長所**: レイアウト制御が細かい。既存コード資産と整合。
+- **短所**: HTML/CSS的な表現が難しく、Markdown要素の装飾ロジックが増えやすい。
+
+#### 候補B: fpdf2 の HTML媒介
+- **概要**: `FPDF.write_html()` でHTMLをPDFに変換する方式。
+- **対応範囲（v2系ドキュメント前提）**:
+  - HTMLの基本要素（見出し/段落/リスト/表/リンク/太字など）に対応。
+  - HTMLパーサはPython標準の `html.parser.HTMLParser` を使用。
+  - CSSは**非サポート**（限定的な属性のみ、Tailwindのclass適用は不可）。
+- Markdownは Mistune でHTMLに変換可能。
+- **長所**: Markdown → HTML → PDFの流れが整理しやすい。
+- **短所**: CSSが使えないため、装飾はHTML要素と限定属性に集約する必要がある。
+
+#### 候補C: OSネイティブ依存のHTML→PDFエンジン
+- **扱い**: Agent Skillsの制約により**不採用**。
+
+#### 判断基準
+- OS非依存で動作すること
+- Markdown要素に対する**論理的な装飾**が可能か
+- 余白/加飾（罫線・背景）の制御性
+- 既存の履歴書（ReportLab）との共存性
+
+### 対応するMarkdown構文（GFM）
+
+Mistune v3 + GFM相当プラグインで解析し、ReportLabへ変換する。
+
+- **見出し**: `##` (H2) をトップレベルとして扱う（`#`はH2に正規化）
+- **箇条書き**: `- item` / タスク（`- [x]`）
+- **太字/斜体**: `**bold**` / `*italic*`
+- **取り消し線**: `~~strike~~`
+- **リンク**: `https://example.com` / `[text](url)`
+- **水平線**: `---`
+- **コード**: インライン `` `code` `` / ブロック ````` ``` `````
+- **テーブル**: GFMテーブル構文
 
 ---
 
@@ -316,42 +361,47 @@ metadata:
 
 ```python
 from typing import Any
-from reportlab.platypus import Paragraph, Spacer
+from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
 
-def markdown_to_richtext(
+def markdown_to_flowables(
     markdown: str,
-    styles: dict[str, ParagraphStyle]
+    styles: dict[str, ParagraphStyle],
+    decorations: dict[str, dict[str, Any]] | None = None,
 ) -> list[Any]:
     """
     Markdownテキストをreportlab Flowablesに変換
 
-    対応するMarkdown構文:
-    - 見出し: # H1, ## H2, ### H3
-    - 箇条書き: - item
-    - 太字: **bold**
+    対応するMarkdown構文（GFMサブセット）:
+    - 見出し: ## (H2), ### (H3), #### (H4) ※ # はH2扱い
+    - 箇条書き/タスク: - item / - [x] item
+    - 太字/斜体/取り消し線: **bold** / *italic* / ~~strike~~
     - 段落: 空行で区切り
+    - 水平線: ---
+    - コード: `code` / ```code```
+    - テーブル: GFMテーブル
 
     Args:
         markdown: Markdown形式のテキスト
         styles: ParagraphStyleの辞書
+        decorations: 罫線やテーブルの加飾指定
 
     Returns:
         reportlab Flowablesのリスト
 
     Raises:
-        ValueError: 不正なMarkdown構文の場合
+        KeyError: 必要なスタイルが存在しない場合
     """
     pass  # 実装は次PRで
 ```
 
 **テストケース:**
-- 見出し（H1/H2/H3）の変換
+- 見出し（H2/H3/H4）の変換
 - 箇条書きの変換
 - 太字の変換
 - 段落の区切り
-- 異常系（不正な構文）
+- 水平線・テーブル・タスクの変換
+- 異常系（必須スタイル不足）
 
 ### 2. 職務経歴書PDF生成 (`scripts/jtr/career_sheet_generator.py`)
 

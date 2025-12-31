@@ -139,8 +139,16 @@ options:
   date_format: seireki  # or wareki
   paper_size: A4        # B5は将来実装予定
 
+styles:
+  colors:
+    body_text: "#050315"
+    main: "#6761af"
+    sub: "#cdc69c"
+    accent: "#e36162"
+
 fonts:
   main: fonts/custom/your-font.ttf  # カスタムフォント
+  career_sheet_main: fonts/custom/your-gothic.ttf  # 職務経歴書用フォント
 ```
 
 ### カスタムフォントの使用

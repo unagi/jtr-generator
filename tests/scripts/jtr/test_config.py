@@ -17,7 +17,18 @@ class TestLoadConfig:
         config_file = tmp_path / "config.yaml"
         config_data = {
             "options": {"date_format": "wareki", "paper_size": "B5"},
-            "fonts": {"main": "fonts/custom.ttf"},
+            "fonts": {
+                "main": "fonts/custom.ttf",
+                "career_sheet_main": "fonts/gothic.ttf",
+            },
+            "styles": {
+                "colors": {
+                    "body_text": "#050315",
+                    "main": "#6761af",
+                    "sub": "#cdc69c",
+                    "accent": "#e36162",
+                }
+            },
         }
         with open(config_file, "w", encoding="utf-8") as f:
             yaml.dump(config_data, f)
@@ -27,6 +38,9 @@ class TestLoadConfig:
         assert result["options"]["date_format"] == "wareki"
         assert result["options"]["paper_size"] == "B5"
         assert result["fonts"]["main"] == "fonts/custom.ttf"
+        assert result["fonts"]["career_sheet_main"] == "fonts/gothic.ttf"
+        assert result["styles"]["colors"]["body_text"] == "#050315"
+        assert result["styles"]["colors"]["main"] == "#6761af"
 
     def test_load_config_with_nonexistent_file(self) -> None:
         """存在しないファイルを指定するとデフォルト設定が返る"""
@@ -102,6 +116,24 @@ class TestResolveFontPaths:
 
         assert result["fonts"]["main"] == str(main_font)
         assert result["fonts"]["heading"] == str(heading_font)
+
+    def test_resolve_career_sheet_font(self, tmp_path: Path) -> None:
+        """職務経歴書フォントの相対パスを絶対パスに解決"""
+        assets_dir = tmp_path / "assets"
+        assets_dir.mkdir()
+        main_font = assets_dir / "main.ttf"
+        career_font = assets_dir / "career.ttf"
+        main_font.touch()
+        career_font.touch()
+
+        config = {"fonts": {"main": "main.ttf", "career_sheet_main": "career.ttf"}}
+
+        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+            mock_get_assets.side_effect = lambda x: assets_dir / x
+            result = resolve_font_paths(config)
+
+        assert result["fonts"]["main"] == str(main_font)
+        assert result["fonts"]["career_sheet_main"] == str(career_font)
 
     def test_resolve_nonexistent_main_font(self, tmp_path: Path) -> None:
         """存在しないメインフォントを指定するとFileNotFoundErrorが発生"""
