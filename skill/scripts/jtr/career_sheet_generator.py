@@ -24,9 +24,9 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .config import resolve_style_colors
-from .fonts import register_font
-from .generation_context import get_generation_context, init_generation_context
+from .helper.config import resolve_style_colors
+from .helper.fonts import register_font
+from .helper.generation_context import get_generation_context, init_generation_context
 from .layout.career_sheet import load_career_sheet_spacing_rules
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
 

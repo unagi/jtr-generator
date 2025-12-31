@@ -8,7 +8,7 @@ from typing import Any, cast
 import jsonschema
 import yaml
 
-from .paths import get_schema_path
+from .helper.paths import get_schema_path
 
 
 def _normalize_dates(data: Any) -> Any:

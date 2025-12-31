@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..paths import get_assets_path
+from ..helper.paths import get_assets_path
 
 SpacingRules = tuple[dict[str, float], dict[str, float], dict[str, float]]
 

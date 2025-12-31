@@ -16,7 +16,7 @@ class TestRegisterFont:
     def test_register_font_success(self) -> None:
         """フォント登録が成功することを確認"""
         # デフォルトフォントを使用（BIZ UDMincho）
-        from skill.scripts.jtr.fonts import find_default_font
+        from skill.scripts.jtr.helper.fonts import find_default_font
 
         font_path = find_default_font()
         font_name = register_font(font_path)
@@ -38,7 +38,7 @@ class TestGetFontMetrics:
     def test_get_font_metrics_basic(self) -> None:
         """基本的なフォントメトリクスの取得"""
         # まずフォントを登録
-        from skill.scripts.jtr.fonts import find_default_font
+        from skill.scripts.jtr.helper.fonts import find_default_font
 
         font_path = find_default_font()
         font_name = register_font(font_path)
@@ -64,7 +64,7 @@ class TestGetFontMetrics:
 
     def test_get_font_metrics_different_sizes(self) -> None:
         """異なるフォントサイズでメトリクスが変化することを確認"""
-        from skill.scripts.jtr.fonts import find_default_font
+        from skill.scripts.jtr.helper.fonts import find_default_font
 
         font_path = find_default_font()
         font_name = register_font(font_path)

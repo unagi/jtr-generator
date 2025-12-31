@@ -11,7 +11,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr.generation_context import init_generation_context
+from skill.scripts.jtr.helper.generation_context import init_generation_context
 from skill.scripts.jtr.resume_generator import (
     _calculate_age,
     _format_date,

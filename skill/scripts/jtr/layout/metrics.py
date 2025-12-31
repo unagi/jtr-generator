@@ -3,7 +3,7 @@ from __future__ import annotations
 from reportlab.pdfbase import pdfmetrics
 
 # 共通実装を再エクスポート（tools/からの参照互換性維持）
-from ..fonts import register_font
+from ..helper.fonts import register_font
 
 __all__ = ["register_font", "get_font_metrics"]
 

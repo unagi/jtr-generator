@@ -48,7 +48,7 @@ from jtr import (  # noqa: E402
     resolve_font_paths,
     validate_and_load_data,
 )
-from jtr.paths import get_assets_path  # noqa: E402
+from jtr.helper.paths import get_assets_path  # noqa: E402
 
 
 def _add_common_options(parser: ArgumentParser) -> None:

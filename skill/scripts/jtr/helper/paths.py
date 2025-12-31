@@ -13,13 +13,14 @@ def get_skill_root() -> Path:
         skill/ ディレクトリの絶対パス
 
     Note:
-        このファイルは skill/scripts/jtr/paths.py に配置されているため、
-        parents[2] で skill/ ディレクトリを取得します：
-        - parents[0]: skill/scripts/jtr/
-        - parents[1]: skill/scripts/
-        - parents[2]: skill/
+        このファイルは skill/scripts/jtr/helper/paths.py に配置されているため、
+        parents[3] で skill/ ディレクトリを取得します：
+        - parents[0]: skill/scripts/jtr/helper/
+        - parents[1]: skill/scripts/jtr/
+        - parents[2]: skill/scripts/
+        - parents[3]: skill/
     """
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def get_assets_path(*parts: str) -> Path:

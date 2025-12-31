@@ -1,4 +1,4 @@
-"""skill.scripts.jtr.config モジュールのテスト"""
+"""skill.scripts.jtr.helper.config モジュールのテスト"""
 
 from pathlib import Path
 from unittest.mock import patch
@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 import yaml
 
-from skill.scripts.jtr.config import load_config, resolve_font_paths
+from skill.scripts.jtr.helper.config import load_config, resolve_font_paths
 
 
 class TestLoadConfig:
@@ -92,7 +92,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"main": "custom.ttf"}}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = font_file
             result = resolve_font_paths(config)
 
@@ -110,7 +110,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"main": "main.ttf", "heading": "heading.ttf"}}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.side_effect = lambda x: assets_dir / x
             result = resolve_font_paths(config)
 
@@ -128,7 +128,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"main": "main.ttf", "career_sheet_main": "career.ttf"}}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.side_effect = lambda x: assets_dir / x
             result = resolve_font_paths(config)
 
@@ -141,7 +141,7 @@ class TestResolveFontPaths:
         assets_dir.mkdir()
         config = {"fonts": {"main": "nonexistent.ttf"}}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = assets_dir / "nonexistent.ttf"
             with pytest.raises(FileNotFoundError, match="カスタムフォントファイルが見つかりません"):
                 resolve_font_paths(config)
@@ -161,7 +161,7 @@ class TestResolveFontPaths:
                 return main_font
             return assets_dir / "nonexistent.ttf"
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.side_effect = mock_side_effect
             with pytest.raises(FileNotFoundError, match="見出しフォントファイルが見つかりません"):
                 resolve_font_paths(config)
@@ -176,7 +176,7 @@ class TestResolveFontPaths:
 
         config: dict[str, str] = {}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 
@@ -188,7 +188,7 @@ class TestResolveFontPaths:
         font_dir.mkdir(parents=True)
         config: dict[str, str] = {}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = font_dir / "BIZUDMincho-Regular.ttf"  # 存在しない
             with pytest.raises(FileNotFoundError, match="デフォルトフォントが見つかりません"):
                 resolve_font_paths(config)
@@ -203,7 +203,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {}}
 
-        with patch("skill.scripts.jtr.config.get_assets_path") as mock_get_assets:
+        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 
