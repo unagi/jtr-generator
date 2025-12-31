@@ -23,7 +23,7 @@ JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF�
 
 ### エンドユーザー向け
 - **[skill/references/README.md](skill/references/README.md)** - Skill使用方法（Claude.ai/Codexでの使い方）
-- **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_rirekisho.yaml) | [PDF](skill/assets/examples/sample_rirekisho.pdf)
+- **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_rirekisho.yaml) | [履歴書PDF](skill/assets/examples/sample_rirekisho.pdf) | [職務経歴書PDF](skill/assets/examples/sample_career_sheet_mincho.pdf)
 
 ### 開発者向け
 - **[AGENTS.md](AGENTS.md)** - プロジェクト全体仕様（LLM非依存の設計ドキュメント）

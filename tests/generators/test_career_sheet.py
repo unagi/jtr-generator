@@ -7,6 +7,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
+from skill.scripts.jtr import career_sheet_generator
 from skill.scripts.jtr.career_sheet_generator import generate_career_sheet_pdf
 
 
@@ -39,7 +40,7 @@ def test_generate_career_sheet_pdf_basic(tmp_path: Path) -> None:
     from skill.scripts.jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
-    options = {"fonts": {"main": str(font_path)}}
+    options = {"fonts": {"mincho": str(font_path)}}
 
     # PDF生成
     generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
@@ -71,7 +72,7 @@ def test_generate_career_sheet_with_qualifications(tmp_path: Path) -> None:
     from skill.scripts.jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
-    options = {"fonts": {"main": str(font_path)}}
+    options = {"fonts": {"mincho": str(font_path)}}
 
     generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
 
@@ -122,7 +123,7 @@ def test_generate_career_sheet_complex_markdown(tmp_path: Path) -> None:
     from skill.scripts.jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
-    options = {"fonts": {"main": str(font_path)}}
+    options = {"fonts": {"mincho": str(font_path)}}
 
     generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
 
@@ -136,7 +137,29 @@ def test_font_not_found_error(tmp_path: Path) -> None:
 
     rirekisho_data = {"personal_info": {"name": "Test", "email": "test@example.com"}}
     markdown_content = "# Test"
-    options = {"fonts": {"main": "/nonexistent/font.ttf"}}
+    options = {"fonts": {"mincho": "/nonexistent/font.ttf"}}
 
     with pytest.raises(FileNotFoundError):
         generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
+
+
+def test_resolve_career_sheet_font_selector() -> None:
+    options = {"font": "gothic", "fonts": {"gothic": "/tmp/gothic.ttf"}}
+
+    assert career_sheet_generator._resolve_career_sheet_font(options) == Path("/tmp/gothic.ttf")
+
+
+def test_resolve_career_sheet_font_gothic_fallback() -> None:
+    options = {"fonts": {"gothic": "/tmp/gothic.ttf"}}
+
+    assert career_sheet_generator._resolve_career_sheet_font(options) == Path("/tmp/gothic.ttf")
+
+
+def test_resolve_career_sheet_font_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        career_sheet_generator, "find_default_font", lambda: Path("/tmp/default.ttf")
+    )
+
+    assert career_sheet_generator._resolve_career_sheet_font({"fonts": {}}) == Path(
+        "/tmp/default.ttf"
+    )

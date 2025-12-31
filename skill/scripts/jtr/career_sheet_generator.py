@@ -25,7 +25,7 @@ from reportlab.platypus import (
 )
 
 from .helper.config import resolve_style_colors
-from .helper.fonts import register_font
+from .helper.fonts import find_default_font, register_font
 from .helper.generation_context import get_generation_context, init_generation_context
 from .layout.career_sheet import load_career_sheet_spacing_rules
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
@@ -434,5 +434,11 @@ def _create_heading_bar(
 
 def _resolve_career_sheet_font(options: dict[str, Any]) -> Path:
     fonts = options.get("fonts", {})
-    font_value = fonts.get("career_sheet_main") or fonts.get("main", "")
-    return Path(font_value)
+    selector = options.get("font")
+    if selector and selector in fonts and fonts[selector]:
+        return Path(fonts[selector])
+    if "mincho" in fonts and fonts["mincho"]:
+        return Path(fonts["mincho"])
+    if "gothic" in fonts and fonts["gothic"]:
+        return Path(fonts["gothic"])
+    return find_default_font()

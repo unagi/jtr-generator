@@ -18,7 +18,7 @@ Agent Skillsパッケージは `skill/` を基点にビルドされます。
 | コンポーネント | 説明 |
 |---------------|------|
 | jtr/* | 共通実装（PDF生成、検証、日付処理など） |
-| schemas/* | データスキーマ |
+| schemas/* | データスキーマ（rirekisho_schema.jsonのみ） |
 | data/* | レイアウトデータ |
 | scripts/main.py | エントリーポイント |
 | config.yaml | 設定テンプレート |
@@ -47,8 +47,8 @@ options:
   paper_size: A4          # 'A4'（B5は将来対応予定）
 
 fonts:
-  main: fonts/main.ttf           # 本文用フォント（相対パス）
-  heading: fonts/heading.ttf     # 見出し用フォント（相対パス、optional）
+  mincho: fonts/mincho.ttf       # 明朝フォント（相対パス）
+  gothic: fonts/gothic.ttf       # ゴシックフォント（相対パス）
 ```
 
 **注意**: フォントパスは相対パスで記述し、`main.py` で絶対パスに解決します。

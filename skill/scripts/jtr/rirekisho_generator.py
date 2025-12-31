@@ -50,11 +50,8 @@ def generate_rirekisho_pdf(
     # A4サイズのCanvasを作成
     c = canvas.Canvas(str(output_path), pagesize=A4)
 
-    # フォント登録（options['fonts']['main']を優先、未指定時はデフォルト）
-    if "fonts" in options and "main" in options["fonts"]:
-        font_path = Path(options["fonts"]["main"])
-    else:
-        font_path = find_default_font()
+    # フォント登録（options['font']でmincho/gothicを選択）
+    font_path = _resolve_shared_font(options)
 
     font_name = register_font(font_path)
 
@@ -386,6 +383,18 @@ def _draw_texts(
             c.drawCentredString(text["x"], text["y"], text["text"])
         elif align == "right":
             c.drawRightString(text["x"], text["y"], text["text"])
+
+
+def _resolve_shared_font(options: dict[str, Any]) -> Path:
+    fonts = options.get("fonts", {})
+    selector = options.get("font")
+    if selector and selector in fonts and fonts[selector]:
+        return Path(fonts[selector])
+    if "mincho" in fonts and fonts["mincho"]:
+        return Path(fonts["mincho"])
+    if "gothic" in fonts and fonts["gothic"]:
+        return Path(fonts["gothic"])
+    return find_default_font()
 
 
 def _draw_lines(c: canvas.Canvas, lines: list[dict[str, Any]]) -> None:

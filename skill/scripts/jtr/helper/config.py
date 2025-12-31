@@ -55,35 +55,23 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
     Raises:
         FileNotFoundError: カスタムフォントファイルが存在しない場合
     """
+
+    def resolve_font_key(fonts: dict[str, Any], key: str, label: str) -> None:
+        if key not in fonts:
+            return
+        font_path = get_assets_path(fonts[key])
+        if not font_path.exists():
+            raise FileNotFoundError(
+                f"{label}フォントファイルが見つかりません: {font_path}\n"
+                f"config.yamlのfonts.{key}設定を確認してください。"
+            )
+        fonts[key] = str(font_path)
+
     # カスタムフォントが指定されている場合
     if "fonts" in config and config["fonts"]:
-        if "main" in config["fonts"]:
-            # config.yaml内のパスは assets/ からの相対パスとして解決
-            custom_font_path = get_assets_path(config["fonts"]["main"])
-            if not custom_font_path.exists():
-                raise FileNotFoundError(
-                    f"カスタムフォントファイルが見つかりません: {custom_font_path}\n"
-                    "config.yamlのfonts.main設定を確認してください。"
-                )
-            config["fonts"]["main"] = str(custom_font_path)
-
-        if "career_sheet_main" in config["fonts"]:
-            career_font_path = get_assets_path(config["fonts"]["career_sheet_main"])
-            if not career_font_path.exists():
-                raise FileNotFoundError(
-                    f"職務経歴書フォントファイルが見つかりません: {career_font_path}\n"
-                    "config.yamlのfonts.career_sheet_main設定を確認してください。"
-                )
-            config["fonts"]["career_sheet_main"] = str(career_font_path)
-
-        if "heading" in config["fonts"]:
-            heading_font_path = get_assets_path(config["fonts"]["heading"])
-            if not heading_font_path.exists():
-                raise FileNotFoundError(
-                    f"見出しフォントファイルが見つかりません: {heading_font_path}\n"
-                    "config.yamlのfonts.heading設定を確認してください。"
-                )
-            config["fonts"]["heading"] = str(heading_font_path)
+        fonts = config["fonts"]
+        resolve_font_key(fonts, "mincho", "明朝")
+        resolve_font_key(fonts, "gothic", "ゴシック")
     else:
         # デフォルトフォントを設定
         default_font_path = get_assets_path("fonts", "BIZ_UDMincho", "BIZUDMincho-Regular.ttf")
@@ -92,10 +80,7 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
                 f"デフォルトフォントが見つかりません: {default_font_path}\n"
                 "BIZ UDMinchoフォントがインストールされているか確認してください。"
             )
-        config["fonts"] = {"main": str(default_font_path)}
-
-    if "career_sheet_main" not in config["fonts"]:
-        config["fonts"]["career_sheet_main"] = config["fonts"]["main"]
+        config["fonts"] = {"mincho": str(default_font_path)}
 
     return config
 

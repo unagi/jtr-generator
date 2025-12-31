@@ -37,9 +37,7 @@ def layout_data():
 @pytest.fixture
 def layout_schema():
     """レイアウトスキーマを読み込む"""
-    schema_path = (
-        Path(__file__).parent.parent.parent / "skill" / "assets" / "schemas" / "layout_schema.json"
-    )
+    schema_path = Path(__file__).parent.parent.parent / "tools" / "schema" / "layout_schema.json"
     with open(schema_path, encoding="utf-8") as f:
         return json.load(f)
 

@@ -9,6 +9,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
+from skill.scripts.jtr import rirekisho_generator
 from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 
@@ -82,7 +83,7 @@ def test_custom_font_registration(tmp_path: Path) -> None:
     custom_font = custom_fonts[0]
 
     data = {}
-    options = {"paper_size": "A4", "fonts": {"main": str(custom_font)}}
+    options = {"paper_size": "A4", "fonts": {"mincho": str(custom_font)}}
 
     generate_rirekisho_pdf(data, options, output_path)
 
@@ -95,7 +96,7 @@ def test_font_not_found_error(tmp_path: Path) -> None:
     output_path = tmp_path / "test_font_error.pdf"
 
     data = {}
-    options = {"paper_size": "A4", "fonts": {"main": "/nonexistent/path/to/font.ttf"}}
+    options = {"paper_size": "A4", "fonts": {"mincho": "/nonexistent/path/to/font.ttf"}}
 
     with pytest.raises(FileNotFoundError):
         generate_rirekisho_pdf(data, options, output_path)
@@ -175,3 +176,21 @@ def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
     finally:
         # クリーンアップ: 権限を戻してファイル削除できるようにする
         os.chmod(no_read_path, 0o644)
+
+
+def test_resolve_shared_font_selector() -> None:
+    options = {"font": "mincho", "fonts": {"mincho": "/tmp/mincho.ttf"}}
+
+    assert rirekisho_generator._resolve_shared_font(options) == Path("/tmp/mincho.ttf")
+
+
+def test_resolve_shared_font_gothic_fallback() -> None:
+    options = {"fonts": {"gothic": "/tmp/gothic.ttf"}}
+
+    assert rirekisho_generator._resolve_shared_font(options) == Path("/tmp/gothic.ttf")
+
+
+def test_resolve_shared_font_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rirekisho_generator, "find_default_font", lambda: Path("/tmp/default.ttf"))
+
+    assert rirekisho_generator._resolve_shared_font({"fonts": {}}) == Path("/tmp/default.ttf")

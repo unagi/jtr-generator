@@ -190,11 +190,10 @@ PythonとTensorFlowを使用した顧客解約予測モデルを構築し、解�
 
 ### 3.1. 標準的な職務経歴書の構成
 
-```markdown
-# タイトル・個人情報
-（氏名、生年月日、電話、メール）← 履歴書データから自動生成
+プロフィール/免許・資格は履歴書データから自動生成されるため、Markdown本文には記載しません。
 
-# 職務要約
+```markdown
+## 職務要約
 （3-5行、PREP法適用）
 
 ## 職務経歴
@@ -273,7 +272,7 @@ PythonとTensorFlowを使用した顧客解約予測モデルを構築し、解�
 
 **ポイント**:
 - 応募企業のJDに合わせて優先順位を調整
-- **免許・資格は履歴書データから自動生成**されるため、本文には記載不要
+- **プロフィール/免許・資格は履歴書データから自動生成**されるため、Markdown本文には記載不要
 
 #### 自己PR
 
@@ -486,8 +485,9 @@ Python/TensorFlow/AWSを活用したデータドリブン経営を推進しま�
 
 ```markdown
 ## 職務要約（H2: トップレベル）
-### 職務経歴（H3）
-#### 株式会社○○（H4）
+## 職務経歴（H2）
+### 株式会社○○（H3）
+#### 担当業務と実績（H4）
 ```
 
 #### 箇条書き
@@ -585,8 +585,8 @@ LLM: わかりました。次に「Task（課題）」を伺います。あな�
 
 ### 9.2. 関連ドキュメント
 
-- [skill/assets/examples/sample_career_sheet.yaml](../assets/examples/sample_career_sheet.yaml) - 職務経歴書サンプルデータ（Phase 2で作成予定）
-- [skill/assets/schemas/career_sheet_schema.json](../assets/schemas/career_sheet_schema.json) - データスキーマ定義（Phase 2で作成予定）
+- [assets/examples/sample_career_content.md](../assets/examples/sample_career_content.md) - 職務経歴書Markdownサンプル
+- [assets/examples/sample_career_metadata.yaml](../assets/examples/sample_career_metadata.yaml) - 職務経歴書メタデータサンプル
 - [docs/career_sheet_design.md](../../docs/career_sheet_design.md) - 設計仕様書
 
 ---

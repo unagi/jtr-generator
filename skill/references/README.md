@@ -1,10 +1,10 @@
 # jtr-generator - Agent Skill
 
-JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF形式で生成するAgent Skillです。
+履歴書はJIS規格準拠、職務経歴書は一般的体裁の日本のレジュメをPDF形式で生成するAgent Skillです。
 
 ## 概要
 
-このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本のレジュメPDFを生成できます。
+このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、日本の履歴書/職務経歴書PDFを生成できます。
 
 **対応プラットフォーム:**
 - Agent Skills対応のLLMプラットフォーム（Claude.ai、Codex等）
@@ -165,14 +165,14 @@ styles:
     accent: "#e36162"
 
 fonts:
-  main: fonts/custom/your-font.ttf  # カスタムフォント
-  career_sheet_main: fonts/custom/your-gothic.ttf  # 職務経歴書用フォント
+  mincho: fonts/custom/your-mincho.ttf  # カスタム明朝
+  gothic: fonts/custom/your-gothic.ttf  # カスタムゴシック
 ```
 
 ### カスタムフォントの使用
 
 1. `fonts/` ディレクトリにフォントファイル（.ttf または .otf）を配置
-2. `config.yaml` の `fonts.main` 設定をコメント解除
+2. `config.yaml` の `fonts.mincho` または `fonts.gothic` を編集
 3. ファイルパスを指定（相対パスは jtr-generator/ を基準）
 
 ## トラブルシューティング

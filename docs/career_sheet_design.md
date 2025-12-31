@@ -27,7 +27,7 @@ skill/
 ├── references/           # ドキュメント（ベストプラクティス等）
 └── assets/               # リソース（スキーマ、テンプレート、フォント等）
     ├── config.yaml
-    ├── schemas/
+    ├── schemas/ (rirekisho_schema.jsonのみ)
     ├── data/
     ├── fonts/
     └── examples/
@@ -141,9 +141,9 @@ skill/
 │
 └── assets/                                         # リソース・テンプレート
     ├── config.yaml                                 # 既存: 設定テンプレート
-    ├── schemas/                                    # JSON Schema
+    ├── schemas/                                    # JSON Schema（rirekishoのみ）
     │   ├── rirekisho_schema.json                     # 既存: 履歴書スキーマ
-    │   └── career_sheet_schema.json               # 新規: 職務経歴書スキーマ
+    │   └── (削除) career_sheet_schema.json        # 職務経歴書スキーマは未使用のため削除
     ├── data/                                       # 既存: レイアウトデータ（履歴書用）
     ├── fonts/                                      # 既存: デフォルトフォント
     └── examples/                                   # サンプルデータ
@@ -155,77 +155,9 @@ skill/
 
 ## データスキーマ設計
 
-### JSON Schema (`assets/schemas/career_sheet_schema.json`)
+### JSON Schema（削除済み）
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/unagi/jtr-generator/schemas/career_sheet_schema.json",
-  "title": "Japanese Career Sheet",
-  "description": "日本の職務経歴書データのスキーマ定義",
-  "type": "object",
-  "required": ["content"],
-  "properties": {
-    "rirekisho_reference": {
-      "type": "object",
-      "description": "履歴書データからの参照（オプション、自動抽出用）",
-      "properties": {
-        "personal_info": {
-          "type": "object",
-          "description": "個人情報（履歴書のpersonal_infoから自動抽出）",
-          "properties": {
-            "name": {"type": "string"},
-            "birthdate": {"type": "string", "format": "date"},
-            "phone": {"type": "string"},
-            "email": {"type": "string", "format": "email"}
-          }
-        },
-        "qualifications": {
-          "type": "array",
-          "description": "免許・資格（履歴書のqualificationsから自動抽出）",
-          "items": {
-            "type": "object",
-            "required": ["date", "name"],
-            "properties": {
-              "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$"},
-              "name": {"type": "string"}
-            }
-          }
-        }
-      }
-    },
-    "content": {
-      "type": "string",
-      "description": "職務経歴書本文（Markdown形式）。ベストプラクティス（PREP法、STAR法等）に従って構造化することを推奨。",
-      "minLength": 1,
-      "examples": [
-        "# 職務要約\n\nデータ分析領域で8年の経験...\n\n## 職務経歴\n\n### 株式会社○○（2020-04 〜 2023-03）\n\n**Situation:** ...\n**Task:** ...\n**Action:** ...\n**Result:** ..."
-      ]
-    },
-    "metadata": {
-      "type": "object",
-      "description": "メタデータ（生成オプション等）",
-      "properties": {
-        "format_type": {
-          "type": "string",
-          "enum": ["chronological", "reverse_chronological", "career"],
-          "default": "reverse_chronological",
-          "description": "フォーマット種別（逆時系列を推奨）"
-        },
-        "target_company": {
-          "type": "string",
-          "description": "応募企業名（カスタマイズ用、オプション）"
-        },
-        "job_description": {
-          "type": "string",
-          "description": "応募職種のJD（カスタマイズ用、オプション）"
-        }
-      }
-    }
-  },
-  "additionalProperties": false
-}
-```
+職務経歴書用の専用スキーマは廃止しました。履歴書データは `rirekisho_schema.json` を用い、職務経歴書本文はMarkdownで扱います。
 
 ### サンプルデータ (`assets/examples/sample_career_sheet.yaml`)
 
@@ -554,7 +486,7 @@ skill/
 ### Phase 2: スキーマ設計
 
 **対応内容:**
-- `assets/schemas/career_sheet_schema.json` の作成
+- `assets/schemas/career_sheet_schema.json` は削除済み
 - `assets/examples/sample_career_sheet.yaml` の作成
 
 **テスト:** JSON Schemaバリデーション
