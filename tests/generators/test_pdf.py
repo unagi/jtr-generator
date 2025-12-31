@@ -9,6 +9,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
+from skill.scripts.jtr import rirekisho_generator
 from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 
@@ -175,3 +176,21 @@ def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
     finally:
         # クリーンアップ: 権限を戻してファイル削除できるようにする
         os.chmod(no_read_path, 0o644)
+
+
+def test_resolve_shared_font_selector() -> None:
+    options = {"font": "mincho", "fonts": {"mincho": "/tmp/mincho.ttf"}}
+
+    assert rirekisho_generator._resolve_shared_font(options) == Path("/tmp/mincho.ttf")
+
+
+def test_resolve_shared_font_gothic_fallback() -> None:
+    options = {"fonts": {"gothic": "/tmp/gothic.ttf"}}
+
+    assert rirekisho_generator._resolve_shared_font(options) == Path("/tmp/gothic.ttf")
+
+
+def test_resolve_shared_font_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rirekisho_generator, "find_default_font", lambda: Path("/tmp/default.ttf"))
+
+    assert rirekisho_generator._resolve_shared_font({"fonts": {}}) == Path("/tmp/default.ttf")
