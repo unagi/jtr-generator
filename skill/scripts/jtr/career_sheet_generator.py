@@ -39,85 +39,96 @@ _DEFAULT_COLOR_TOKENS = {
     "accent": "#e36162",
 }
 
-_PT_PER_MM = 72 / 25.4
-
-_DEFAULT_SPACING_MM_VALUES: dict[str, float] = {
-    "xs": 1.5,
-    "sm": 2.0,
-    "md": 3.0,
-    "lg": 4.0,
-    "xl": 6.0,
-    "xxl": 8.0,
-    "xxxl": 10.0,
-}
-
-_DEFAULT_SPACING_PT_VALUES: dict[str, float] = {
-    "title_after": 5,
-    "h1_before": 20,
-    "h1_after": 10,
-    "h2_before": 10,
-    "h2_after": 3,
-    "h2_rule_before": 1,
-    "h2_rule_after": 3,
-    "h3_before": 10,
-    "h3_after": 9,
-    "h4_before": 8,
-    "h4_after": 7,
-    "h5_before": 15,
-    "h5_after": 5,
-    "h6_before": 15,
-    "h6_after": 3,
-    "h7_before": 15,
-    "h7_after": 1,
-    "body_after": 3,
-    "heading_bar_padding_x": 3 * _PT_PER_MM,
-    "heading_bar_padding_y": 1.5 * _PT_PER_MM,
-    "heading_bar_before": 17,
-    "heading_bar_after": 6,
-    "body_leading": 15,
-}
-
-_DEFAULT_INDENT_MM_VALUES: dict[str, float] = {
-    "heading3": 2.0,
-    "heading4": 4.0,
-    "bullet_left": 8.0,
-    "bullet_hanging": 3.0,
-}
-
 
 def _load_spacing_rules() -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
     rules_path = get_assets_path("data", "a4", "rules", "career_sheet_spacing.json")
-    spacing_mm = dict(_DEFAULT_SPACING_MM_VALUES)
-    spacing_pt = dict(_DEFAULT_SPACING_PT_VALUES)
-    indent_mm = dict(_DEFAULT_INDENT_MM_VALUES)
-
     if not rules_path.exists():
-        return spacing_mm, spacing_pt, indent_mm
+        raise FileNotFoundError(f"余白ルールファイルが見つかりません: {rules_path}")
 
     try:
         with open(rules_path, encoding="utf-8") as file:
             loaded = json.load(file)
-    except (OSError, json.JSONDecodeError):
-        return spacing_mm, spacing_pt, indent_mm
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"余白ルールファイルの読み込みに失敗しました: {rules_path}") from exc
 
-    if isinstance(loaded, dict):
-        for key, value in loaded.get("spacing_mm", {}).items():
-            if isinstance(value, (int, float)):
-                spacing_mm[key] = float(value)
-        for key, value in loaded.get("spacing_pt", {}).items():
-            if isinstance(value, (int, float)):
-                spacing_pt[key] = float(value)
-        for key, value in loaded.get("indent_mm", {}).items():
-            if isinstance(value, (int, float)):
-                indent_mm[key] = float(value)
+    if not isinstance(loaded, dict):
+        raise ValueError(f"余白ルールファイルの形式が不正です: {rules_path}")
+
+    spacing_mm = _extract_numeric_map(loaded, "spacing_mm", rules_path)
+    spacing_pt = _extract_numeric_map(loaded, "spacing_pt", rules_path)
+    indent_mm = _extract_numeric_map(loaded, "indent_mm", rules_path)
+
+    _ensure_required_keys(
+        spacing_mm,
+        {"xs", "sm", "md", "lg", "xl", "xxl", "xxxl"},
+        "spacing_mm",
+        rules_path,
+    )
+    _ensure_required_keys(
+        spacing_pt,
+        {
+            "title_after",
+            "h1_before",
+            "h1_after",
+            "h2_before",
+            "h2_after",
+            "h2_rule_before",
+            "h2_rule_after",
+            "h3_before",
+            "h3_after",
+            "h4_before",
+            "h4_after",
+            "h5_before",
+            "h5_after",
+            "h6_before",
+            "h6_after",
+            "h7_before",
+            "h7_after",
+            "body_after",
+            "heading_bar_padding_x",
+            "heading_bar_padding_y",
+            "heading_bar_before",
+            "heading_bar_after",
+            "body_leading",
+        },
+        "spacing_pt",
+        rules_path,
+    )
+    _ensure_required_keys(
+        indent_mm,
+        {"heading3", "heading4", "bullet_left", "bullet_hanging"},
+        "indent_mm",
+        rules_path,
+    )
 
     return spacing_mm, spacing_pt, indent_mm
+
+
+def _extract_numeric_map(loaded: dict[str, Any], key: str, rules_path: Path) -> dict[str, float]:
+    raw = loaded.get(key)
+    if not isinstance(raw, dict):
+        raise ValueError(f"余白ルールの'{key}'が見つかりません: {rules_path}")
+    result: dict[str, float] = {}
+    for map_key, value in raw.items():
+        if not isinstance(value, (int, float)):
+            raise ValueError(f"余白ルールの'{key}.{map_key}'が数値ではありません: {rules_path}")
+        result[map_key] = float(value)
+    return result
+
+
+def _ensure_required_keys(
+    mapping: dict[str, float], required: set[str], name: str, rules_path: Path
+) -> None:
+    missing = required - mapping.keys()
+    if missing:
+        missing_list = ", ".join(sorted(missing))
+        raise ValueError(f"余白ルールの'{name}'に必須キーが不足しています: {missing_list}")
 
 
 _SPACING_MM_VALUES, _SPACING_PT, _INDENT_MM_VALUES = _load_spacing_rules()
 _SPACING_MM = {key: value * mm for key, value in _SPACING_MM_VALUES.items()}
 _INDENT_MM = {key: value * mm for key, value in _INDENT_MM_VALUES.items()}
-_BODY_LEADING_PT = _SPACING_PT.get("body_leading", _DEFAULT_SPACING_PT_VALUES["body_leading"])
+_BODY_LEADING_PT = _SPACING_PT["body_leading"]
 
 
 def generate_career_sheet_pdf(
