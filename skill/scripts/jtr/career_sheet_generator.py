@@ -91,7 +91,6 @@ _INDENT_MM = {
 def generate_career_sheet_pdf(
     resume_data: dict[str, Any],
     markdown_content: str,
-    additional_info: dict[str, Any],
     options: dict[str, Any],
     output_path: Path,
 ) -> None:
@@ -101,7 +100,6 @@ def generate_career_sheet_pdf(
     Args:
         resume_data: 履歴書データ（personal_info, qualificationsを使用）
         markdown_content: 職務経歴書本文（Markdown形式）
-        additional_info: 追加情報（email等）
         options: 生成オプション（fonts等）
         output_path: 出力先PDFファイルパス
 
@@ -146,7 +144,7 @@ def generate_career_sheet_pdf(
     init_generation_context(options)
 
     # ヘッダー（個人情報・連絡先）
-    flowables.extend(_create_header(resume_data, additional_info, styles, options, color_palette))
+    flowables.extend(_create_header(resume_data, styles, color_palette))
 
     # 免許・資格（履歴書データから）
     if "qualifications" in resume_data and resume_data["qualifications"]:
@@ -343,9 +341,7 @@ def _create_styles(
 
 def _create_header(
     resume_data: dict[str, Any],
-    additional_info: dict[str, Any],
     styles: dict[str, ParagraphStyle],
-    options: dict[str, Any],
     palette: dict[str, colors.Color],
 ) -> list[Any]:
     """ヘッダー（個人情報・連絡先）作成（視認性重視）"""
@@ -377,7 +373,7 @@ def _create_header(
         personal_info.get("birthdate", ""), format_style="full"
     )
     phone = personal_info.get("phone", "") or personal_info.get("mobile", "")
-    email = additional_info.get("email", "")
+    email = personal_info.get("email", "")
 
     flowables.extend(_create_section_heading("プロフィール", styles, palette))
 

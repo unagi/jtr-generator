@@ -410,7 +410,8 @@ from pathlib import Path
 from typing import Any
 
 def generate_career_sheet_pdf(
-    data: dict[str, Any],
+    resume_data: dict[str, Any],
+    markdown_content: str,
     options: dict[str, Any],
     output_path: Path,
 ) -> None:
@@ -418,12 +419,12 @@ def generate_career_sheet_pdf(
     職務経歴書PDFを生成
 
     Args:
-        data: 職務経歴書データ（career_sheet_schema.jsonに準拠）
+        resume_data: 履歴書データ（personal_info, qualificationsを使用）
+        markdown_content: 職務経歴書本文（Markdown形式）
         options: 生成オプション（fonts等）
         output_path: 出力先PDFファイルパス
 
     Raises:
-        ValidationError: データがスキーマに準拠しない場合
         FontError: フォントファイルが見つからない場合
     """
     pass  # 実装は次PRで

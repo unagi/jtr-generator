@@ -4,17 +4,18 @@
 [![codecov](https://codecov.io/gh/unagi/jtr-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/unagi/jtr-generator)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=unagi_jtr-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=unagi_jtr-generator)
 
-JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する**Agent Skills / Codex対応ツール**です。
+JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF形式で生成する**Agent Skills / Codex対応ツール**です。
 
 ## プロジェクト概要
 
-このプロジェクトは、Claude Agent Skills（Claude.ai）およびCodex（MCP経由）で動作する履歴書生成Skillです。
-対話的な情報収集、またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書PDFを生成できます。
+このプロジェクトは、Claude Agent Skills（Claude.ai）およびCodex（MCP経由）で動作するレジュメ生成Skillです。
+対話的な情報収集、またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書/職務経歴書PDFを生成できます。
 
 **主な特徴:**
 - JIS規格準拠の精密なレイアウト（208本の罫線、33個の固定ラベル）
 - A4サイズ2ページ構成
 - 西暦/和暦の切り替え
+- 職務経歴書のMarkdown入力対応
 - カスタムフォント対応
 - JSON Schema準拠のデータバリデーション
 

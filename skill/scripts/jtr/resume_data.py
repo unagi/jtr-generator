@@ -93,7 +93,7 @@ def load_validated_data(
 
     Args:
         file_path: YAMLまたはJSONファイルのパス（またはYAML/JSON文字列）
-        schema_name: スキーマファイル名（例: "resume_schema.json", "additional_info_schema.json"）
+        schema_name: スキーマファイル名（例: "resume_schema.json"）
 
     Returns:
         検証済みデータ

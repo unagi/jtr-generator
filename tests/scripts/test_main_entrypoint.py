@@ -46,16 +46,9 @@ def test_resume_branch_uses_session_overrides(monkeypatch: Any, tmp_path: Path) 
     assert captured["options"]["fonts"] == {}
 
 
-def test_career_sheet_branch_requires_both_bodies() -> None:
+def test_career_sheet_branch_requires_markdown() -> None:
     with pytest.raises(ValueError):
         scripts_main.main(input_data="resume.yaml", document_type="career_sheet")
-
-    with pytest.raises(ValueError):
-        scripts_main.main(
-            input_data="resume.yaml",
-            document_type="career_sheet",
-            markdown_content="body",
-        )
 
 
 def test_career_sheet_branch_delegates(monkeypatch: Any, tmp_path: Path) -> None:
@@ -64,22 +57,16 @@ def test_career_sheet_branch_delegates(monkeypatch: Any, tmp_path: Path) -> None
 
     monkeypatch.setattr(module, "load_config", lambda _path: _minimal_config())
     monkeypatch.setattr(module, "resolve_font_paths", lambda config: config)
-    monkeypatch.setattr(
-        module,
-        "load_validated_data",
-        lambda payload, schema: {"payload": payload, "schema": schema},
-    )
+    monkeypatch.setattr(module, "validate_and_load_data", lambda payload: {"payload": payload})
 
     def fake_generate(
         resume_data: dict[str, Any],
         markdown_text: str,
-        additional_data: dict[str, Any],
         options: dict[str, Any],
         output_path: Path,
     ) -> None:
         captured["resume_data"] = resume_data
         captured["markdown_text"] = markdown_text
-        captured["additional_data"] = additional_data
         captured["options"] = options
         captured["output_path"] = output_path
 
@@ -90,21 +77,53 @@ def test_career_sheet_branch_delegates(monkeypatch: Any, tmp_path: Path) -> None
         input_data="resume.yaml",
         document_type="career_sheet",
         markdown_content="**Markdown Body**",
-        additional_info="extra.yaml",
         output_path=destination,
         session_options={"paper_size": "B5"},
     )
 
     assert result == destination
-    assert captured["resume_data"] == {"payload": "resume.yaml", "schema": "resume_schema.json"}
+    assert captured["resume_data"] == {"payload": "resume.yaml"}
     assert captured["markdown_text"] == "**Markdown Body**"
-    assert captured["additional_data"] == {
-        "payload": "extra.yaml",
-        "schema": "additional_info_schema.json",
-    }
     assert captured["options"]["paper_size"] == "B5"
     assert captured["options"]["fonts"] == {}
     assert captured["output_path"] == destination
+
+
+def test_both_branch_generates_two_pdfs(monkeypatch: Any, tmp_path: Path) -> None:
+    module = reload(scripts_main)
+    captured: dict[str, Any] = {"resume": [], "career": []}
+
+    monkeypatch.setattr(module, "load_config", lambda _path: _minimal_config())
+    monkeypatch.setattr(module, "resolve_font_paths", lambda config: config)
+    monkeypatch.setattr(module, "validate_and_load_data", lambda payload: {"payload": payload})
+
+    def fake_generate_resume(
+        data: dict[str, Any], options: dict[str, Any], output_path: Path
+    ) -> None:
+        captured["resume"].append((data, options, output_path))
+
+    def fake_generate_career(
+        resume_data: dict[str, Any],
+        markdown_text: str,
+        options: dict[str, Any],
+        output_path: Path,
+    ) -> None:
+        captured["career"].append((resume_data, markdown_text, options, output_path))
+
+    monkeypatch.setattr(module, "generate_resume_pdf", fake_generate_resume)
+    monkeypatch.setattr(module, "generate_career_sheet_pdf", fake_generate_career)
+
+    output_dir = tmp_path / "outputs"
+    results = module.main(
+        input_data="resume.yaml",
+        document_type="both",
+        markdown_content="body",
+        output_path=output_dir,
+    )
+
+    assert results == [output_dir / "rirekisho.pdf", output_dir / "career_sheet.pdf"]
+    assert captured["resume"][0][0] == {"payload": "resume.yaml"}
+    assert captured["career"][0][1] == "body"
 
 
 def test_parse_args_builds_session_options(monkeypatch: Any) -> None:
@@ -113,6 +132,7 @@ def test_parse_args_builds_session_options(monkeypatch: Any) -> None:
         "sys.argv",
         [
             "main.py",
+            "resume",
             "inputs/resume.yaml",
             "--date-format",
             "wareki",
@@ -121,7 +141,8 @@ def test_parse_args_builds_session_options(monkeypatch: Any) -> None:
         ],
     )
 
-    input_file, options = module._parse_args()
+    args = module._parse_args()
 
-    assert input_file == Path("inputs/resume.yaml")
-    assert options == {"date_format": "wareki", "paper_size": "B5"}
+    assert args.input_file == Path("inputs/resume.yaml")
+    assert args.date_format == "wareki"
+    assert args.paper_size == "B5"
