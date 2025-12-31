@@ -259,7 +259,7 @@ jtr-generator/
 from typing import Dict, Any
 from pathlib import Path
 
-def generate_resume_pdf(
+def generate_rirekisho_pdf(
     data: Dict[str, Any],
     options: Dict[str, Any],
     output_path: Path
@@ -268,7 +268,7 @@ def generate_resume_pdf(
     履歴書PDFを生成（LLM非依存）
 
     Args:
-        data: skill/assets/schemas/resume_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
+        data: skill/assets/schemas/rirekisho_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
         options: 生成オプション（LLM環境から注入される）
             - paper_size: 'A4'（B5は将来対応予定）
             - date_format: 'seireki' or 'wareki'
@@ -287,7 +287,7 @@ def generate_resume_pdf(
 ### データ読み込み
 
 ```python
-def load_resume_data(file_path: Path) -> Dict[str, Any]:
+def load_rirekisho_data(file_path: Path) -> Dict[str, Any]:
     """
     YAML/JSONファイルから履歴書データを読み込み（LLM非依存）
 

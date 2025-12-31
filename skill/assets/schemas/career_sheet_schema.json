@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/unagi/jtr-generator/refs/heads/main/skill/assets/schemas/career_sheet_schema.json",
   "title": "Japanese Career Sheet Metadata",
-  "description": "職務経歴書のメタデータスキーマ（Markdown本文は別ファイル、履歴書データは resume_schema.json を参照）",
+  "description": "職務経歴書のメタデータスキーマ（Markdown本文は別ファイル、履歴書データは rirekisho_schema.json を参照）",
   "type": "object",
   "properties": {
     "metadata": {

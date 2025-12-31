@@ -1,5 +1,5 @@
 {
-  "source": "tests/fixtures/resume_sample.docx",
+  "source": "tests/fixtures/rirekisho_sample.docx",
   "paragraphs": [
     {
       "index": 0,

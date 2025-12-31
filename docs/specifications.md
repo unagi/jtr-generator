@@ -32,8 +32,8 @@ PDF生成はOS依存のネイティブライブラリを避け、**OS非依存�
 履歴書（絶対レイアウト）はReportLabで確定し、職務経歴書はOS非依存であれば別ライブラリも検討可能とします。
 
 **skill/scripts/jtr/** - 共通実装
-- `resume_generator.py`: 履歴書PDF生成（OS非依存ライブラリ、履歴書はReportLabで固定）
-- `resume_data.py`: YAML/JSON読み込み・JSON Schemaバリデーション
+- `rirekisho_generator.py`: 履歴書PDF生成（OS非依存ライブラリ、履歴書はReportLabで固定）
+- `rirekisho_data.py`: YAML/JSON読み込み・JSON Schemaバリデーション
 - `japanese_era.py`: 和暦変換（西暦 ↔ 令和/平成/昭和）
 - `layout/`: レイアウト計算・フォントメトリクス関連
 
@@ -132,8 +132,8 @@ additional_info:    # 志望動機・自己PR
 ### 詳細仕様
 
 データモデルの詳細は **JSON Schema** で定義されています:
-- **スキーマファイル**: [skill/assets/schemas/resume_schema.json](../skill/assets/schemas/resume_schema.json)
-- **サンプルデータ**: [skill/assets/examples/sample_resume.yaml](../skill/assets/examples/sample_resume.yaml) および [skill/assets/examples/sample_resume.json](../skill/assets/examples/sample_resume.json)
+- **スキーマファイル**: [skill/assets/schemas/rirekisho_schema.json](../skill/assets/schemas/rirekisho_schema.json)
+- **サンプルデータ**: [skill/assets/examples/sample_rirekisho.yaml](../skill/assets/examples/sample_rirekisho.yaml) および [skill/assets/examples/sample_rirekisho.json](../skill/assets/examples/sample_rirekisho.json)
 
 ### データ形式要件
 

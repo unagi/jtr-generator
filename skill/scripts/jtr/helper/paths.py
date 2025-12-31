@@ -45,14 +45,14 @@ def get_schema_path(schema_name: str) -> Path:
     """スキーマファイルのパスを取得
 
     Args:
-        schema_name: スキーマファイル名（例: "resume_schema.json"）
+        schema_name: スキーマファイル名（例: "rirekisho_schema.json"）
 
     Returns:
         skill/assets/schemas/ 配下の絶対パス
 
     Examples:
-        >>> get_schema_path("resume_schema.json")
-        PosixPath('/path/to/skill/assets/schemas/resume_schema.json')
+        >>> get_schema_path("rirekisho_schema.json")
+        PosixPath('/path/to/skill/assets/schemas/rirekisho_schema.json')
     """
     return get_assets_path("schemas", schema_name)
 
@@ -67,7 +67,7 @@ def get_layout_path(*parts: str) -> Path:
         skill/assets/data/ 配下の絶対パス
 
     Examples:
-        >>> get_layout_path("a4", "resume_layout.json")
-        PosixPath('/path/to/skill/assets/data/a4/resume_layout.json')
+        >>> get_layout_path("a4", "rirekisho_layout.json")
+        PosixPath('/path/to/skill/assets/data/a4/rirekisho_layout.json')
     """
     return get_assets_path("data", *parts)

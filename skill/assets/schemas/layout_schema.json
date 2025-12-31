@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Resume Layout Schema",
+  "title": "Rirekisho Layout Schema",
   "description": "JIS規格履歴書のレイアウトデータ（罫線+テキスト）スキーマ定義（v3フォーマット）",
   "type": "object",
   "required": ["source_page_size_pt", "split_x_pt", "page1_lines", "page2_lines"],

@@ -40,7 +40,7 @@ try:
 except ImportError:
     PDF2IMAGE_AVAILABLE = False
 
-from skill.scripts.jtr.resume_generator import generate_resume_pdf
+from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 # pdf2imageが利用できない場合はテストをスキップ
 pytestmark = pytest.mark.skipif(
@@ -51,8 +51,8 @@ pytestmark = pytest.mark.skipif(
 @pytest.fixture
 def generated_pdf_path(tmp_path):
     """テスト用のPDFを生成"""
-    output_path = tmp_path / "test_resume.pdf"
-    generate_resume_pdf({}, {"paper_size": "A4"}, output_path)
+    output_path = tmp_path / "test_rirekisho.pdf"
+    generate_rirekisho_pdf({}, {"paper_size": "A4"}, output_path)
     return output_path
 
 

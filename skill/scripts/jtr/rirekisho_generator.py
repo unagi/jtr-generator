@@ -19,7 +19,7 @@ from .helper.japanese_era import convert_to_wareki
 from .helper.paths import get_layout_path
 
 
-def generate_resume_pdf(
+def generate_rirekisho_pdf(
     data: dict[str, Any],
     options: dict[str, Any],
     output_path: Path,
@@ -33,7 +33,7 @@ def generate_resume_pdf(
         output_path: 出力先PDFファイルパス
     """
     # レイアウトデータのJSONファイルパス（v4フォーマット）
-    layout_json_path = get_layout_path("a4", "resume_layout.json")
+    layout_json_path = get_layout_path("a4", "rirekisho_layout.json")
 
     try:
         with open(layout_json_path, encoding="utf-8") as f:

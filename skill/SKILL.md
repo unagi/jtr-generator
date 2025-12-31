@@ -93,7 +93,7 @@ JIS規格準拠の日本のレジュメをPDF形式で生成するスキルで�
    - 連絡先のふりがな（`contact_info.address_kana`）: 連絡先が提供された場合は確認
    - 資格・免許（`qualifications`）: 職歴に関連する資格があるか確認
    - 志望動機（`additional_info.motivation`）: 未記入の場合は確認を推奨
-5. サンプルデータ参照（形式の質問があれば `assets/examples/sample_resume.yaml` を提示）
+5. サンプルデータ参照（形式の質問があれば `assets/examples/sample_rirekisho.yaml` を提示）
 
 **データ検証:**
 - JSON Schemaによるバリデーション実行
@@ -102,7 +102,7 @@ JIS規格準拠の日本のレジュメをPDF形式で生成するスキルで�
 
 **PDF生成:**
 - `main.py` の `main()` 関数を呼び出し
-- `document_type` は `resume` / `career_sheet` / `both` を指定
+- `document_type` は `rirekisho` / `career_sheet` / `both` を指定
 - 職務経歴書生成時は `markdown_content` を必須指定
 - 生成されたPDFファイルパスをユーザーに提供
 
@@ -173,7 +173,7 @@ JIS規格準拠の日本のレジュメをPDF形式で生成するスキルで�
 ```
 
 **Agent動作:**
-- `assets/examples/sample_resume.yaml` の内容を提示
+- `assets/examples/sample_rirekisho.yaml` の内容を提示
 
 ## Guidelines
 

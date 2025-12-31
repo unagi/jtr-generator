@@ -29,7 +29,7 @@ LLMに直接情報を伝えて履歴書を作成します。
 あらかじめ用意したYAMLファイルから履歴書を生成します。
 
 ```
-[sample_resume.yamlを添付]
+[sample_rirekisho.yamlを添付]
 このファイルから履歴書を生成してください。
 ```
 
@@ -38,7 +38,7 @@ LLMに直接情報を伝えて履歴書を作成します。
 履歴書データ（YAML/JSON）とMarkdown本文を渡して職務経歴書を生成します。
 
 ```
-[sample_resume.yamlを添付]
+[sample_rirekisho.yamlを添付]
 [sample_career_content.mdを添付]
 職務経歴書を作成してください。
 ```
@@ -46,7 +46,7 @@ LLMに直接情報を伝えて履歴書を作成します。
 ### 4. 履歴書と職務経歴書のまとめて生成
 
 ```
-[sample_resume.yamlを添付]
+[sample_rirekisho.yamlを添付]
 [sample_career_content.mdを添付]
 履歴書と職務経歴書をまとめて作成してください。
 ```
@@ -110,8 +110,8 @@ LLMに直接情報を伝えて履歴書を作成します。
 
 ## サンプルデータ
 
-サンプルデータは `assets/examples/sample_resume.yaml` を参照してください。
-リポジトリでは `skill/assets/examples/sample_resume.yaml` に配置されています。
+サンプルデータは `assets/examples/sample_rirekisho.yaml` を参照してください。
+リポジトリでは `skill/assets/examples/sample_rirekisho.yaml` に配置されています。
 
 ```yaml
 personal_info:
@@ -184,7 +184,7 @@ fonts:
 ```
 エラー: 必須フィールド 'name' が不足しています。
 対象: personal_info
-skill/assets/examples/sample_resume.yamlを参考にデータを追加してください。
+skill/assets/examples/sample_rirekisho.yamlを参考にデータを追加してください。
 ```
 
 **対処法**: 不足しているフィールドを追加してください。
@@ -225,7 +225,7 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 ```bash
 cd /path/to/jtr-generator
-python skill/scripts/main.py resume skill/assets/examples/sample_resume.yaml --date-format wareki
+python skill/scripts/main.py rirekisho skill/assets/examples/sample_rirekisho.yaml --date-format wareki
 ```
 
 ビルド:

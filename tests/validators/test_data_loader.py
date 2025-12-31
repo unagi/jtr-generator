@@ -4,19 +4,19 @@ from pathlib import Path
 
 import pytest
 
-from skill.scripts.jtr.resume_data import load_resume_data
+from skill.scripts.jtr.rirekisho_data import load_rirekisho_data
 
 jsonschema = pytest.importorskip("jsonschema")
 ValidationError = jsonschema.ValidationError
 
 
-class TestLoadResumeData:
-    """load_resume_data関数のテスト"""
+class TestLoadRirekishoData:
+    """load_rirekisho_data関数のテスト"""
 
     def test_load_valid_yaml_minimal(self, valid_fixtures_dir: Path) -> None:
         """正常系: 最小限の必須項目のみを含むYAMLファイルを読み込める"""
         file_path = valid_fixtures_dir / "minimal.yaml"
-        data = load_resume_data(file_path)
+        data = load_rirekisho_data(file_path)
 
         assert isinstance(data, dict)
         assert "personal_info" in data
@@ -29,7 +29,7 @@ class TestLoadResumeData:
     def test_load_valid_yaml_full(self, valid_fixtures_dir: Path) -> None:
         """正常系: すべての項目を含むYAMLファイルを読み込める"""
         file_path = valid_fixtures_dir / "full.yaml"
-        data = load_resume_data(file_path)
+        data = load_rirekisho_data(file_path)
 
         assert isinstance(data, dict)
         assert "personal_info" in data
@@ -45,7 +45,7 @@ class TestLoadResumeData:
     def test_load_valid_json(self, valid_fixtures_dir: Path) -> None:
         """正常系: JSON形式のファイルを読み込める"""
         file_path = valid_fixtures_dir / "full.json"
-        data = load_resume_data(file_path)
+        data = load_rirekisho_data(file_path)
 
         assert isinstance(data, dict)
         assert "personal_info" in data
@@ -56,13 +56,13 @@ class TestLoadResumeData:
         """異常系: 存在しないファイルを指定するとFileNotFoundErrorが発生"""
         file_path = valid_fixtures_dir / "nonexistent.yaml"
         with pytest.raises(FileNotFoundError):
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
     def test_missing_required_field(self, invalid_fixtures_dir: Path) -> None:
         """異常系: 必須項目が欠落しているとValidationErrorが発生"""
         file_path = invalid_fixtures_dir / "missing_name.yaml"
         with pytest.raises(ValidationError) as exc_info:
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
         # エラーメッセージに欠落フィールドが含まれることを確認
         error_message = str(exc_info.value)
@@ -72,13 +72,13 @@ class TestLoadResumeData:
         """異常系: 日付形式が不正だとValidationErrorが発生"""
         file_path = invalid_fixtures_dir / "invalid_birthdate.yaml"
         with pytest.raises(ValidationError):
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
     def test_invalid_enum_value(self, invalid_fixtures_dir: Path) -> None:
         """異常系: 列挙型の値が不正だとValidationErrorが発生"""
         file_path = invalid_fixtures_dir / "invalid_gender.yaml"
         with pytest.raises(ValidationError) as exc_info:
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
         # エラーメッセージに列挙型違反が含まれることを確認
         error_message = str(exc_info.value)
@@ -88,7 +88,7 @@ class TestLoadResumeData:
         """異常系: パターン制約違反でValidationErrorが発生"""
         file_path = invalid_fixtures_dir / "invalid_name_kana.yaml"
         with pytest.raises(ValidationError) as exc_info:
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
         # エラーメッセージにパターン違反が含まれることを確認
         error_message = str(exc_info.value)
@@ -98,7 +98,7 @@ class TestLoadResumeData:
         """異常系: 必須配列が空だとValidationErrorが発生（education minItems: 1）"""
         file_path = invalid_fixtures_dir / "empty_education.yaml"
         with pytest.raises(ValidationError) as exc_info:
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
         # エラーメッセージにminItems違反が含まれることを確認
         error_message = str(exc_info.value)
@@ -109,7 +109,7 @@ class TestLoadResumeData:
         file_path = invalid_fixtures_dir / "malformed.yaml"
         # YAMLパースエラーはValidationErrorではなく、yaml.YAMLErrorまたはValueErrorを想定
         with pytest.raises((ValueError, Exception)):
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)
 
     def test_unsupported_file_extension(self, valid_fixtures_dir: Path) -> None:
         """異常系: 非対応の拡張子でValueErrorが発生"""
@@ -118,4 +118,4 @@ class TestLoadResumeData:
         # ファイルが存在しない場合はFileNotFoundError、
         # 存在する場合はValueErrorを期待
         with pytest.raises((ValueError, FileNotFoundError)):
-            load_resume_data(file_path)
+            load_rirekisho_data(file_path)

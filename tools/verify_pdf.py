@@ -7,7 +7,7 @@ from pathlib import Path
 import pypdf
 
 if __name__ == "__main__":
-    pdf_path = Path("outputs/test_resume_lines_only.pdf")
+    pdf_path = Path("outputs/test_rirekisho_lines_only.pdf")
 
     if not pdf_path.exists():
         print(f"Error: {pdf_path} not found")

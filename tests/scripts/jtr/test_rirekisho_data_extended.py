@@ -1,4 +1,4 @@
-"""skill.scripts.jtr.resume_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data, load_validated_data）"""
+"""skill.scripts.jtr.rirekisho_data モジュールの拡張機能テスト（format_validation_error_ja, validate_and_load_data, load_validated_data）"""
 
 import json
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from skill.scripts.jtr.resume_data import (
+from skill.scripts.jtr.rirekisho_data import (
     format_validation_error_ja,
     load_validated_data,
     validate_and_load_data,
@@ -27,7 +27,7 @@ class TestFormatValidationErrorJa:
             result = format_validation_error_ja(e)
 
             assert "必須フィールド 'name' が不足しています" in result
-            assert "assets/examples/sample_resume.yaml" in result
+            assert "assets/examples/sample_rirekisho.yaml" in result
 
     def test_format_pattern_error(self) -> None:
         """パターン制約違反エラーを日本語で整形"""
@@ -111,7 +111,7 @@ class TestFormatValidationErrorJa:
             result = format_validation_error_ja(e)
 
             assert "データ検証エラー" in result
-            assert "schemas/resume_schema.json" in result
+            assert "schemas/rirekisho_schema.json" in result
 
 
 class TestValidateAndLoadData:
@@ -143,7 +143,7 @@ class TestValidateAndLoadData:
 
     def test_load_from_valid_yaml_file(self, tmp_path: Path, sample_data_dict: dict) -> None:
         """有効なYAMLファイルを読み込める"""
-        yaml_file = tmp_path / "resume.yaml"
+        yaml_file = tmp_path / "rirekisho.yaml"
         with open(yaml_file, "w", encoding="utf-8") as f:
             import yaml
 
@@ -156,7 +156,7 @@ class TestValidateAndLoadData:
 
     def test_load_from_valid_json_file(self, tmp_path: Path, sample_data_dict: dict) -> None:
         """有効なJSONファイルを読み込める"""
-        json_file = tmp_path / "resume.json"
+        json_file = tmp_path / "rirekisho.json"
         with open(json_file, "w", encoding="utf-8") as f:
             json.dump(sample_data_dict, f, ensure_ascii=False)
 
@@ -185,7 +185,7 @@ class TestValidateAndLoadData:
     def test_load_nonexistent_file(self) -> None:
         """存在しないファイルを指定するとFileNotFoundErrorが発生"""
         with pytest.raises(FileNotFoundError, match="ファイルが見つかりません"):
-            validate_and_load_data(Path("/nonexistent/resume.yaml"))
+            validate_and_load_data(Path("/nonexistent/rirekisho.yaml"))
 
     def test_load_invalid_yaml_string(self) -> None:
         """不正なYAML/JSON文字列を読み込むとValueErrorが発生"""
@@ -239,7 +239,7 @@ class TestValidateAndLoadData:
 
     def test_load_from_json_file_directly(self, tmp_path: Path, sample_data_dict: dict) -> None:
         """JSONファイルを直接読み込む（line 131-132をカバー）"""
-        json_file = tmp_path / "resume.json"
+        json_file = tmp_path / "rirekisho.json"
         with open(json_file, "w", encoding="utf-8") as f:
             json.dump(sample_data_dict, f, ensure_ascii=False)
 
@@ -282,7 +282,7 @@ class TestLoadValidatedData:
 
         yaml_str = yaml.dump(sample_data_dict, allow_unicode=True)
 
-        result = load_validated_data(yaml_str, "resume_schema.json")
+        result = load_validated_data(yaml_str, "rirekisho_schema.json")
 
         assert result["personal_info"]["name"] == "山田太郎"
 
@@ -290,17 +290,17 @@ class TestLoadValidatedData:
         """JSON文字列を指定スキーマで読み込む（line 114-117カバー）"""
         json_str = json.dumps(sample_data_dict, ensure_ascii=False)
 
-        result = load_validated_data(json_str, "resume_schema.json")
+        result = load_validated_data(json_str, "rirekisho_schema.json")
 
         assert result["personal_info"]["name"] == "山田太郎"
 
     def test_load_json_file_with_schema(self, tmp_path: Path, sample_data_dict: dict) -> None:
         """JSONファイルを指定スキーマで読み込む（line 131-132カバー）"""
-        json_file = tmp_path / "resume.json"
+        json_file = tmp_path / "rirekisho.json"
         with open(json_file, "w", encoding="utf-8") as f:
             json.dump(sample_data_dict, f, ensure_ascii=False)
 
-        result = load_validated_data(json_file, "resume_schema.json")
+        result = load_validated_data(json_file, "rirekisho_schema.json")
 
         assert result["personal_info"]["name"] == "山田太郎"
 
@@ -308,10 +308,10 @@ class TestLoadValidatedData:
         """YAMLファイルを指定スキーマで読み込む（line 134-135カバー）"""
         import yaml
 
-        yaml_file = tmp_path / "resume.yaml"
+        yaml_file = tmp_path / "rirekisho.yaml"
         with open(yaml_file, "w", encoding="utf-8") as f:
             yaml.dump(sample_data_dict, f, allow_unicode=True)
 
-        result = load_validated_data(yaml_file, "resume_schema.json")
+        result = load_validated_data(yaml_file, "rirekisho_schema.json")
 
         assert result["personal_info"]["name"] == "山田太郎"

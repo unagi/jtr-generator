@@ -1,4 +1,4 @@
-"""Generation context shared by resume/career sheet generators."""
+"""Generation context shared by rirekisho/career sheet generators."""
 
 from __future__ import annotations
 

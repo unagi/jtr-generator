@@ -1,6 +1,6 @@
 """フォント登録の共通化モジュール
 
-resume_generator.py と layout/metrics.py で重複していたフォント登録処理を統一します。
+rirekisho_generator.py と layout/metrics.py で重複していたフォント登録処理を統一します。
 """
 
 from pathlib import Path
