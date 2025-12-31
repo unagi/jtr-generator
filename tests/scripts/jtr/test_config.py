@@ -18,8 +18,8 @@ class TestLoadConfig:
         config_data = {
             "options": {"date_format": "wareki", "paper_size": "B5"},
             "fonts": {
-                "main": "fonts/custom.ttf",
-                "career_sheet_main": "fonts/gothic.ttf",
+                "mincho": "fonts/custom_mincho.ttf",
+                "gothic": "fonts/custom_gothic.ttf",
             },
             "styles": {
                 "colors": {
@@ -37,8 +37,8 @@ class TestLoadConfig:
 
         assert result["options"]["date_format"] == "wareki"
         assert result["options"]["paper_size"] == "B5"
-        assert result["fonts"]["main"] == "fonts/custom.ttf"
-        assert result["fonts"]["career_sheet_main"] == "fonts/gothic.ttf"
+        assert result["fonts"]["mincho"] == "fonts/custom_mincho.ttf"
+        assert result["fonts"]["gothic"] == "fonts/custom_gothic.ttf"
         assert result["styles"]["colors"]["body_text"] == "#050315"
         assert result["styles"]["colors"]["main"] == "#6761af"
 
@@ -82,88 +82,31 @@ class TestLoadConfig:
 class TestResolveFontPaths:
     """resolve_font_paths関数のテスト"""
 
-    def test_resolve_custom_main_font(self, tmp_path: Path) -> None:
-        """カスタムメインフォントの相対パスを絶対パスに解決"""
+    def test_resolve_custom_mincho_font(self, tmp_path: Path) -> None:
+        """カスタム明朝フォントの相対パスを絶対パスに解決"""
         # assets/ ディレクトリを作成
         assets_dir = tmp_path / "assets"
         assets_dir.mkdir()
-        font_file = assets_dir / "custom.ttf"
-        font_file.touch()
+        mincho_font = assets_dir / "mincho.ttf"
+        mincho_font.touch()
 
-        config = {"fonts": {"main": "custom.ttf"}}
-
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
-            mock_get_assets.return_value = font_file
-            result = resolve_font_paths(config)
-
-        assert result["fonts"]["main"] == str(font_file)
-
-    def test_resolve_custom_heading_font(self, tmp_path: Path) -> None:
-        """カスタム見出しフォントの相対パスを絶対パスに解決"""
-        # assets/ ディレクトリを作成
-        assets_dir = tmp_path / "assets"
-        assets_dir.mkdir()
-        main_font = assets_dir / "main.ttf"
-        heading_font = assets_dir / "heading.ttf"
-        main_font.touch()
-        heading_font.touch()
-
-        config = {"fonts": {"main": "main.ttf", "heading": "heading.ttf"}}
+        config = {"fonts": {"mincho": "mincho.ttf"}}
 
         with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
-            mock_get_assets.side_effect = lambda x: assets_dir / x
+            mock_get_assets.return_value = mincho_font
             result = resolve_font_paths(config)
 
-        assert result["fonts"]["main"] == str(main_font)
-        assert result["fonts"]["heading"] == str(heading_font)
+        assert result["fonts"]["mincho"] == str(mincho_font)
 
-    def test_resolve_career_sheet_font(self, tmp_path: Path) -> None:
-        """職務経歴書フォントの相対パスを絶対パスに解決"""
+    def test_resolve_nonexistent_mincho_font(self, tmp_path: Path) -> None:
+        """存在しない明朝フォントを指定するとFileNotFoundErrorが発生"""
         assets_dir = tmp_path / "assets"
         assets_dir.mkdir()
-        main_font = assets_dir / "main.ttf"
-        career_font = assets_dir / "career.ttf"
-        main_font.touch()
-        career_font.touch()
-
-        config = {"fonts": {"main": "main.ttf", "career_sheet_main": "career.ttf"}}
-
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
-            mock_get_assets.side_effect = lambda x: assets_dir / x
-            result = resolve_font_paths(config)
-
-        assert result["fonts"]["main"] == str(main_font)
-        assert result["fonts"]["career_sheet_main"] == str(career_font)
-
-    def test_resolve_nonexistent_main_font(self, tmp_path: Path) -> None:
-        """存在しないメインフォントを指定するとFileNotFoundErrorが発生"""
-        assets_dir = tmp_path / "assets"
-        assets_dir.mkdir()
-        config = {"fonts": {"main": "nonexistent.ttf"}}
+        config = {"fonts": {"mincho": "nonexistent.ttf"}}
 
         with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = assets_dir / "nonexistent.ttf"
-            with pytest.raises(FileNotFoundError, match="カスタムフォントファイルが見つかりません"):
-                resolve_font_paths(config)
-
-    def test_resolve_nonexistent_heading_font(self, tmp_path: Path) -> None:
-        """存在しない見出しフォントを指定するとFileNotFoundErrorが発生"""
-        # assets/ ディレクトリを作成
-        assets_dir = tmp_path / "assets"
-        assets_dir.mkdir()
-        main_font = assets_dir / "main.ttf"
-        main_font.touch()
-
-        config = {"fonts": {"main": "main.ttf", "heading": "nonexistent.ttf"}}
-
-        def mock_side_effect(x):
-            if x == "main.ttf":
-                return main_font
-            return assets_dir / "nonexistent.ttf"
-
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
-            mock_get_assets.side_effect = mock_side_effect
-            with pytest.raises(FileNotFoundError, match="見出しフォントファイルが見つかりません"):
+            with pytest.raises(FileNotFoundError, match="明朝フォントファイルが見つかりません"):
                 resolve_font_paths(config)
 
     def test_resolve_default_font(self, tmp_path: Path) -> None:
@@ -180,7 +123,7 @@ class TestResolveFontPaths:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 
-        assert result["fonts"]["main"] == str(default_font)
+        assert result["fonts"]["mincho"] == str(default_font)
 
     def test_resolve_default_font_not_found(self, tmp_path: Path) -> None:
         """デフォルトフォントが存在しない場合、FileNotFoundErrorが発生"""
@@ -207,4 +150,4 @@ class TestResolveFontPaths:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 
-        assert result["fonts"]["main"] == str(default_font)
+        assert result["fonts"]["mincho"] == str(default_font)

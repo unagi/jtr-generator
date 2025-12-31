@@ -9,6 +9,9 @@ options:
   # 用紙サイズ: "A4" または "B5"（B5は将来実装予定）
   paper_size: A4
 
+  # フォント指定（"mincho" または "gothic"）
+  font: mincho
+
 # デザイン設定（職務経歴書）
 styles:
   colors:
@@ -24,16 +27,13 @@ styles:
 # フォント設定（オプション）
 # 未指定の場合、デフォルトフォント（BIZ UDMincho）が自動使用されます
 fonts:
-  # 本文用フォント（相対パス: jtr-generator/を基準）
-  main: fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf
+  # 明朝フォント（相対パス: jtr-generator/を基準）
+  mincho: fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf
 
-  # 職務経歴書用フォント（BIZ UD Gothic）
-  career_sheet_main: fonts/BIZ_UDGothic/BIZUDGothic-Regular.ttf
-
-  # 見出し用フォント（オプション）
-  # heading: fonts/custom/your-font-bold.ttf
+  # ゴシックフォント（BIZ UD Gothic）
+  gothic: fonts/BIZ_UDGothic/BIZUDGothic-Regular.ttf
 
 # カスタムフォントを使用する場合:
 # 1. fonts/ディレクトリにフォントファイル（.ttf または .otf）を配置
-# 2. 上記のmainまたはheading設定をコメント解除
+# 2. 上記のminchoまたはgothic設定を編集
 # 3. ファイルパスを指定（相対パスはjtr-generator/を基準）

@@ -37,8 +37,8 @@ v0.1.0以降、BIZ UDMincho Regular がデフォルトフォントとして同�
 3. **config.yamlで指定**
    ```yaml
    fonts:
-     main: fonts/custom/your-font.ttf
-     heading: fonts/custom/your-heading-font.ttf  # optional
+    mincho: fonts/custom/your-mincho.ttf
+    gothic: fonts/custom/your-gothic.ttf
    ```
 
 ## 注意事項

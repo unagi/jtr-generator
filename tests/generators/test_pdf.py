@@ -82,7 +82,7 @@ def test_custom_font_registration(tmp_path: Path) -> None:
     custom_font = custom_fonts[0]
 
     data = {}
-    options = {"paper_size": "A4", "fonts": {"main": str(custom_font)}}
+    options = {"paper_size": "A4", "fonts": {"mincho": str(custom_font)}}
 
     generate_rirekisho_pdf(data, options, output_path)
 
@@ -95,7 +95,7 @@ def test_font_not_found_error(tmp_path: Path) -> None:
     output_path = tmp_path / "test_font_error.pdf"
 
     data = {}
-    options = {"paper_size": "A4", "fonts": {"main": "/nonexistent/path/to/font.ttf"}}
+    options = {"paper_size": "A4", "fonts": {"mincho": "/nonexistent/path/to/font.ttf"}}
 
     with pytest.raises(FileNotFoundError):
         generate_rirekisho_pdf(data, options, output_path)

@@ -112,6 +112,11 @@ def test_both_branch_generates_two_pdfs(monkeypatch: Any, tmp_path: Path) -> Non
 
     monkeypatch.setattr(module, "generate_rirekisho_pdf", fake_generate_rirekisho)
     monkeypatch.setattr(module, "generate_career_sheet_pdf", fake_generate_career)
+    monkeypatch.setattr(
+        module,
+        "_build_both_output_paths",
+        lambda output_dir: (output_dir / "rirekisho_fixed.pdf", output_dir / "career_fixed.pdf"),
+    )
 
     output_dir = tmp_path / "outputs"
     results = module.main(
@@ -121,7 +126,7 @@ def test_both_branch_generates_two_pdfs(monkeypatch: Any, tmp_path: Path) -> Non
         output_path=output_dir,
     )
 
-    assert results == [output_dir / "rirekisho.pdf", output_dir / "career_sheet.pdf"]
+    assert results == [output_dir / "rirekisho_fixed.pdf", output_dir / "career_fixed.pdf"]
     assert captured["rirekisho"][0][0] == {"payload": "rirekisho.yaml"}
     assert captured["career"][0][1] == "body"
 

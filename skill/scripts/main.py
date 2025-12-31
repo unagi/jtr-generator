@@ -28,6 +28,7 @@ Examples:
 # ruff: isort: skip_file
 
 import sys
+from datetime import UTC, datetime
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from typing import Any
@@ -64,6 +65,12 @@ def _add_common_options(parser: ArgumentParser) -> None:
         default="A4",
         help="用紙サイズ（B5は将来対応予定）",
     )
+    parser.add_argument(
+        "--font",
+        choices=["mincho", "gothic"],
+        default=None,
+        help="明朝/ゴシックの選択（両ドキュメント共通）",
+    )
 
 
 def _parse_args() -> Namespace:
@@ -75,7 +82,7 @@ def _parse_args() -> Namespace:
     rirekisho_parser.add_argument("--output", type=Path, default=None, help="出力PDFファイル")
     _add_common_options(rirekisho_parser)
 
-    career_parser = subparsers.add_parser("career", help="職務経歴書PDFを生成")
+    career_parser = subparsers.add_parser("career_sheet", help="職務経歴書PDFを生成")
     career_parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
     career_parser.add_argument("markdown_file", type=Path, help="Markdown本文ファイル")
     career_parser.add_argument("--output", type=Path, default=None, help="出力PDFファイル")
@@ -100,6 +107,8 @@ def _build_options(session_options: dict[str, Any] | None) -> dict[str, Any]:
         for key in ("date_format", "paper_size"):
             if key in session_options:
                 config_options[key] = session_options[key]
+        if "font" in session_options and session_options["font"]:
+            config_options["font"] = session_options["font"]
 
     options = dict(config.get("options", {}))
     options["fonts"] = config.get("fonts", {})
@@ -118,6 +127,14 @@ def _load_markdown(markdown_content: str | Path | None) -> str:
         return str(markdown_content)
 
     return str(markdown_content)
+
+
+def _build_both_output_paths(output_dir: Path) -> tuple[Path, Path]:
+    timestamp = datetime.now(UTC).strftime("%y%m%d-%H%M%S")
+    return (
+        output_dir / f"rirekisho_{timestamp}.pdf",
+        output_dir / f"career_sheet_{timestamp}.pdf",
+    )
 
 
 def main(
@@ -166,10 +183,11 @@ def main(
             raise ValueError("bothの出力先はディレクトリを指定してください")
         output_dir.mkdir(parents=True, exist_ok=True)
 
+    if output_dir:
+        rirekisho_output_path, career_output_path = _build_both_output_paths(output_dir)
+
     if make_rirekisho:
-        if output_dir:
-            rirekisho_output_path = output_dir / "rirekisho.pdf"
-        else:
+        if not output_dir:
             rirekisho_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
         generate_rirekisho_pdf(rirekisho_data, options, rirekisho_output_path)
         outputs.append(rirekisho_output_path)
@@ -177,9 +195,7 @@ def main(
     if make_career:
         if markdown_text is None:
             raise ValueError("職務経歴書生成には markdown_content が必要です")
-        if output_dir:
-            career_output_path = output_dir / "career_sheet.pdf"
-        else:
+        if not output_dir:
             career_output_path = Path(output_path) if output_path else Path("career_sheet.pdf")
         generate_career_sheet_pdf(rirekisho_data, markdown_text, options, career_output_path)
         outputs.append(career_output_path)
@@ -191,18 +207,24 @@ def main(
 
 if __name__ == "__main__":
     args = _parse_args()
-    session_options = {"date_format": args.date_format, "paper_size": args.paper_size}
+    session_options = {
+        "date_format": args.date_format,
+        "paper_size": args.paper_size,
+        "font": args.font,
+    }
 
     try:
         document_type = (
             "rirekisho"
             if args.command == "rirekisho"
             else "career_sheet"
-            if args.command == "career"
+            if args.command == "career_sheet"
             else "both"
         )
-        output_target = args.output if args.command in ("rirekisho", "career") else args.output_dir
-        markdown_content = args.markdown_file if args.command in ("career", "both") else None
+        output_target = (
+            args.output if args.command in ("rirekisho", "career_sheet") else args.output_dir
+        )
+        markdown_content = args.markdown_file if args.command in ("career_sheet", "both") else None
         outputs = main(
             input_data=args.input_file,
             session_options=session_options,

@@ -1,6 +1,6 @@
 ---
 name: jtr-generator
-description: JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF形式で生成するSkill。対話的な情報収集またはYAML/JSONファイルからPDF生成が可能。
+description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の日本のレジュメをPDF生成するSkill。対話的な情報収集またはYAML/JSONファイルからPDF生成が可能。
 ---
 
 # 日本のレジュメ（履歴書・職務経歴書）生成Skill
@@ -9,199 +9,178 @@ description: JIS規格準拠の日本のレジュメ（履歴書・職務経歴�
 
 ## Overview
 
-JIS規格準拠の日本のレジュメをPDF形式で生成するスキルです。
+履歴書はJIS規格準拠、職務経歴書は日本国内の一般的体裁でPDFを生成します。
 
 **主な機能:**
-- ユーザーとの対話による情報収集
-- YAML/JSONファイルからの一括生成
-- JIS規格準拠のレイアウト
-- 和暦/西暦の切り替え対応
-- 職務経歴書のMarkdown入力対応
-
-**使用場面:**
-- 日本企業への就職・転職活動における履歴書/職務経歴書作成
-- データから一貫性のあるレジュメフォーマット生成
+- 対話（呼び出し側LLM）による情報収集、またはYAML/JSONからの一括生成
+- 履歴書（JIS様式準拠）と職務経歴書（一般的体裁/Markdown本文）に対応
+- 和暦/西暦の切り替え
+- フォント選択（明朝/ゴシック）
 
 ## Details
 
-### 技術仕様
+本ドキュメント（SKILL.md）が置かれたディレクトリをスキルルートとし、以降のパスはすべてそのルートからの相対パスとする。
 
-**入力形式:**
-- YAML形式（推奨）
-- JSON形式
-- 対話形式（Agent経由）
-- 職務経歴書本文: Markdown形式（ファイルまたは本文文字列）
+### 入力
+- 履歴書データ: YAML/JSON（`assets/schemas/rirekisho_schema.json` に準拠）
+- 職務経歴書本文: Markdown（文字列またはファイル）
+  - examplesとschemaが一致していることが最優先
 
-**Markdownの役割（職務経歴書）:**
-- 履歴書データでは補完できない職務経歴の詳細（職務要約、担当業務、実績、プロジェクト等）を記述
-- 履歴書データは「個人情報・学歴・職歴の事実」を担い、職務経歴書の本文は「具体的な説明」を担う
+### 職務経歴書の構成とMarkdownの責務
+- プロフィール/免許・資格は履歴書データから出力
+- それ以降（職務要約、職務経歴、自己PRなど）はMarkdown本文で記述
+- MarkdownはGitHub Flavored Markdownに準拠し、H2（`##`）を起点に構成する
+- 規約から逸脱する場合は出力品質を保証しない
 
-**出力形式:**
-- PDF（A4サイズ、JIS規格準拠、履歴書/職務経歴書）
-- 和暦/西暦の自動切り替え対応
-- 証明写真エリア付き
+### 出力
+- PDF（A4）
+- APIは `document_type`（`rirekisho` / `career_sheet` / `both`）、CLIは `rirekisho` / `career_sheet` / `both`
+- `both` は `--output-dir` 配下に以下の規則で2ファイルを出力する（`rirekisho_YYMMDD-HHMMSS.pdf` / `career_sheet_YYMMDD-HHMMSS.pdf`）
+  - `YYMMDD-HHMMSS` はUTC（24時間表記）を用いる
 
-**データ検証:**
-- JSON Schema準拠の厳格なバリデーション
-- 日付形式チェック（ISO 8601）
-- 必須フィールドの完全性確認
+### オプション
+- `date_format`: `seireki` / `wareki`
+- `paper_size`: `A4`（B5は将来対応）
+- `font`: `mincho` / `gothic`（履歴書・職務経歴書で共通）
 
-**カスタマイズ:**
-- フォント変更対応（デフォルト: BIZ UDMincho）
-- 用紙サイズ設定（A4のみ、B5は将来対応予定）
-- 日付表記切り替え（和暦/西暦）
+### カスタマイズ（assets/config.yaml）
+設定ファイル（`assets/config.yaml`）でフォント（`fonts.mincho` / `fonts.gothic`）や色（`styles.colors`）を変更できます。  
+設定を更新するにはSkillの再アップロードが必要なので、その前提を明示して案内してください。
 
-**エラーハンドリング:**
-- すべてのエラーメッセージは日本語で表示
-- 具体的な修正方法を提示
+### エントリーポイント
+- CLI: `scripts/main.py`
+- Python API: `scripts/main.py` の `main()`
+  - 戻り値は単体生成で `Path`、`both` で `list[Path]`
 
-### データスキーマ要件
+## References
+
+- 履歴書JIS様式の根拠: `references/README.md`
+- 職務経歴書の書き方: `references/career_sheet_best_practices.md`
+- Agent Skills仕様: https://agentskills.io/specification
+
+## Data Requirements
 
 **必須フィールド（履歴書データ）:**
 - `personal_info`: 氏名、氏名かな、生年月日、性別、住所、電話番号、メールアドレス
 - `education`: 学歴（配列、最低1件）
 - `work_history`: 職歴（配列、0件以上可）
 
-**職務経歴書生成の入力:**
-- 履歴書データ（上記） + Markdown本文
+**職務経歴書生成時:**
+- 上記履歴書データ + Markdown本文が必須
 
-**オプションフィールド:**
-- `contact_info`: 連絡先（現住所以外に連絡を希望する場合）
-- `qualifications`: 資格・免許（配列）
-- `additional_info`: 志望動機、自己PR、本人希望欄
-
-**日付形式規則:**
-- 生年月日: `YYYY-MM-DD`（例: `1990-04-01`）
-- 年月: `YYYY-MM`（例: `2010-04`）
-- ISO 8601形式を厳守
+**日付形式:**
+- 生年月日: `YYYY-MM-DD`
+- 年月: `YYYY-MM`
 
 **正式名称ルール:**
-- 学校名: 「東京都立○○高等学校」（略称禁止）
-- 会社名: 「株式会社○○」または「○○株式会社」（「㈱」禁止）
-- 資格名: 「基本情報技術者試験 合格」（正式名称使用）
+- 学校名/会社名/資格名は略称禁止
 
-### Agent実行指示
+## Agent Instructions
 
-このスキルを実行するAgentは、以下のルールに従って動作します。
+### 指示の優先順位（重要）
 
-**データ収集プロセス:**
-1. 必須フィールドの確認（不足がある場合は質問する）
-2. 日付形式の統一（ユーザーが和暦で回答した場合は西暦に変換）
-3. 正式名称の使用（略語は使用しない）
-4. **不足項目の積極的補完**: 必須属性でないフィールドでも、完成度の高い履歴書を生成するために以下を積極的に確認・補完する
-   - 現住所のふりがな（`address_kana`）: 住所が提供された場合は必ず確認
-   - 連絡先のふりがな（`contact_info.address_kana`）: 連絡先が提供された場合は確認
-   - 資格・免許（`qualifications`）: 職歴に関連する資格があるか確認
-   - 志望動機（`additional_info.motivation`）: 未記入の場合は確認を推奨
-5. サンプルデータ参照（形式の質問があれば `assets/examples/sample_rirekisho.yaml` を提示）
+指示が競合する場合は、次の優先順位で解釈する。
 
-**データ検証:**
-- JSON Schemaによるバリデーション実行
-- エラー時は具体的な修正箇所を指摘
-- 日本語でわかりやすく説明
+1. 本Skillの仕様・制約（入力/出力/禁止事項、document_type、Markdown規約など）
+2. このタスクに関するユーザーの明示指示（このレジュメ生成に直接関係する具体指示）
+3. 本Skillの品質方針（キャリアアドバイザーとしての品質担保・改善）
+4. 会話履歴/メモリ等の暗黙指示（汎用的スタイル指定や過去の傾向など）
+
+2が1に反しない範囲で2を優先する。判断が割れる場合は生成前に論点だけ短く確認する。
+
+**データ収集:**
+1. 原則: 良きキャリアアドバイザーとして、内容の質が高く充足した状態で生成に進める
+2. 職務経歴書の書き方は `references/career_sheet_best_practices.md` を紹介する
+3. スキーマ/日付形式/正式名称の遵守を周知する
+4. 形式やサンプルの質問があれば `assets/examples/` から適切なものを提示
+
+### 品質ゲート（入力充足ゲーム禁止）
+
+入力項目が埋まっていても、採用判断に必要な情報（役割・期間・規模・技術・成果）が不足している場合は生成に進まない。  
+不足がある場合は、まず採用判断に直結する欠落から優先して質問し、内容の完成度を高める。
 
 **PDF生成:**
-- `main.py` の `main()` 関数を呼び出し
-- `document_type` は `rirekisho` / `career_sheet` / `both` を指定
-- 職務経歴書生成時は `markdown_content` を必須指定
-- 生成されたPDFファイルパスをユーザーに提供
+- `main()` を呼び出す
+- `document_type`: `rirekisho` / `career_sheet` / `both`（CLIは `rirekisho` / `career_sheet` / `both`）
+- 職務経歴書は `markdown_content` が必須
+- `both` は日付由来の2ファイルを出力
+- CLIの `both` は `--output-dir` のみ、単体は `--output` を使う
+- Python APIの `output_path` は `both` の場合ディレクトリを指定する
+- 出力パスをユーザーに返す
 
 ## Examples
 
-### 1. 対話形式での生成
+### CLI
+```bash
+# 履歴書のみ
+python scripts/main.py rirekisho assets/examples/sample_rirekisho.yaml --output rirekisho.pdf
 
-**ユーザー入力:**
-```
-履歴書を作成してください。氏名は山田太郎です。生年月日は1990年4月1日です。
-```
+# 職務経歴書のみ（Markdown必須）
+python scripts/main.py career_sheet assets/examples/sample_rirekisho.yaml \
+  assets/examples/sample_career_content.md --output career_sheet.pdf
 
-**Agent動作:**
-- 不足している情報（住所、電話番号、学歴など）を対話的に収集
-- データ収集完了後、PDF生成を実行
-
-### 2. YAMLファイルからの生成
-
-**ユーザー入力:**
-```
-[YAMLファイルを添付] このファイルから履歴書を生成してください。
+# 両方まとめて（フォント選択）
+python scripts/main.py both assets/examples/sample_rirekisho.yaml \
+  assets/examples/sample_career_content.md --output-dir outputs --font mincho
 ```
 
-**Agent動作:**
-- ファイルを読み込み
-- JSON Schemaでバリデーション
-- バリデーション成功後、PDF生成
+### Python
+```python
+from pathlib import Path
+from scripts.main import main
 
-### 3. 職務経歴書の生成
-
-**ユーザー入力:**
+outputs = main(
+    input_data=Path("assets/examples/sample_rirekisho.yaml"),
+    document_type="both",
+    markdown_content=Path("assets/examples/sample_career_content.md"),
+    output_path=Path("outputs"),
+    session_options={"font": "gothic"},
+)
 ```
-[YAMLファイルを添付] 履歴書データです。職務経歴書はこのMarkdownを使ってください。
-[Markdownファイルを添付]
-```
-
-**Agent動作:**
-- 履歴書データを読み込み
-- Markdown本文と組み合わせて職務経歴書PDF生成
-
-### 4. 履歴書と職務経歴書の同時生成
-
-**ユーザー入力:**
-```
-[YAMLファイルを添付] 履歴書データです。履歴書と職務経歴書をまとめて作成してください。
-[Markdownファイルを添付]
-```
-
-**Agent動作:**
-- 履歴書と職務経歴書を連続で生成
-
-### 5. オプション指定
-
-**ユーザー入力:**
-```
-和暦表記で履歴書を作成してください。
-```
-
-**Agent動作:**
-- `config.yaml` のデフォルト設定を上書き
-- 和暦形式でPDF生成
-
-### 6. サンプルデータ参照
-
-**ユーザー入力:**
-```
-サンプルデータの形式を教えてください。
-```
-
-**Agent動作:**
-- `assets/examples/sample_rirekisho.yaml` の内容を提示
 
 ## Guidelines
 
-### エラーハンドリング
-
-**フォントファイル不在時:**
-```
-フォントファイルが見つかりません。config.yamlのfonts設定を確認するか、デフォルトフォント（BIZ UDMincho）のパスを確認してください。
-```
-
-**JSON Schemaバリデーション失敗時:**
-```
-データ検証に失敗しました。[具体的なエラー内容] を修正してください。
-```
-
-**日付形式エラー:**
-```
-日付形式が不正です。YYYY-MM-DD形式（例: 1990-04-01）で指定してください。
-```
-
-### セキュリティとプライバシー
-
+**セキュリティ/プライバシー:**
 - 個人情報の取り扱いに注意
-- 生成されたPDFはセッション終了後に自動削除
-- エラーメッセージは必ず日本語で表示
+- エラーは日本語で明確に提示
 
-### 実行環境要件
+## Non-goals / Prohibited Usage
 
-- Python 3.11以上
-- 必要なライブラリ: reportlab, pyyaml, jsonschema
-- 日本語フォント（BIZ UDMincho）
+- スキーマ外フィールドの投入で挙動を変えようとする
+- 型違い/必須欠落/日付フォーマット違反を許容して動かそうとする
+- `both` の出力先をファイルパスにするなど、引数の想定外運用
+- Markdown規約（H2起点/GFM）違反を前提に自動補正させようとする
+
+### 推測・補完の取り扱い（重要）
+
+- ユーザーが提示していない事実・数値を断言して記載しない（捏造禁止）
+- 推測/補完を行う場合は、(a) 根拠（会話履歴 / 一般的な変換規則 等）を明示し、(b) 生成前にユーザー確認を取る
+- ユーザー確認が取れない場合は、推測箇所を「要確認」として残すか、空欄にする
+- FAQに定義する「自動でよい整形」は確認不要。それ以外は生成前に確認する
+
+## FAQ / Troubleshooting
+
+**バリデーションはどこまで行う？**  
+必須項目・型・日付形式の一部をチェックするが、網羅的な検証は保証しない。呼び出し側はスキーマ準拠の入力を作成すること。
+
+**`date_format` はMarkdown本文も変換する？**  
+履歴書データと履歴書由来セクションのみが対象。Markdown本文の数値は変換しない。
+
+**生成されたPDFは自動削除される？**  
+実行環境に依存し、保証しない（ベストエフォート）。
+
+**`main()` の戻り値と順序は？**  
+単体生成は `Path`、`both` は `list[Path]`。順序は `[rirekisho, career_sheet]`。
+
+**`both` で同名ファイルが存在する場合は？**  
+通常は時刻付き命名で衝突しない。万一同名が存在する場合は上書きする。
+
+**返却される `Path` の基準は？**  
+`output_path` に渡したディレクトリ配下のパスを返す。相対/絶対は `output_path` に従う。
+
+**`YYMMDD-HHMMSS` の時刻はどの基準？**  
+UTC（24時間表記）。
+
+**確認が必要な補完 / 自動でよい整形**  
+- 自動で行ってよい整形: 表記ゆれ統一（全角/半角、箇条書き体裁、敬体/常体の統一など）
+- 生成前に確認が必要: 数値の補完、成果の断言、応募企業向けの主張の具体内容、事実関係が変わりうる記載
