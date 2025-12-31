@@ -223,6 +223,8 @@ skill/assets/fonts/*
 !skill/assets/fonts/README.md
 !skill/assets/fonts/BIZ_UDMincho/
 !skill/assets/fonts/BIZ_UDMincho/*
+!skill/assets/fonts/BIZ_UDGothic/
+!skill/assets/fonts/BIZ_UDGothic/*
 
 # Serena MCP cache (local only)
 .serena/
