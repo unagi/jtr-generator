@@ -180,7 +180,7 @@ def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
         return (
             f"必須フィールド '{missing_field}' が不足しています。\n"
             f"対象: {field_path}\n"
-            f"examples/sample_resume.yamlを参考にデータを追加してください。"
+            f"assets/examples/sample_resume.yamlを参考にデータを追加してください。"
         )
     elif error.validator == "pattern":  # type: ignore[comparison-overlap]
         expected_pattern = error.schema.get("pattern", "")  # type: ignore[union-attr]

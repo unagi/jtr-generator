@@ -84,7 +84,7 @@ JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する�
    - 連絡先のふりがな（`contact_info.address_kana`）: 連絡先が提供された場合は確認
    - 資格・免許（`qualifications`）: 職歴に関連する資格があるか確認
    - 志望動機（`additional_info.motivation`）: 未記入の場合は確認を推奨
-5. サンプルデータ参照（形式の質問があれば `examples/sample_resume.yaml` を提示）
+5. サンプルデータ参照（形式の質問があれば `assets/examples/sample_resume.yaml` を提示）
 
 **データ検証:**
 - JSON Schemaによるバリデーション実行
@@ -139,7 +139,7 @@ JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する�
 ```
 
 **Agent動作:**
-- `examples/sample_resume.yaml` の内容を提示
+- `assets/examples/sample_resume.yaml` の内容を提示
 
 ## Guidelines
 

@@ -8,6 +8,7 @@ JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです
 
 **対応プラットフォーム:**
 - Agent Skills対応のLLMプラットフォーム（Claude.ai、Codex等）
+- エントリーポイント: `skill/main.py`（内部で`scripts/main.py`に委譲。zip化時はルート直下に展開）
 
 ## 使い方
 
@@ -91,7 +92,8 @@ LLMに直接情報を伝えて履歴書を作成します。
 
 ## サンプルデータ
 
-サンプルデータは `examples/sample_resume.yaml` を参照してください。
+サンプルデータは `assets/examples/sample_resume.yaml` を参照してください。
+リポジトリでは `skill/assets/examples/sample_resume.yaml` に配置されています。
 
 ```yaml
 personal_info:
@@ -156,7 +158,7 @@ fonts:
 ```
 エラー: 必須フィールド 'name' が不足しています。
 対象: personal_info
-examples/sample_resume.yamlを参考にデータを追加してください。
+skill/assets/examples/sample_resume.yamlを参考にデータを追加してください。
 ```
 
 **対処法**: 不足しているフィールドを追加してください。
@@ -196,8 +198,8 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 開発者向けのローカルテスト:
 
 ```bash
-cd /path/to/jtr-generator/skill
-python main.py examples/sample_resume.yaml --date-format wareki
+cd /path/to/jtr-generator
+python skill/main.py skill/assets/examples/sample_resume.yaml --date-format wareki
 ```
 
 ビルド:

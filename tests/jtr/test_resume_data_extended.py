@@ -27,7 +27,7 @@ class TestFormatValidationErrorJa:
             result = format_validation_error_ja(e)
 
             assert "必須フィールド 'name' が不足しています" in result
-            assert "examples/sample_resume.yaml" in result
+            assert "assets/examples/sample_resume.yaml" in result
 
     def test_format_pattern_error(self) -> None:
         """パターン制約違反エラーを日本語で整形"""
