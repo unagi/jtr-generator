@@ -13,14 +13,12 @@ from skill.scripts import main as skill_main
 
 SAMPLE_RESUME = Path("skill/assets/examples/sample_resume.yaml")
 SAMPLE_MARKDOWN = Path("skill/assets/examples/sample_career_content.md")
-SAMPLE_ADDITIONAL = Path("skill/assets/examples/sample_additional_info.yaml")
 
 
 def _print_context(output_path: Path) -> None:
     print("職務経歴書PDF生成テスト")
     print(f"履歴書データ: {SAMPLE_RESUME}")
     print(f"Markdown: {SAMPLE_MARKDOWN}")
-    print(f"追加情報: {SAMPLE_ADDITIONAL}")
     print(f"出力先: {output_path}\n")
 
 
@@ -29,7 +27,6 @@ def _generate(output_path: Path) -> Path:
         input_data=SAMPLE_RESUME,
         document_type="career_sheet",
         markdown_content=SAMPLE_MARKDOWN,
-        additional_info=SAMPLE_ADDITIONAL,
         output_path=output_path,
     )
 

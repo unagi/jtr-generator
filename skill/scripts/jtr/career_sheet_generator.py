@@ -24,74 +24,24 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .fonts import register_font
-from .generation_context import get_generation_context, init_generation_context
+from .helper.config import resolve_style_colors
+from .helper.fonts import register_font
+from .helper.generation_context import get_generation_context, init_generation_context
+from .layout.career_sheet import load_career_sheet_spacing_rules
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
 
 __all__ = ["generate_career_sheet_pdf"]
 
-_DEFAULT_COLOR_TOKENS = {
-    "body_text": "#050315",
-    "main": "#6761af",
-    "sub": "#cdc69c",
-    "accent": "#e36162",
-}
 
-_SPACING_MM = {
-    "xs": 1.5 * mm,
-    "sm": 2 * mm,
-    "md": 3 * mm,
-    "lg": 4 * mm,
-    "xl": 6 * mm,
-    "xxl": 8 * mm,
-    "xxxl": 10 * mm,
-}
-
-_BODY_LEADING_PT = 15
-_PT_PER_MM = 72 / 25.4
-
-_SPACING_PT: dict[str, float] = {
-    "title_after": 5,
-    "h1_before": 20,
-    "h1_after": 10,
-    "h2_before": 10,
-    "h2_after": 3,
-    "h2_rule_before": 1,
-    "h2_rule_after": 3,
-    "h3_before": 10,
-    "h3_after": 9,
-    "h4_before": 8,
-    "h4_after": 7,
-    "h5_before": 15,
-    "h5_after": 5,
-    "h6_before": 15,
-    "h6_after": 3,
-    "h7_before": 15,
-    "h7_after": 1,
-    "body_after": 3,
-}
-
-_SPACING_PT.update(
-    {
-        "heading_bar_padding_x": 3 * _PT_PER_MM,
-        "heading_bar_padding_y": 1.5 * _PT_PER_MM,
-        "heading_bar_before": 17,
-        "heading_bar_after": 6,
-    }
-)
-
-_INDENT_MM = {
-    "heading3": 2 * mm,
-    "heading4": 4 * mm,
-    "bullet_left": 8 * mm,
-    "bullet_hanging": 3 * mm,
-}
+_SPACING_MM_VALUES, _SPACING_PT, _INDENT_MM_VALUES = load_career_sheet_spacing_rules()
+_SPACING_MM = {key: value * mm for key, value in _SPACING_MM_VALUES.items()}
+_INDENT_MM = {key: value * mm for key, value in _INDENT_MM_VALUES.items()}
+_BODY_LEADING_PT = _SPACING_PT["body_leading"]
 
 
 def generate_career_sheet_pdf(
     resume_data: dict[str, Any],
     markdown_content: str,
-    additional_info: dict[str, Any],
     options: dict[str, Any],
     output_path: Path,
 ) -> None:
@@ -101,7 +51,6 @@ def generate_career_sheet_pdf(
     Args:
         resume_data: 履歴書データ（personal_info, qualificationsを使用）
         markdown_content: 職務経歴書本文（Markdown形式）
-        additional_info: 追加情報（email等）
         options: 生成オプション（fonts等）
         output_path: 出力先PDFファイルパス
 
@@ -146,7 +95,7 @@ def generate_career_sheet_pdf(
     init_generation_context(options)
 
     # ヘッダー（個人情報・連絡先）
-    flowables.extend(_create_header(resume_data, additional_info, styles, options, color_palette))
+    flowables.extend(_create_header(resume_data, styles, color_palette))
 
     # 免許・資格（履歴書データから）
     if "qualifications" in resume_data and resume_data["qualifications"]:
@@ -203,14 +152,8 @@ def generate_career_sheet_pdf(
 
 def _resolve_color_palette(options: dict[str, Any]) -> dict[str, colors.Color]:
     """カラー設定を解決（未指定はデフォルト）"""
-    configured = options.get("styles", {}).get("colors", {})
-    palette: dict[str, colors.Color] = {}
-    for key, fallback in _DEFAULT_COLOR_TOKENS.items():
-        value = configured.get(key, fallback)
-        if not isinstance(value, str) or not value:
-            value = fallback
-        palette[key] = colors.HexColor(value)
-    return palette
+    resolved = resolve_style_colors(options.get("styles"))
+    return {key: colors.HexColor(value) for key, value in resolved.items()}
 
 
 def _create_styles(
@@ -343,9 +286,7 @@ def _create_styles(
 
 def _create_header(
     resume_data: dict[str, Any],
-    additional_info: dict[str, Any],
     styles: dict[str, ParagraphStyle],
-    options: dict[str, Any],
     palette: dict[str, colors.Color],
 ) -> list[Any]:
     """ヘッダー（個人情報・連絡先）作成（視認性重視）"""
@@ -377,7 +318,7 @@ def _create_header(
         personal_info.get("birthdate", ""), format_style="full"
     )
     phone = personal_info.get("phone", "") or personal_info.get("mobile", "")
-    email = additional_info.get("email", "")
+    email = personal_info.get("email", "")
 
     flowables.extend(_create_section_heading("プロフィール", styles, palette))
 

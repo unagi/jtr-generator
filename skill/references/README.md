@@ -1,10 +1,10 @@
 # jtr-generator - Agent Skill
 
-JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです。
+JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF形式で生成するAgent Skillです。
 
 ## 概要
 
-このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本の履歴書PDFを生成できます。
+このSkillを使用すると、対話的な情報収集またはYAML/JSONファイルから、JIS規格に準拠した日本のレジュメPDFを生成できます。
 
 **対応プラットフォーム:**
 - Agent Skills対応のLLMプラットフォーム（Claude.ai、Codex等）
@@ -12,7 +12,7 @@ JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです
 
 ## 使い方
 
-### 1. 対話的生成
+### 1. 対話的生成（履歴書）
 
 LLMに直接情報を伝えて履歴書を作成します。
 
@@ -24,7 +24,7 @@ LLMに直接情報を伝えて履歴書を作成します。
 
 不足している情報があれば、対話的に質問されます。
 
-### 2. YAMLファイルからの生成
+### 2. YAMLファイルからの生成（履歴書）
 
 あらかじめ用意したYAMLファイルから履歴書を生成します。
 
@@ -33,7 +33,25 @@ LLMに直接情報を伝えて履歴書を作成します。
 このファイルから履歴書を生成してください。
 ```
 
-### 3. オプション指定
+### 3. 職務経歴書の生成
+
+履歴書データ（YAML/JSON）とMarkdown本文を渡して職務経歴書を生成します。
+
+```
+[sample_resume.yamlを添付]
+[sample_career_content.mdを添付]
+職務経歴書を作成してください。
+```
+
+### 4. 履歴書と職務経歴書のまとめて生成
+
+```
+[sample_resume.yamlを添付]
+[sample_career_content.mdを添付]
+履歴書と職務経歴書をまとめて作成してください。
+```
+
+### 5. オプション指定
 
 生成時にオプションを指定できます。
 
@@ -207,7 +225,7 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 ```bash
 cd /path/to/jtr-generator
-python skill/scripts/main.py skill/assets/examples/sample_resume.yaml --date-format wareki
+python skill/scripts/main.py resume skill/assets/examples/sample_resume.yaml --date-format wareki
 ```
 
 ビルド:
@@ -221,7 +239,7 @@ uv run poe build-skill
 
 - **用紙サイズ**: 現在はA4のみサポート（B5は将来実装予定）
 - **証明写真**: 画像エリアは表示されますが、自動埋め込みは未実装
-- **出力先**: カレントディレクトリに `rirekisho.pdf` を生成（`output_path` 指定で変更可）
+- **出力先**: カレントディレクトリに `rirekisho.pdf` または `career_sheet.pdf` を生成（`output_path` 指定で変更可）
 
 ## ライセンス
 
