@@ -194,36 +194,30 @@ if __name__ == "__main__":
     session_options = {"date_format": args.date_format, "paper_size": args.paper_size}
 
     try:
-        if args.command == "resume":
-            output = main(
-                input_data=args.input_file,
-                session_options=session_options,
-                output_path=args.output,
-                document_type="resume",
-            )
-            print(f"履歴書PDFを生成しました: {output}")
-        elif args.command == "career":
-            output = main(
-                input_data=args.input_file,
-                session_options=session_options,
-                output_path=args.output,
-                document_type="career_sheet",
-                markdown_content=args.markdown_file,
-            )
-            print(f"職務経歴書PDFを生成しました: {output}")
-        else:
-            outputs = main(
-                input_data=args.input_file,
-                session_options=session_options,
-                output_path=args.output_dir,
-                document_type="both",
-                markdown_content=args.markdown_file,
-            )
-            if not isinstance(outputs, list):
-                raise ValueError("bothの出力が不正です")
-            resume_path, career_path = outputs
-            print(f"履歴書PDFを生成しました: {resume_path}")
-            print(f"職務経歴書PDFを生成しました: {career_path}")
+        document_type = (
+            "resume"
+            if args.command == "resume"
+            else "career_sheet"
+            if args.command == "career"
+            else "both"
+        )
+        output_target = args.output if args.command in ("resume", "career") else args.output_dir
+        markdown_content = args.markdown_file if args.command in ("career", "both") else None
+        outputs = main(
+            input_data=args.input_file,
+            session_options=session_options,
+            output_path=output_target,
+            document_type=document_type,
+            markdown_content=markdown_content,
+        )
+        output_list = outputs if isinstance(outputs, list) else [outputs]
+        labels = (
+            ["履歴書", "職務経歴書"]
+            if args.command == "both"
+            else ["履歴書" if args.command == "resume" else "職務経歴書"]
+        )
+        for label, path in zip(labels, output_list, strict=False):
+            print(f"{label}PDFを生成しました: {path}")
     except (FileNotFoundError, ValueError) as exc:
         print(f"エラー: {exc}", file=sys.stderr)
         sys.exit(1)
