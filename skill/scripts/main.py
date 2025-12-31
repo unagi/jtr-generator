@@ -146,35 +146,47 @@ def main(
     """
     options = _build_options(session_options)
 
-    if document_type == "resume":
-        data = validate_and_load_data(input_data)
-        final_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
-        generate_resume_pdf(data, options, final_output_path)
-        return final_output_path
+    make_resume = document_type in ("resume", "both")
+    make_career = document_type in ("career_sheet", "both")
 
-    if document_type == "career_sheet":
-        resume_data = validate_and_load_data(input_data)
-        markdown_text = _load_markdown(markdown_content)
-        final_output_path = Path(output_path) if output_path else Path("career_sheet.pdf")
-        generate_career_sheet_pdf(resume_data, markdown_text, options, final_output_path)
-        return final_output_path
+    if not make_resume and not make_career:
+        raise ValueError(f"不明な document_type: {document_type}")
+
+    resume_data = validate_and_load_data(input_data)
+    markdown_text = _load_markdown(markdown_content) if make_career else None
+
+    outputs: list[Path] = []
+    output_dir: Path | None = None
 
     if document_type == "both":
-        resume_data = validate_and_load_data(input_data)
-        markdown_text = _load_markdown(markdown_content)
         output_dir = Path(output_path) if output_path else Path(".")
         if output_dir.suffix:
             raise ValueError("bothの出力先はディレクトリを指定してください")
         if output_dir.exists() and not output_dir.is_dir():
             raise ValueError("bothの出力先はディレクトリを指定してください")
         output_dir.mkdir(parents=True, exist_ok=True)
-        resume_output_path = output_dir / "rirekisho.pdf"
-        career_output_path = output_dir / "career_sheet.pdf"
-        generate_resume_pdf(resume_data, options, resume_output_path)
-        generate_career_sheet_pdf(resume_data, markdown_text, options, career_output_path)
-        return [resume_output_path, career_output_path]
 
-    raise ValueError(f"不明な document_type: {document_type}")
+    if make_resume:
+        if output_dir:
+            resume_output_path = output_dir / "rirekisho.pdf"
+        else:
+            resume_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
+        generate_resume_pdf(resume_data, options, resume_output_path)
+        outputs.append(resume_output_path)
+
+    if make_career:
+        if markdown_text is None:
+            raise ValueError("職務経歴書生成には markdown_content が必要です")
+        if output_dir:
+            career_output_path = output_dir / "career_sheet.pdf"
+        else:
+            career_output_path = Path(output_path) if output_path else Path("career_sheet.pdf")
+        generate_career_sheet_pdf(resume_data, markdown_text, options, career_output_path)
+        outputs.append(career_output_path)
+
+    if document_type == "both":
+        return outputs
+    return outputs[0]
 
 
 if __name__ == "__main__":
