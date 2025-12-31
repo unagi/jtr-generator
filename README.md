@@ -43,7 +43,7 @@ jtr-generator/
 ├── pyproject.toml              # Pythonプロジェクト設定
 ├── skill/                      # Agent Skillsパッケージ
 │   ├── SKILL.md                # LLM向け指示
-│   ├── main.py                 # Skillエントリーポイント（scripts/main.pyのラッパー）
+│   ├── requirements.txt        # Agent Skills依存関係
 │   ├── assets/                 # データ/フォント/スキーマ
 │   │   ├── config.yaml         # 設定テンプレート
 │   │   ├── data/               # レイアウトデータ（A4）
@@ -53,7 +53,7 @@ jtr-generator/
 │   ├── references/             # エンドユーザー向けドキュメント
 │   │   └── README.md
 │   └── scripts/                # 実装本体
-│       ├── main.py             # Skill実行ロジック
+│       ├── main.py             # Skillエントリーポイント
 │       └── jtr/                # 共通実装（PDF生成・データ処理）
 │           ├── pdf_generator.py
 │           ├── resume_data.py
@@ -61,12 +61,12 @@ jtr-generator/
 │           ├── career_sheet_generator.py
 │           └── layout/
 ├── tests/                      # テストコード
-│   ├── jtr/                    # ユニットテスト
+│   ├── scripts/                # エントリーポイント・共通実装のテスト
 │   ├── generators/             # PDF生成テスト
 │   └── fixtures/               # テストデータ
 ├── tools/                      # 開発ツール
-│   ├── build_skill.py          # Agent Skillsパッケージビルド
 │   ├── extract_lines.py        # 罫線抽出ツール
+│   ├── manual_career_sheet_generation.py  # 手動テスト用スクリプト
 │   └── layout/                 # レイアウト検証ツール
 ├── docs/                       # 開発ドキュメント
 │   └── development/

@@ -45,7 +45,7 @@
 
 **パス関連の注意点**:
 - ビルド成果物は`build/jtr-generator.zip`に生成される
-- ビルドスクリプト（`tools/build_skill.py`）がソースコードを収集・パッケージング
+- `skill/`直下のファイルをzip化し、`skill/requirements.txt`を同梱
 
 **ハッシュ固定されたアクション**:
 - `actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5` (v4)
@@ -171,7 +171,7 @@ uv run poe test-cov     # カバレッジ付きテスト
 
 **Agent Skillsにおける出力ファイル指定**:
 
-`skill/main.py`の`main()`関数は`output_path`パラメータで出力先を指定できます。
+`skill/scripts/main.py`の`main()`関数は`output_path`パラメータで出力先を指定できます。
 
 **パラメータ**:
 ```python
@@ -207,7 +207,7 @@ main(data, output_path="outputs/2025_resume.pdf")
 
 - [ ] `sonar-project.properties` - `sonar.sources`、`sonar.tests`、`sonar.exclusions`、`sonar.test.exclusions`
 - [ ] `.github/workflows/ci.yml` - カバレッジファイルのパス
-- [ ] `tools/build_skill.py` - Agent Skillsパッケージのファイルコピー処理
+- [ ] `poe build-skill` - Agent Skillsパッケージのzip生成処理
 - [ ] `pyproject.toml` - pytest、mypy、coverage設定
 - [ ] テストコード内のモジュールスタブ（`tests/tools/test_*.py`）
 

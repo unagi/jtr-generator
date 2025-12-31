@@ -25,41 +25,52 @@ Examples:
 3. オプション指定:
    「A4サイズ、和暦で履歴書を作成してください。」
 """
+# ruff: isort: skip_file
 
 import sys
+from argparse import ArgumentParser
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-if TYPE_CHECKING:
-    from .jtr import (
-        generate_career_sheet_pdf,
-        generate_resume_pdf,
-        load_config,
-        load_validated_data,
-        resolve_font_paths,
-        validate_and_load_data,
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+SKILL_ROOT = SCRIPT_DIR.parent
+
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+if str(SKILL_ROOT) not in sys.path:
+    sys.path.insert(0, str(SKILL_ROOT))
+
+from jtr import (  # noqa: E402
+    generate_career_sheet_pdf,
+    generate_resume_pdf,
+    load_config,
+    load_validated_data,
+    resolve_font_paths,
+    validate_and_load_data,
+)
+from jtr.paths import get_assets_path  # noqa: E402
+
+
+def _parse_args() -> tuple[Path, dict[str, str]]:
+    parser = ArgumentParser(description="日本の履歴書PDF生成")
+    parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
+    parser.add_argument(
+        "--date-format",
+        choices=["seireki", "wareki"],
+        default="seireki",
+        help="日付形式",
     )
-    from .jtr.paths import get_assets_path
-elif __package__:
-    from .jtr import (
-        generate_career_sheet_pdf,
-        generate_resume_pdf,
-        load_config,
-        load_validated_data,
-        resolve_font_paths,
-        validate_and_load_data,
+    parser.add_argument(
+        "--paper-size",
+        choices=["A4", "B5"],
+        default="A4",
+        help="用紙サイズ（B5は将来対応予定）",
     )
-    from .jtr.paths import get_assets_path
-else:
-    from jtr import (
-        generate_career_sheet_pdf,
-        generate_resume_pdf,
-        load_config,
-        load_validated_data,
-        resolve_font_paths,
-        validate_and_load_data,
-    )
-    from jtr.paths import get_assets_path
+
+    args = parser.parse_args()
+    session_options = {"date_format": args.date_format, "paper_size": args.paper_size}
+    return args.input_file, session_options
 
 
 def main(
@@ -152,24 +163,11 @@ def main(
 
 
 if __name__ == "__main__":
-    # ローカルテスト用のエントリーポイント
-    import argparse
-
-    parser = argparse.ArgumentParser(description="日本の履歴書PDF生成")
-    parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
-    parser.add_argument(
-        "--date-format", choices=["seireki", "wareki"], default="seireki", help="日付形式"
-    )
-    parser.add_argument(
-        "--paper-size", choices=["A4", "B5"], default="A4", help="用紙サイズ（B5は将来対応予定）"
-    )
-    args = parser.parse_args()
-
-    session_options = {"date_format": args.date_format, "paper_size": args.paper_size}
+    input_file, options = _parse_args()
 
     try:
-        output = main(args.input_file, session_options)
+        output = main(input_file, options)
         print(f"履歴書PDFを生成しました: {output}")
-    except (FileNotFoundError, ValueError) as e:
-        print(f"エラー: {e}", file=sys.stderr)
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"エラー: {exc}", file=sys.stderr)
         sys.exit(1)
