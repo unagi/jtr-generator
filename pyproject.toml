@@ -19,7 +19,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["skill"]
+only-include = ["skill"]
 
 # Ruff設定
 [tool.ruff]
@@ -119,7 +119,7 @@ sequence = [
 [tool.poe.tasks.build-skill]
 help = "Build Agent Skills package (jtr-generator.zip)"
 sequence = [
-    { cmd = "python tools/build_skill.py" },
+    { cmd = "cd skill && zip -r ../build/jtr-generator.zip . -x \"*/__pycache__/*\"" },
 ]
 
 [dependency-groups]

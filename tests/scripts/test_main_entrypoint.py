@@ -105,3 +105,23 @@ def test_career_sheet_branch_delegates(monkeypatch: Any, tmp_path: Path) -> None
     assert captured["options"]["paper_size"] == "B5"
     assert captured["options"]["fonts"] == {}
     assert captured["output_path"] == destination
+
+
+def test_parse_args_builds_session_options(monkeypatch: Any) -> None:
+    module = reload(scripts_main)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "main.py",
+            "inputs/resume.yaml",
+            "--date-format",
+            "wareki",
+            "--paper-size",
+            "B5",
+        ],
+    )
+
+    input_file, options = module._parse_args()
+
+    assert input_file == Path("inputs/resume.yaml")
+    assert options == {"date_format": "wareki", "paper_size": "B5"}

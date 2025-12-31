@@ -228,12 +228,10 @@ jtr-generator/
 ├── skill/                  # 配布パッケージのルート相当
 │   ├── SKILL.md            # LLM向け指示
 │   ├── README.md           # エンドユーザー向け
-│   ├── main.py             # エントリーポイント
+│   ├── requirements.txt    # Agent Skills仕様に基づく依存関係
 │   ├── config.yaml         # 設定テンプレート
-│   ├── jtr/                # 共通実装（LLM非依存）
-│   ├── data/               # レイアウトデータ（A4）
-│   ├── schemas/            # JSON Schema
-│   ├── examples/           # サンプルデータ
+│   ├── scripts/            # エントリーポイントと共通実装
+│   ├── assets/             # レイアウトデータ・スキーマ・サンプル
 │   └── fonts/              # デフォルトフォント
 ├── tools/                  # レイアウト検証・抽出ツール
 ├── tests/                  # テストコード
@@ -244,7 +242,7 @@ jtr-generator/
 
 **設計方針:**
 - **skill/scripts/jtr/**: LLM非依存の共通実装（再利用可能）
-- **skill/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
+- **skill/scripts/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
 
 **詳細**: [docs/specifications.md - アーキテクチャ](docs/specifications.md)を参照してください。
 

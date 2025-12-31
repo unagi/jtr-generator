@@ -10,9 +10,8 @@
 
 Agent Skillsパッケージは `skill/` を基点にビルドされます。
 
-1. `tools/build_skill.py` が `skill/` を `build/jtr-generator/` にコピー
-2. `requirements.txt` を生成
-3. `build/jtr-generator.zip` を作成
+1. `skill/` 配下をそのままzip化（`build/jtr-generator.zip`）
+2. 依存関係は `skill/requirements.txt` に同梱する
 
 ### 配布パッケージの構成
 
@@ -21,8 +20,9 @@ Agent Skillsパッケージは `skill/` を基点にビルドされます。
 | jtr/* | 共通実装（PDF生成、検証、日付処理など） |
 | schemas/* | データスキーマ |
 | data/* | レイアウトデータ |
-| main.py | エントリーポイント |
+| scripts/main.py | エントリーポイント |
 | config.yaml | 設定テンプレート |
+| requirements.txt | Agent Skills用依存関係 |
 | SKILL.md | LLM向け指示 |
 | README.md | エンドユーザー向けガイド |
 

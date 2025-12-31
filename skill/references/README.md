@@ -8,7 +8,7 @@ JIS規格準拠の日本の履歴書をPDF形式で生成するAgent Skillです
 
 **対応プラットフォーム:**
 - Agent Skills対応のLLMプラットフォーム（Claude.ai、Codex等）
-- エントリーポイント: `skill/main.py`（内部で`scripts/main.py`に委譲。zip化時はルート直下に展開）
+- エントリーポイント: `skill/scripts/main.py`（zip化時はルート直下に展開）
 
 ## 使い方
 
@@ -199,7 +199,7 @@ BIZ UDMinchoフォントがインストールされているか確認してく�
 
 ```bash
 cd /path/to/jtr-generator
-python skill/main.py skill/assets/examples/sample_resume.yaml --date-format wareki
+python skill/scripts/main.py skill/assets/examples/sample_resume.yaml --date-format wareki
 ```
 
 ビルド:

@@ -33,7 +33,9 @@ jobs:
 
       - name: Build Agent Skills package
         run: |
-          uv run poe build-skill
+          mkdir -p build
+          cd skill
+          zip -r ../build/jtr-generator.zip . -x "*/__pycache__/*"
 
       - name: Determine version
         id: version
