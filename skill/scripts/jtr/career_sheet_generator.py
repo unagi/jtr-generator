@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +28,7 @@ from reportlab.platypus import (
 from .fonts import register_font
 from .generation_context import get_generation_context, init_generation_context
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
+from .paths import get_assets_path
 
 __all__ = ["generate_career_sheet_pdf"]
 
@@ -37,20 +39,19 @@ _DEFAULT_COLOR_TOKENS = {
     "accent": "#e36162",
 }
 
-_SPACING_MM = {
-    "xs": 1.5 * mm,
-    "sm": 2 * mm,
-    "md": 3 * mm,
-    "lg": 4 * mm,
-    "xl": 6 * mm,
-    "xxl": 8 * mm,
-    "xxxl": 10 * mm,
-}
-
-_BODY_LEADING_PT = 15
 _PT_PER_MM = 72 / 25.4
 
-_SPACING_PT: dict[str, float] = {
+_DEFAULT_SPACING_MM_VALUES: dict[str, float] = {
+    "xs": 1.5,
+    "sm": 2.0,
+    "md": 3.0,
+    "lg": 4.0,
+    "xl": 6.0,
+    "xxl": 8.0,
+    "xxxl": 10.0,
+}
+
+_DEFAULT_SPACING_PT_VALUES: dict[str, float] = {
     "title_after": 5,
     "h1_before": 20,
     "h1_after": 10,
@@ -69,23 +70,54 @@ _SPACING_PT: dict[str, float] = {
     "h7_before": 15,
     "h7_after": 1,
     "body_after": 3,
+    "heading_bar_padding_x": 3 * _PT_PER_MM,
+    "heading_bar_padding_y": 1.5 * _PT_PER_MM,
+    "heading_bar_before": 17,
+    "heading_bar_after": 6,
+    "body_leading": 15,
 }
 
-_SPACING_PT.update(
-    {
-        "heading_bar_padding_x": 3 * _PT_PER_MM,
-        "heading_bar_padding_y": 1.5 * _PT_PER_MM,
-        "heading_bar_before": 17,
-        "heading_bar_after": 6,
-    }
-)
-
-_INDENT_MM = {
-    "heading3": 2 * mm,
-    "heading4": 4 * mm,
-    "bullet_left": 8 * mm,
-    "bullet_hanging": 3 * mm,
+_DEFAULT_INDENT_MM_VALUES: dict[str, float] = {
+    "heading3": 2.0,
+    "heading4": 4.0,
+    "bullet_left": 8.0,
+    "bullet_hanging": 3.0,
 }
+
+
+def _load_spacing_rules() -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
+    rules_path = get_assets_path("data", "a4", "rules", "career_sheet_spacing.json")
+    spacing_mm = dict(_DEFAULT_SPACING_MM_VALUES)
+    spacing_pt = dict(_DEFAULT_SPACING_PT_VALUES)
+    indent_mm = dict(_DEFAULT_INDENT_MM_VALUES)
+
+    if not rules_path.exists():
+        return spacing_mm, spacing_pt, indent_mm
+
+    try:
+        with open(rules_path, encoding="utf-8") as file:
+            loaded = json.load(file)
+    except (OSError, json.JSONDecodeError):
+        return spacing_mm, spacing_pt, indent_mm
+
+    if isinstance(loaded, dict):
+        for key, value in loaded.get("spacing_mm", {}).items():
+            if isinstance(value, (int, float)):
+                spacing_mm[key] = float(value)
+        for key, value in loaded.get("spacing_pt", {}).items():
+            if isinstance(value, (int, float)):
+                spacing_pt[key] = float(value)
+        for key, value in loaded.get("indent_mm", {}).items():
+            if isinstance(value, (int, float)):
+                indent_mm[key] = float(value)
+
+    return spacing_mm, spacing_pt, indent_mm
+
+
+_SPACING_MM_VALUES, _SPACING_PT, _INDENT_MM_VALUES = _load_spacing_rules()
+_SPACING_MM = {key: value * mm for key, value in _SPACING_MM_VALUES.items()}
+_INDENT_MM = {key: value * mm for key, value in _INDENT_MM_VALUES.items()}
+_BODY_LEADING_PT = _SPACING_PT.get("body_leading", _DEFAULT_SPACING_PT_VALUES["body_leading"])
 
 
 def generate_career_sheet_pdf(
