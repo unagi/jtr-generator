@@ -116,6 +116,7 @@ def main(
     # 4. PDF生成オプション
     options = dict(config.get("options", {}))
     options["fonts"] = config.get("fonts", {})
+    options["styles"] = config.get("styles", {})
 
     # 5. document_typeで分岐
     if document_type == "resume":

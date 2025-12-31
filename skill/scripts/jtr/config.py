@@ -16,7 +16,7 @@ def load_config(config_path: Path | None = None) -> dict[str, Any]:
         config_path: config.yamlのパス（Noneの場合はデフォルト設定を返す）
 
     Returns:
-        設定辞書（date_format, paper_size, fonts等）
+        設定辞書（date_format, paper_size, fonts, styles等）
 
     Raises:
         ValueError: config.yamlのパースエラー時
@@ -60,6 +60,15 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
                 )
             config["fonts"]["main"] = str(custom_font_path)
 
+        if "career_sheet_main" in config["fonts"]:
+            career_font_path = get_assets_path(config["fonts"]["career_sheet_main"])
+            if not career_font_path.exists():
+                raise FileNotFoundError(
+                    f"職務経歴書フォントファイルが見つかりません: {career_font_path}\n"
+                    "config.yamlのfonts.career_sheet_main設定を確認してください。"
+                )
+            config["fonts"]["career_sheet_main"] = str(career_font_path)
+
         if "heading" in config["fonts"]:
             heading_font_path = get_assets_path(config["fonts"]["heading"])
             if not heading_font_path.exists():
@@ -77,5 +86,8 @@ def resolve_font_paths(config: dict[str, Any]) -> dict[str, Any]:
                 "BIZ UDMinchoフォントがインストールされているか確認してください。"
             )
         config["fonts"] = {"main": str(default_font_path)}
+
+    if "career_sheet_main" not in config["fonts"]:
+        config["fonts"]["career_sheet_main"] = config["fonts"]["main"]
 
     return config

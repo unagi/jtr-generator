@@ -21,7 +21,7 @@ def test_generate_blank_resume_script(monkeypatch, tmp_path: Path) -> None:
             writer.write(f)
 
     dummy_module = types.SimpleNamespace(generate_resume_pdf=_stub_generate_resume_pdf)
-    monkeypatch.setitem(sys.modules, "skill.scripts.jtr.pdf_generator", dummy_module)
+    monkeypatch.setitem(sys.modules, "skill.scripts.jtr.resume_generator", dummy_module)
 
     runpy.run_path(repo_root / "tools/generate_blank_resume.py", run_name="__main__")
 

@@ -9,11 +9,26 @@ options:
   # 用紙サイズ: "A4" または "B5"（B5は将来実装予定）
   paper_size: A4
 
+# デザイン設定（職務経歴書）
+styles:
+  colors:
+    # 本文色
+    body_text: "#050315"
+    # 見出しのメインカラー
+    main: "#6761af"
+    # 補助（罫線/背景）
+    sub: "#cdc69c"
+    # アクセント（重要語/数値）
+    accent: "#e36162"
+
 # フォント設定（オプション）
 # 未指定の場合、デフォルトフォント（BIZ UDMincho）が自動使用されます
 fonts:
   # 本文用フォント（相対パス: jtr-generator/を基準）
-  # main: fonts/custom/your-font.ttf
+  main: fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf
+
+  # 職務経歴書用フォント（BIZ UD Gothic）
+  career_sheet_main: fonts/BIZ_UDGothic/BIZUDGothic-Regular.ttf
 
   # 見出し用フォント（オプション）
   # heading: fonts/custom/your-font-bold.ttf

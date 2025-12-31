@@ -2,7 +2,19 @@
 
 import pytest
 
-from skill.scripts.jtr.japanese_era import convert_to_wareki
+from skill.scripts.jtr.generation_context import (
+    GenerationContext,
+    get_generation_context,
+    init_generation_context,
+    set_generation_context,
+)
+from skill.scripts.jtr.japanese_era import (
+    JapaneseDateFormatter,
+    convert_to_wareki,
+    format_japanese_date,
+    format_japanese_date_or_raw,
+    format_seireki_japanese,
+)
 
 
 class TestConvertToWareki:
@@ -127,3 +139,63 @@ class TestConvertToWareki:
         """昭和→平成の境界（1989年1月7日→8日）"""
         assert convert_to_wareki("1989-01-07", format="full") == "昭和64年1月7日"
         assert convert_to_wareki("1989-01-08", format="full") == "平成元年1月8日"
+
+
+def test_format_seireki_japanese() -> None:
+    assert format_seireki_japanese("1990-04-01", format_style="full") == "1990年4月1日"
+    assert format_seireki_japanese("1990-04-01", format_style="short") == "1990.4.1"
+    assert format_seireki_japanese("1990-04", format_style="full") == "1990年4月"
+    assert format_seireki_japanese("1990-04", format_style="short") == "1990.4"
+
+
+def test_format_japanese_date() -> None:
+    assert format_japanese_date("2023-04-01", "seireki", format_style="full") == "2023年4月1日"
+    assert format_japanese_date("2023-04-01", "seireki", format_style="short") == "2023.4.1"
+    assert format_japanese_date("2023-04-01", "wareki", format_style="full") == "令和5年4月1日"
+    assert format_japanese_date("2023-04-01", "wareki", format_style="short") == "R5.4.1"
+
+
+def test_format_japanese_date_or_raw() -> None:
+    assert format_japanese_date_or_raw("1990-04-01", "seireki", format_style="full") == (
+        "1990年4月1日"
+    )
+    assert format_japanese_date_or_raw("1990/04/01", "seireki", format_style="full") == (
+        "1990/04/01"
+    )
+
+
+def test_japanese_date_formatter() -> None:
+    formatter = JapaneseDateFormatter("wareki", default_format_style="full")
+    assert formatter.format("2023-04-01", format_style="short") == "R5.4.1"
+    assert formatter.format_or_raw("2023-04", format_style="full") == "令和5年4月"
+    assert formatter.format_or_raw("2023/04/01", format_style="full") == "2023/04/01"
+
+
+def test_japanese_date_formatter_invalid_config() -> None:
+    with pytest.raises(ValueError, match="date_format"):
+        JapaneseDateFormatter("invalid")  # type: ignore
+    with pytest.raises(ValueError, match="default_format_style"):
+        JapaneseDateFormatter("seireki", default_format_style="inline")  # type: ignore
+
+
+def test_format_japanese_date_invalid_format() -> None:
+    with pytest.raises(ValueError, match="date_format"):
+        format_japanese_date("2023-04-01", "invalid", format_style="full")  # type: ignore
+    with pytest.raises(ValueError, match="format_style"):
+        format_seireki_japanese("2023-04-01", format_style="inline")  # type: ignore
+
+
+def test_generation_context_init_and_get() -> None:
+    context = init_generation_context({"date_format": "wareki"})
+    assert context.date_format == "wareki"
+    assert context.date_formatter.format("2023-04-01") == "令和5年4月1日"
+    assert get_generation_context().date_format == "wareki"
+
+
+def test_generation_context_set_override() -> None:
+    context = GenerationContext(
+        date_format="seireki",
+        date_formatter=JapaneseDateFormatter("seireki", default_format_style="full"),
+    )
+    set_generation_context(context)
+    assert get_generation_context().date_format == "seireki"

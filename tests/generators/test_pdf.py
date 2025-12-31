@@ -9,7 +9,7 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr.pdf_generator import generate_resume_pdf
+from skill.scripts.jtr.resume_generator import generate_resume_pdf
 
 
 def test_generate_resume_pdf_basic(tmp_path: Path) -> None:
@@ -109,7 +109,7 @@ def test_layout_file_not_found_error(tmp_path: Path, monkeypatch) -> None:
     def mock_get_layout_path(*args, **kwargs):
         return tmp_path / "nonexistent_layout.json"
 
-    monkeypatch.setattr("skill.scripts.jtr.pdf_generator.get_layout_path", mock_get_layout_path)
+    monkeypatch.setattr("skill.scripts.jtr.resume_generator.get_layout_path", mock_get_layout_path)
 
     data = {}
     options = {"paper_size": "A4"}
@@ -128,7 +128,8 @@ def test_layout_file_invalid_json_error(tmp_path: Path, monkeypatch) -> None:
 
     # get_layout_pathをモックして不正なJSONファイルを返す
     monkeypatch.setattr(
-        "skill.scripts.jtr.pdf_generator.get_layout_path", lambda *args, **kwargs: invalid_json_path
+        "skill.scripts.jtr.resume_generator.get_layout_path",
+        lambda *args, **kwargs: invalid_json_path,
     )
 
     data = {}
@@ -159,7 +160,7 @@ def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
 
     # get_layout_pathをモックして権限のないファイルを返す
     monkeypatch.setattr(
-        "skill.scripts.jtr.pdf_generator.get_layout_path", lambda *args, **kwargs: no_read_path
+        "skill.scripts.jtr.resume_generator.get_layout_path", lambda *args, **kwargs: no_read_path
     )
 
     data = {}

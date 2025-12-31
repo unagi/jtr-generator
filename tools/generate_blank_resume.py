@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from skill.scripts.jtr.pdf_generator import generate_resume_pdf
+from skill.scripts.jtr.resume_generator import generate_resume_pdf
 
 if __name__ == "__main__":
     output_dir = Path("outputs")

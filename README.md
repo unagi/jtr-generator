@@ -55,7 +55,7 @@ jtr-generator/
 │   └── scripts/                # 実装本体
 │       ├── main.py             # Skillエントリーポイント
 │       └── jtr/                # 共通実装（PDF生成・データ処理）
-│           ├── pdf_generator.py
+│           ├── resume_generator.py
 │           ├── resume_data.py
 │           ├── japanese_era.py
 │           ├── career_sheet_generator.py
