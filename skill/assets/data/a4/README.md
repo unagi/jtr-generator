@@ -235,7 +235,7 @@ uv run python tools/layout/analyze_data_field_alignment.py
 
 ```python
 from pathlib import Path
-from skill.scripts.jtr.pdf_generator import generate_resume_pdf
+from skill.scripts.jtr.resume_generator import generate_resume_pdf
 
 output_path = Path("outputs/rirekisho.pdf")
 generate_resume_pdf({}, {"paper_size": "A4"}, output_path)

@@ -32,7 +32,7 @@ PDF生成はOS依存のネイティブライブラリを避け、**OS非依存�
 履歴書（絶対レイアウト）はReportLabで確定し、職務経歴書はOS非依存であれば別ライブラリも検討可能とします。
 
 **skill/scripts/jtr/** - 共通実装
-- `pdf_generator.py`: 履歴書PDF生成（OS非依存ライブラリ、履歴書はReportLabで固定）
+- `resume_generator.py`: 履歴書PDF生成（OS非依存ライブラリ、履歴書はReportLabで固定）
 - `resume_data.py`: YAML/JSON読み込み・JSON Schemaバリデーション
 - `japanese_era.py`: 和暦変換（西暦 ↔ 令和/平成/昭和）
 - `layout/`: レイアウト計算・フォントメトリクス関連

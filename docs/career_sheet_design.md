@@ -127,7 +127,7 @@ skill/
 │   ├── main.py                                     # 更新: document_type分岐追加
 │   └── jtr/                                        # 共通実装
 │       ├── __init__.py                             # 更新: 新規関数のエクスポート追加
-│       ├── pdf_generator.py                       # 既存: 履歴書PDF生成
+│       ├── resume_generator.py                       # 既存: 履歴書PDF生成
 │       ├── career_sheet_generator.py              # 新規: 職務経歴書PDF生成
 │       ├── markdown_to_richtext.py                # 新規: Markdown → リッチテキスト変換
 │       ├── resume_data.py                         # 既存: データ読み込み・検証

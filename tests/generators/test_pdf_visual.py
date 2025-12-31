@@ -40,7 +40,7 @@ try:
 except ImportError:
     PDF2IMAGE_AVAILABLE = False
 
-from skill.scripts.jtr.pdf_generator import generate_resume_pdf
+from skill.scripts.jtr.resume_generator import generate_resume_pdf
 
 # pdf2imageが利用できない場合はテストをスキップ
 pytestmark = pytest.mark.skipif(

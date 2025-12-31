@@ -25,6 +25,7 @@ from reportlab.platypus import (
 )
 
 from .fonts import register_font
+from .generation_context import get_generation_context, init_generation_context
 from .markdown_to_richtext import HeadingBar, markdown_to_flowables
 
 __all__ = ["generate_career_sheet_pdf"]
@@ -57,9 +58,9 @@ _SPACING_PT: dict[str, float] = {
     "h2_after": 3,
     "h2_rule_before": 1,
     "h2_rule_after": 3,
-    "h3_before": 15,
+    "h3_before": 10,
     "h3_after": 9,
-    "h4_before": 15,
+    "h4_before": 8,
     "h4_after": 7,
     "h5_before": 15,
     "h5_after": 5,
@@ -75,7 +76,7 @@ _SPACING_PT.update(
         "heading_bar_padding_x": 3 * _PT_PER_MM,
         "heading_bar_padding_y": 1.5 * _PT_PER_MM,
         "heading_bar_before": 17,
-        "heading_bar_after": 10,
+        "heading_bar_after": 6,
     }
 )
 
@@ -141,6 +142,8 @@ def generate_career_sheet_pdf(
 
     # Flowables作成
     flowables: list[Any] = []
+
+    init_generation_context(options)
 
     # ヘッダー（個人情報・連絡先）
     flowables.extend(_create_header(resume_data, additional_info, styles, options, color_palette))
@@ -354,17 +357,9 @@ def _create_header(
     # 日付（右寄せ、date_formatオプションに対応）
     from datetime import datetime
 
-    from .japanese_era import convert_to_wareki
-
     now = datetime.now()
-    date_format = options.get("date_format", "seireki")
-
-    if date_format == "wareki":
-        # 和暦変換
-        date_text = f"{convert_to_wareki(now.strftime('%Y-%m-%d'))} 現在"
-    else:
-        # 西暦
-        date_text = f"{now.year}年{now.month}月{now.day}日 現在"
+    date_formatter = get_generation_context().date_formatter
+    date_text = f"{date_formatter.format(now.strftime('%Y-%m-%d'))} 現在"
 
     date_style = ParagraphStyle(
         "DateStyle",
@@ -378,39 +373,39 @@ def _create_header(
     # 個人情報（氏名を強調）
     personal_info = resume_data.get("personal_info", {})
     name = personal_info.get("name", "")
-    birthdate = personal_info.get("birthdate", "")
+    birthdate = date_formatter.format_or_raw(
+        personal_info.get("birthdate", ""), format_style="full"
+    )
     phone = personal_info.get("phone", "") or personal_info.get("mobile", "")
     email = additional_info.get("email", "")
 
     flowables.extend(_create_section_heading("プロフィール", styles, palette))
 
-    # 氏名を大きく表示
-    flowables.append(Paragraph(name, styles["NameHeader"]))
-    flowables.append(Spacer(1, _SPACING_MM["md"]))
-
     # 連絡先情報をシンプルなテーブルで
     contact_data = [
-        ["生年月日", birthdate],
-        ["電話", phone],
-        ["メール", email],
+        [f"氏名: {name}".strip(), f"電話: {phone}".strip()],
+        [f"生年月日: {birthdate}".strip(), f"メール: {email}".strip()],
     ]
 
     contact_table = Table(
         contact_data,
-        colWidths=[25 * mm, 145 * mm],
-        rowHeights=[_SPACING_MM["xl"], _SPACING_MM["xl"], _SPACING_MM["xl"]],
+        colWidths=[85 * mm, 85 * mm],
+        rowHeights=[_SPACING_MM["xl"], _SPACING_MM["xl"]],
     )
 
     contact_table.setStyle(
         TableStyle(
             [
-                ("FONT", (0, 0), (-1, -1), styles["Header"].fontName, 9),
-                ("ALIGN", (0, 0), (0, -1), "LEFT"),
-                ("ALIGN", (1, 0), (1, -1), "LEFT"),
+                (
+                    "FONT",
+                    (0, 0),
+                    (-1, -1),
+                    styles["BodyText"].fontName,
+                    styles["BodyText"].fontSize,
+                ),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TEXTCOLOR", (0, 0), (-1, -1), styles["BodyText"].textColor),
-                ("TEXTCOLOR", (0, 0), (0, -1), styles["Header"].textColor),
-                ("BACKGROUND", (0, 0), (0, -1), palette["sub"]),
                 ("LINEBELOW", (0, 0), (-1, -1), 0.5, palette["sub"]),
                 ("LEFTPADDING", (0, 0), (-1, -1), _SPACING_MM["md"]),
                 ("RIGHTPADDING", (0, 0), (-1, -1), _SPACING_MM["md"]),
@@ -421,7 +416,7 @@ def _create_header(
     )
 
     flowables.append(contact_table)
-    flowables.append(Spacer(1, _SPACING_MM["xxxl"]))
+    flowables.append(Spacer(1, _SPACING_MM["xl"]))
 
     return flowables
 
@@ -436,10 +431,11 @@ def _create_qualifications_section(
 
     flowables.extend(_create_section_heading("免許・資格", styles, palette))
 
+    date_formatter = get_generation_context().date_formatter
     for qual in qualifications:
-        date_str = qual.get("date", "")
+        date_str = date_formatter.format_or_raw(qual.get("date", ""), format_style="full")
         name = qual.get("name", "")
-        flowables.append(Paragraph(f"{date_str} {name}", styles["BodyText"]))
+        flowables.append(Paragraph(f"• {date_str} {name}".strip(), styles["Bullet"]))
 
     flowables.append(Spacer(1, _SPACING_MM["xxl"]))
 

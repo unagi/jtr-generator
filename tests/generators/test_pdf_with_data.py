@@ -11,7 +11,8 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr.pdf_generator import (
+from skill.scripts.jtr.generation_context import init_generation_context
+from skill.scripts.jtr.resume_generator import (
     _calculate_age,
     _format_date,
     _get_field_value,
@@ -84,6 +85,7 @@ def test_calculate_age_invalid_format():
 
 def test_format_date_seireki():
     """西暦フォーマットのテスト"""
+    init_generation_context({"date_format": "seireki"})
     # full形式
     result = _format_date("1990-04-01", "seireki", "full")
     assert result == "1990年4月1日"
@@ -99,6 +101,7 @@ def test_format_date_seireki():
 
 def test_format_date_wareki():
     """和暦フォーマットのテスト"""
+    init_generation_context({"date_format": "wareki"})
     # full形式
     result = _format_date("2023-04-01", "wareki", "full")
     assert result == "令和5年4月1日"
@@ -114,12 +117,14 @@ def test_format_date_wareki():
 
 def test_format_date_wareki_gannen():
     """和暦元年のテスト"""
+    init_generation_context({"date_format": "wareki"})
     result = _format_date("2019-05-01", "wareki", "full")
     assert result == "令和元年5月1日"
 
 
 def test_format_date_inline_spaced():
     """inline_spaced形式のテスト（スペース区切りの和暦）"""
+    init_generation_context({"date_format": "wareki"})
     result = _format_date("2023-04-01", "wareki", "inline_spaced")
     # "令和 5 年 4 月 1 日"のような形式を期待
     assert "令和" in result
@@ -133,6 +138,7 @@ def test_format_date_inline_spaced():
 def test_format_date_invalid_format():
     """無効な日付フォーマットでValueErrorが発生すること"""
     with pytest.raises(ValueError, match="Invalid date format"):
+        init_generation_context({"date_format": "seireki"})
         _format_date("2023/04/01", "seireki", "full")
 
 
@@ -266,7 +272,7 @@ def test_generate_resume_with_education_wareki_format(tmp_path):
 
 def test_format_content():
     """_format_content関数のテスト"""
-    from skill.scripts.jtr.pdf_generator import _format_content
+    from skill.scripts.jtr.resume_generator import _format_content
 
     # 学歴（department付き）
     item = {"school": "〇〇大学", "department": "工学部"}

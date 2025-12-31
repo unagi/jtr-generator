@@ -8,12 +8,13 @@ JIS規格準拠の履歴書PDFを生成します。
 import json
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 from .fonts import find_default_font, register_font
+from .generation_context import get_generation_context, init_generation_context
 from .japanese_era import convert_to_wareki
 from .paths import get_layout_path
 
@@ -61,7 +62,8 @@ def generate_resume_pdf(
     is_blank = not data or all(not v for v in data.values())
 
     # 日付フォーマット取得
-    date_format = options.get("date_format", "seireki")
+    context = init_generation_context(options)
+    date_format = context.date_format
 
     # Page 1: 罫線 + 固定ラベル + データフィールド
     _draw_lines(c, layout_data["page1_lines"])
@@ -207,6 +209,11 @@ def _format_date(
         return str(parsed_date.day)
 
     # 通常のフォーマット
+    if format_style in ("full", "short"):
+        format_style_literal = cast(Literal["full", "short"], format_style)
+        formatter = get_generation_context().date_formatter
+        return formatter.format(date_str, format_style=format_style_literal)
+
     if date_format == "wareki":
         if format_style == "inline":
             # 和暦でスペース区切り形式（例: "令和 5 年 4 月 1 日"）
@@ -222,18 +229,13 @@ def _format_date(
             result = re.sub(r"(\D)(\d)", r"\1 \2", full_str)  # 文字と数字の間
             result = re.sub(r"(\d)(\D)", r"\1 \2", result)  # 数字と文字の間
             return result
-        else:
-            return convert_to_wareki(date_str, format=format_style)
+        raise ValueError(f"Invalid format_style: {format_style}")
     elif date_format == "seireki":
         # 西暦形式
-        if format_style == "full":
-            return f"{parsed_date.year}年{parsed_date.month}月{parsed_date.day}日"
-        elif format_style == "inline":
+        if format_style == "inline":
             return f"{parsed_date.year} 年 {parsed_date.month} 月 {parsed_date.day} 日"
         elif format_style == "inline_spaced":
             return f"{parsed_date.year} 年 {parsed_date.month} 月 {parsed_date.day} 日"
-        elif format_style == "short":
-            return f"{parsed_date.year}.{parsed_date.month}.{parsed_date.day}"
         else:
             raise ValueError(f"Invalid format_style: {format_style}")
     else:
@@ -273,7 +275,7 @@ def _draw_data_fields(
     data: dict[str, Any],
     field_defs: dict[str, Any],
     font_name: str,
-    date_format: Literal["seireki", "wareki"] = "seireki",
+    date_format: Literal["seireki", "wareki"],
 ) -> None:
     """
     個人情報フィールドを描画（v4フォーマット対応）
