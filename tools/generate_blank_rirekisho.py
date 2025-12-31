@@ -4,13 +4,13 @@
 
 from pathlib import Path
 
-from skill.scripts.jtr.resume_generator import generate_resume_pdf
+from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 if __name__ == "__main__":
     output_dir = Path("outputs")
     output_dir.mkdir(exist_ok=True)
 
-    output_path = output_dir / "test_resume_lines_only.pdf"
+    output_path = output_dir / "test_rirekisho_lines_only.pdf"
 
     # 空のデータとオプション
     data = {}
@@ -20,6 +20,6 @@ if __name__ == "__main__":
     }
 
     print(f"Generating PDF: {output_path}")
-    generate_resume_pdf(data, options, output_path)
+    generate_rirekisho_pdf(data, options, output_path)
     print("✓ PDF generated successfully")
     print(f"  File size: {output_path.stat().st_size:,} bytes")

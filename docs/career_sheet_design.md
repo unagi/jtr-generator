@@ -68,7 +68,7 @@ skill/
 
 ### DOCX参照解析（デザイン抽出）
 
-- 参照DOCX（`tests/fixtures/resume_sample.docx`）を解析し、ReportLab用の加飾定義の素案を抽出
+- 参照DOCX（`tests/fixtures/rirekisho_sample.docx`）を解析し、ReportLab用の加飾定義の素案を抽出
 - 解析スクリプト: `tools/analyze_docx_styles.py`
 - 出力: `skill/assets/data/career_sheet/docx_style_report.json`
 
@@ -127,10 +127,10 @@ skill/
 │   ├── main.py                                     # 更新: document_type分岐追加
 │   └── jtr/                                        # 共通実装
 │       ├── __init__.py                             # 更新: 新規関数のエクスポート追加
-│       ├── resume_generator.py                       # 既存: 履歴書PDF生成
+│       ├── rirekisho_generator.py                       # 既存: 履歴書PDF生成
 │       ├── career_sheet_generator.py              # 新規: 職務経歴書PDF生成
 │       ├── markdown_to_richtext.py                # 新規: Markdown → リッチテキスト変換
-│       ├── resume_data.py                         # 既存: データ読み込み・検証
+│       ├── rirekisho_data.py                         # 既存: データ読み込み・検証
 │       ├── config.py                              # 既存: 設定管理
 │       ├── japanese_era.py                        # 既存: 和暦変換
 │       └── layout/                                # 既存: レイアウト計算
@@ -142,12 +142,12 @@ skill/
 └── assets/                                         # リソース・テンプレート
     ├── config.yaml                                 # 既存: 設定テンプレート
     ├── schemas/                                    # JSON Schema
-    │   ├── resume_schema.json                     # 既存: 履歴書スキーマ
+    │   ├── rirekisho_schema.json                     # 既存: 履歴書スキーマ
     │   └── career_sheet_schema.json               # 新規: 職務経歴書スキーマ
     ├── data/                                       # 既存: レイアウトデータ（履歴書用）
     ├── fonts/                                      # 既存: デフォルトフォント
     └── examples/                                   # サンプルデータ
-        ├── sample_resume.yaml                     # 既存: 履歴書サンプル
+        ├── sample_rirekisho.yaml                     # 既存: 履歴書サンプル
         └── sample_career_sheet.yaml               # 新規: 職務経歴書サンプル
 ```
 
@@ -166,7 +166,7 @@ skill/
   "type": "object",
   "required": ["content"],
   "properties": {
-    "resume_reference": {
+    "rirekisho_reference": {
       "type": "object",
       "description": "履歴書データからの参照（オプション、自動抽出用）",
       "properties": {
@@ -233,7 +233,7 @@ skill/
 # 職務経歴書サンプルデータ
 
 # 履歴書データからの参照（オプション）
-resume_reference:
+rirekisho_reference:
   personal_info:
     name: "山田太郎"
     birthdate: "1990-04-01"
@@ -410,7 +410,7 @@ from pathlib import Path
 from typing import Any
 
 def generate_career_sheet_pdf(
-    resume_data: dict[str, Any],
+    rirekisho_data: dict[str, Any],
     markdown_content: str,
     options: dict[str, Any],
     output_path: Path,
@@ -419,7 +419,7 @@ def generate_career_sheet_pdf(
     職務経歴書PDFを生成
 
     Args:
-        resume_data: 履歴書データ（personal_info, qualificationsを使用）
+        rirekisho_data: 履歴書データ（personal_info, qualificationsを使用）
         markdown_content: 職務経歴書本文（Markdown形式）
         options: 生成オプション（fonts等）
         output_path: 出力先PDFファイルパス
@@ -454,7 +454,7 @@ def _create_header(
 ```python
 def main(
     input_data: str | Path,
-    document_type: str = "resume",  # "resume" or "career_sheet"
+    document_type: str = "rirekisho",  # "rirekisho" or "career_sheet"
     session_options: dict[str, Any] | None = None,
     output_path: Path | str | None = None,
 ) -> Path:
@@ -463,7 +463,7 @@ def main(
 
     Args:
         input_data: ユーザーが提供したYAML/JSONデータ
-        document_type: "resume"（履歴書）または "career_sheet"（職務経歴書）
+        document_type: "rirekisho"（履歴書）または "career_sheet"（職務経歴書）
         session_options: セッション固有のオプション
         output_path: 出力PDFファイルのパス
 
@@ -682,7 +682,7 @@ skill/
    - パーサブルなPDF形式
 
 4. **国際化**
-   - 英語版職務経歴書（Resume/CV）対応
+   - 英語版職務経歴書（CV）対応
 
 ---
 

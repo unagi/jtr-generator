@@ -131,7 +131,7 @@ from pathlib import Path
 from typing import Any
 
 from jtr import (
-    generate_resume_pdf,
+    generate_rirekisho_pdf,
     load_config,
     resolve_font_paths,
     validate_and_load_data,
@@ -170,7 +170,7 @@ def main(
     options["fonts"] = config.get("fonts", {})
 
     final_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
-    generate_resume_pdf(data, options, final_output_path)
+    generate_rirekisho_pdf(data, options, final_output_path)
     return final_output_path
 ```
 
@@ -185,7 +185,7 @@ def main(
 **共通インターフェースへの注入:**
 - `options` 辞書にすべての設定を格納
 - フォントパスは絶対パスに解決済み
-- `generate_resume_pdf(data, options, output_path)` を呼び出し
+- `generate_rirekisho_pdf(data, options, output_path)` を呼び出し
 
 ## Claude Skills実行環境の制約
 
@@ -392,7 +392,7 @@ import os
 client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 # 履歴書データ（JSON Schemaに準拠）
-resume_data = {
+rirekisho_data = {
     "personal_info": {
         "name": "山田太郎",
         "name_kana": "やまだたろう",
@@ -426,7 +426,7 @@ response = client.beta.messages.create(
 日本の履歴書をPDF形式で作成してください。
 
 データ:
-{resume_data}
+{rirekisho_data}
 
 要件:
 - JIS規格準拠のレイアウト
@@ -465,7 +465,7 @@ for file_id in file_ids:
 
 - [README.md](README.md) - エンドユーザー向け使い方ガイド
 - [AGENTS.md](AGENTS.md) - プロジェクト全体仕様（LLM非依存）
-- [skill/assets/schemas/resume_schema.json](skill/assets/schemas/resume_schema.json) - データスキーマ定義
+- [skill/assets/schemas/rirekisho_schema.json](skill/assets/schemas/rirekisho_schema.json) - データスキーマ定義
 
 ## 今後のAPI変更
 

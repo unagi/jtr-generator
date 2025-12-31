@@ -9,14 +9,14 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr.resume_generator import generate_resume_pdf
+from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 
-def test_generate_resume_pdf_basic(tmp_path: Path) -> None:
+def test_generate_rirekisho_pdf_basic(tmp_path: Path) -> None:
     """
     基本的なPDF生成のテスト（罫線のみ）
     """
-    output_path = tmp_path / "test_resume.pdf"
+    output_path = tmp_path / "test_rirekisho.pdf"
 
     # 空のデータとオプションで生成
     data = {}
@@ -25,23 +25,23 @@ def test_generate_resume_pdf_basic(tmp_path: Path) -> None:
         "date_format": "seireki",
     }
 
-    generate_resume_pdf(data, options, output_path)
+    generate_rirekisho_pdf(data, options, output_path)
 
     # PDFファイルが生成されたことを確認
     assert output_path.exists()
     assert output_path.stat().st_size > 0
 
 
-def test_generate_resume_pdf_creates_two_pages(tmp_path: Path) -> None:
+def test_generate_rirekisho_pdf_creates_two_pages(tmp_path: Path) -> None:
     """
     2ページのPDFが生成されることを確認
     """
-    output_path = tmp_path / "test_resume_pages.pdf"
+    output_path = tmp_path / "test_rirekisho_pages.pdf"
 
     data = {}
     options = {"paper_size": "A4"}
 
-    generate_resume_pdf(data, options, output_path)
+    generate_rirekisho_pdf(data, options, output_path)
 
     # PDFファイルが生成されたことを確認
     assert output_path.exists()
@@ -61,7 +61,7 @@ def test_default_font_registration(tmp_path: Path) -> None:
     options = {"paper_size": "A4"}  # fonts指定なし
 
     # エラーが発生しないことを確認
-    generate_resume_pdf(data, options, output_path)
+    generate_rirekisho_pdf(data, options, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -84,7 +84,7 @@ def test_custom_font_registration(tmp_path: Path) -> None:
     data = {}
     options = {"paper_size": "A4", "fonts": {"main": str(custom_font)}}
 
-    generate_resume_pdf(data, options, output_path)
+    generate_rirekisho_pdf(data, options, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -98,7 +98,7 @@ def test_font_not_found_error(tmp_path: Path) -> None:
     options = {"paper_size": "A4", "fonts": {"main": "/nonexistent/path/to/font.ttf"}}
 
     with pytest.raises(FileNotFoundError):
-        generate_resume_pdf(data, options, output_path)
+        generate_rirekisho_pdf(data, options, output_path)
 
 
 def test_layout_file_not_found_error(tmp_path: Path, monkeypatch) -> None:
@@ -109,13 +109,15 @@ def test_layout_file_not_found_error(tmp_path: Path, monkeypatch) -> None:
     def mock_get_layout_path(*args, **kwargs):
         return tmp_path / "nonexistent_layout.json"
 
-    monkeypatch.setattr("skill.scripts.jtr.resume_generator.get_layout_path", mock_get_layout_path)
+    monkeypatch.setattr(
+        "skill.scripts.jtr.rirekisho_generator.get_layout_path", mock_get_layout_path
+    )
 
     data = {}
     options = {"paper_size": "A4"}
 
     with pytest.raises(FileNotFoundError, match="レイアウトファイルが見つかりません"):
-        generate_resume_pdf(data, options, output_path)
+        generate_rirekisho_pdf(data, options, output_path)
 
 
 def test_layout_file_invalid_json_error(tmp_path: Path, monkeypatch) -> None:
@@ -128,7 +130,7 @@ def test_layout_file_invalid_json_error(tmp_path: Path, monkeypatch) -> None:
 
     # get_layout_pathをモックして不正なJSONファイルを返す
     monkeypatch.setattr(
-        "skill.scripts.jtr.resume_generator.get_layout_path",
+        "skill.scripts.jtr.rirekisho_generator.get_layout_path",
         lambda *args, **kwargs: invalid_json_path,
     )
 
@@ -136,7 +138,7 @@ def test_layout_file_invalid_json_error(tmp_path: Path, monkeypatch) -> None:
     options = {"paper_size": "A4"}
 
     with pytest.raises(ValueError, match="レイアウトファイルの形式が不正です"):
-        generate_resume_pdf(data, options, output_path)
+        generate_rirekisho_pdf(data, options, output_path)
 
 
 @pytest.mark.skipif(
@@ -160,7 +162,8 @@ def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
 
     # get_layout_pathをモックして権限のないファイルを返す
     monkeypatch.setattr(
-        "skill.scripts.jtr.resume_generator.get_layout_path", lambda *args, **kwargs: no_read_path
+        "skill.scripts.jtr.rirekisho_generator.get_layout_path",
+        lambda *args, **kwargs: no_read_path,
     )
 
     data = {}
@@ -168,7 +171,7 @@ def test_layout_file_permission_error(tmp_path: Path, monkeypatch) -> None:
 
     try:
         with pytest.raises(PermissionError, match="レイアウトファイルの読み込み権限がありません"):
-            generate_resume_pdf(data, options, output_path)
+            generate_rirekisho_pdf(data, options, output_path)
     finally:
         # クリーンアップ: 権限を戻してファイル削除できるようにする
         os.chmod(no_read_path, 0o644)

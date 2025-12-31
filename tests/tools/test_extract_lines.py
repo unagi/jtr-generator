@@ -28,7 +28,7 @@ def layout_data():
         / "assets"
         / "data"
         / "a4"
-        / "resume_layout.json"
+        / "rirekisho_layout.json"
     )
     with open(layout_path, encoding="utf-8") as f:
         return json.load(f)

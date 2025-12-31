@@ -23,7 +23,7 @@ JIS規格準拠の日本のレジュメ（履歴書・職務経歴書）をPDF�
 
 ### エンドユーザー向け
 - **[skill/references/README.md](skill/references/README.md)** - Skill使用方法（Claude.ai/Codexでの使い方）
-- **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_resume.yaml) | [PDF](skill/assets/examples/sample_resume.pdf)
+- **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_rirekisho.yaml) | [PDF](skill/assets/examples/sample_rirekisho.pdf)
 
 ### 開発者向け
 - **[AGENTS.md](AGENTS.md)** - プロジェクト全体仕様（LLM非依存の設計ドキュメント）
@@ -56,8 +56,8 @@ jtr-generator/
 │   └── scripts/                # 実装本体
 │       ├── main.py             # Skillエントリーポイント
 │       └── jtr/                # 共通実装（PDF生成・データ処理）
-│           ├── resume_generator.py
-│           ├── resume_data.py
+│           ├── rirekisho_generator.py
+│           ├── rirekisho_data.py
 │           ├── japanese_era.py
 │           ├── career_sheet_generator.py
 │           └── layout/

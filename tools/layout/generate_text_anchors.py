@@ -12,7 +12,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--layout",
         type=Path,
-        default=Path("skill/assets/data/a4/resume_layout.json"),
+        default=Path("skill/assets/data/a4/rirekisho_layout.json"),
         help="Input layout JSON with absolute positions.",
     )
     parser.add_argument(

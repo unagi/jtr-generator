@@ -181,7 +181,7 @@ output_path: Path | str | None = None
 **動作**:
 - `None`（デフォルト）: カレントディレクトリに`rirekisho.pdf`を生成
 - ファイル名のみ（例: `"yamada.pdf"`）: カレントディレクトリに指定ファイル名で生成
-- 相対パス（例: `"outputs/resume.pdf"`）: カレントディレクトリ基準の相対パスに生成
+- 相対パス（例: `"outputs/rirekisho.pdf"`）: カレントディレクトリ基準の相対パスに生成
 - 絶対パス（例: `"/tmp/result.pdf"`）: 指定された絶対パスに生成
 
 **Agent Skills実行環境**:
@@ -195,10 +195,10 @@ output_path: Path | str | None = None
 main(data)  # → rirekisho.pdf
 
 # カスタムファイル名
-main(data, output_path="yamada_resume.pdf")
+main(data, output_path="yamada_rirekisho.pdf")
 
 # サブディレクトリ指定
-main(data, output_path="outputs/2025_resume.pdf")
+main(data, output_path="outputs/2025_rirekisho.pdf")
 ```
 
 ### ディレクトリ構成変更時の更新チェックリスト

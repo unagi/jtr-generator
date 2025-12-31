@@ -307,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "input",
         nargs="?",
-        default="tests/fixtures/resume_sample.docx",
+        default="tests/fixtures/rirekisho_sample.docx",
         help="DOCX file path to analyze",
     )
     parser.add_argument(

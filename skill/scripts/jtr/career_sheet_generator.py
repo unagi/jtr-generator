@@ -40,7 +40,7 @@ _BODY_LEADING_PT = _SPACING_PT["body_leading"]
 
 
 def generate_career_sheet_pdf(
-    resume_data: dict[str, Any],
+    rirekisho_data: dict[str, Any],
     markdown_content: str,
     options: dict[str, Any],
     output_path: Path,
@@ -49,7 +49,7 @@ def generate_career_sheet_pdf(
     職務経歴書PDFを生成
 
     Args:
-        resume_data: 履歴書データ（personal_info, qualificationsを使用）
+        rirekisho_data: 履歴書データ（personal_info, qualificationsを使用）
         markdown_content: 職務経歴書本文（Markdown形式）
         options: 生成オプション（fonts等）
         output_path: 出力先PDFファイルパス
@@ -95,12 +95,12 @@ def generate_career_sheet_pdf(
     init_generation_context(options)
 
     # ヘッダー（個人情報・連絡先）
-    flowables.extend(_create_header(resume_data, styles, color_palette))
+    flowables.extend(_create_header(rirekisho_data, styles, color_palette))
 
     # 免許・資格（履歴書データから）
-    if "qualifications" in resume_data and resume_data["qualifications"]:
+    if "qualifications" in rirekisho_data and rirekisho_data["qualifications"]:
         flowables.extend(
-            _create_qualifications_section(resume_data["qualifications"], styles, color_palette)
+            _create_qualifications_section(rirekisho_data["qualifications"], styles, color_palette)
         )
 
     # 本文（Markdown）
@@ -285,7 +285,7 @@ def _create_styles(
 
 
 def _create_header(
-    resume_data: dict[str, Any],
+    rirekisho_data: dict[str, Any],
     styles: dict[str, ParagraphStyle],
     palette: dict[str, colors.Color],
 ) -> list[Any]:
@@ -312,7 +312,7 @@ def _create_header(
     flowables.append(Spacer(1, _SPACING_MM["sm"]))
 
     # 個人情報（氏名を強調）
-    personal_info = resume_data.get("personal_info", {})
+    personal_info = rirekisho_data.get("personal_info", {})
     name = personal_info.get("name", "")
     birthdate = date_formatter.format_or_raw(
         personal_info.get("birthdate", ""), format_style="full"

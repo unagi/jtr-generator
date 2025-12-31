@@ -12,11 +12,11 @@ import pytest
 pytest.importorskip("reportlab")
 
 from skill.scripts.jtr.helper.generation_context import init_generation_context
-from skill.scripts.jtr.resume_generator import (
+from skill.scripts.jtr.rirekisho_generator import (
     _calculate_age,
     _format_date,
     _get_field_value,
-    generate_resume_pdf,
+    generate_rirekisho_pdf,
 )
 
 
@@ -40,19 +40,19 @@ def sample_data():
     }
 
 
-def test_generate_resume_with_personal_info(sample_data, tmp_path):
+def test_generate_rirekisho_with_personal_info(sample_data, tmp_path):
     """個人情報フィールド付き履歴書の生成"""
-    output_path = tmp_path / "resume_with_data.pdf"
-    generate_resume_pdf(sample_data, {"paper_size": "A4", "date_format": "seireki"}, output_path)
+    output_path = tmp_path / "rirekisho_with_data.pdf"
+    generate_rirekisho_pdf(sample_data, {"paper_size": "A4", "date_format": "seireki"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
 
 
-def test_generate_resume_with_wareki_format(sample_data, tmp_path):
+def test_generate_rirekisho_with_wareki_format(sample_data, tmp_path):
     """和暦フォーマットでの履歴書生成"""
-    output_path = tmp_path / "resume_wareki.pdf"
-    generate_resume_pdf(sample_data, {"paper_size": "A4", "date_format": "wareki"}, output_path)
+    output_path = tmp_path / "rirekisho_wareki.pdf"
+    generate_rirekisho_pdf(sample_data, {"paper_size": "A4", "date_format": "wareki"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -168,12 +168,12 @@ def test_get_field_value_missing_field():
         _get_field_value(data, "personal_info.missing_field")
 
 
-def test_backward_compatibility_blank_resume(tmp_path):
+def test_backward_compatibility_blank_rirekisho(tmp_path):
     """後方互換性: 空のdataでブランク履歴書が生成される"""
-    output_path = tmp_path / "blank_resume.pdf"
+    output_path = tmp_path / "blank_rirekisho.pdf"
 
     # 空のdataで生成
-    generate_resume_pdf({}, {"paper_size": "A4"}, output_path)
+    generate_rirekisho_pdf({}, {"paper_size": "A4"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -181,7 +181,7 @@ def test_backward_compatibility_blank_resume(tmp_path):
 
 def test_backward_compatibility_empty_sections(tmp_path):
     """後方互換性: 空のセクションでブランク履歴書が生成される"""
-    output_path = tmp_path / "blank_resume2.pdf"
+    output_path = tmp_path / "blank_rirekisho2.pdf"
 
     # すべてのセクションが空
     data = {
@@ -191,13 +191,13 @@ def test_backward_compatibility_empty_sections(tmp_path):
         "qualifications": [],
     }
 
-    generate_resume_pdf(data, {"paper_size": "A4"}, output_path)
+    generate_rirekisho_pdf(data, {"paper_size": "A4"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
 
 
-def test_generate_resume_with_education_and_work_history(tmp_path):
+def test_generate_rirekisho_with_education_and_work_history(tmp_path):
     """学歴・職歴フィールド付き履歴書の生成"""
     data = {
         "personal_info": {
@@ -233,14 +233,14 @@ def test_generate_resume_with_education_and_work_history(tmp_path):
         "qualifications": [],
     }
 
-    output_path = tmp_path / "resume_with_education_work_history.pdf"
-    generate_resume_pdf(data, {"paper_size": "A4", "date_format": "seireki"}, output_path)
+    output_path = tmp_path / "rirekisho_with_education_work_history.pdf"
+    generate_rirekisho_pdf(data, {"paper_size": "A4", "date_format": "seireki"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
 
 
-def test_generate_resume_with_education_wareki_format(tmp_path):
+def test_generate_rirekisho_with_education_wareki_format(tmp_path):
     """学歴・職歴を和暦フォーマットで生成"""
     data = {
         "personal_info": {
@@ -263,8 +263,8 @@ def test_generate_resume_with_education_wareki_format(tmp_path):
         "qualifications": [],
     }
 
-    output_path = tmp_path / "resume_education_wareki.pdf"
-    generate_resume_pdf(data, {"paper_size": "A4", "date_format": "wareki"}, output_path)
+    output_path = tmp_path / "rirekisho_education_wareki.pdf"
+    generate_rirekisho_pdf(data, {"paper_size": "A4", "date_format": "wareki"}, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -272,7 +272,7 @@ def test_generate_resume_with_education_wareki_format(tmp_path):
 
 def test_format_content():
     """_format_content関数のテスト"""
-    from skill.scripts.jtr.resume_generator import _format_content
+    from skill.scripts.jtr.rirekisho_generator import _format_content
 
     # 学歴（department付き）
     item = {"school": "〇〇大学", "department": "工学部"}

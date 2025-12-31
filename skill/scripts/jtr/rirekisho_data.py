@@ -33,7 +33,7 @@ def _normalize_dates(data: Any) -> Any:
         return data
 
 
-def load_resume_data(file_path: Path) -> dict[str, Any]:
+def load_rirekisho_data(file_path: Path) -> dict[str, Any]:
     """
     YAML/JSONファイルから履歴書データを読み込み、スキーマ検証を行う
 
@@ -41,7 +41,7 @@ def load_resume_data(file_path: Path) -> dict[str, Any]:
         file_path: YAMLまたはJSONファイルのパス
 
     Returns:
-        履歴書データ（schemas/resume_schema.json準拠）
+        履歴書データ（schemas/rirekisho_schema.json準拠）
 
     Raises:
         FileNotFoundError: ファイルが存在しない場合
@@ -74,7 +74,7 @@ def load_resume_data(file_path: Path) -> dict[str, Any]:
         raise ValueError(f"Failed to parse JSON file: {e}") from e
 
     # スキーマバリデーション
-    schema_path = get_schema_path("resume_schema.json")
+    schema_path = get_schema_path("rirekisho_schema.json")
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
@@ -93,7 +93,7 @@ def load_validated_data(
 
     Args:
         file_path: YAMLまたはJSONファイルのパス（またはYAML/JSON文字列）
-        schema_name: スキーマファイル名（例: "resume_schema.json"）
+        schema_name: スキーマファイル名（例: "rirekisho_schema.json"）
 
     Returns:
         検証済みデータ
@@ -180,7 +180,7 @@ def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
         return (
             f"必須フィールド '{missing_field}' が不足しています。\n"
             f"対象: {field_path}\n"
-            f"assets/examples/sample_resume.yamlを参考にデータを追加してください。"
+            f"assets/examples/sample_rirekisho.yamlを参考にデータを追加してください。"
         )
     elif error.validator == "pattern":  # type: ignore[comparison-overlap]
         expected_pattern = error.schema.get("pattern", "")  # type: ignore[union-attr]
@@ -211,7 +211,7 @@ def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
         return (
             f"データ検証エラー: {error.message}\n"
             f"対象フィールド: {field_path}\n"
-            f"詳細: schemas/resume_schema.jsonを参照してください。"
+            f"詳細: schemas/rirekisho_schema.jsonを参照してください。"
         )
 
 
@@ -248,7 +248,7 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
 
     if is_file_path:
         try:
-            return load_resume_data(file_path)
+            return load_rirekisho_data(file_path)
         except FileNotFoundError as e:
             raise FileNotFoundError(f"ファイルが見つかりません: {file_path}") from e
         except jsonschema.ValidationError as e:
@@ -269,7 +269,7 @@ def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
             raise ValueError(f"YAML/JSONのパースに失敗しました: {e}") from e
 
     # スキーマバリデーション
-    schema_path = get_schema_path("resume_schema.json")
+    schema_path = get_schema_path("rirekisho_schema.json")
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 

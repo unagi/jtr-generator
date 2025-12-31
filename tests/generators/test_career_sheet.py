@@ -15,7 +15,7 @@ def test_generate_career_sheet_pdf_basic(tmp_path: Path) -> None:
     output_path = tmp_path / "test_career_sheet.pdf"
 
     # 最小限のデータ
-    resume_data = {
+    rirekisho_data = {
         "personal_info": {
             "name": "山田太郎",
             "birthdate": "1990-04-01",
@@ -42,7 +42,7 @@ def test_generate_career_sheet_pdf_basic(tmp_path: Path) -> None:
     options = {"fonts": {"main": str(font_path)}}
 
     # PDF生成
-    generate_career_sheet_pdf(resume_data, markdown_content, options, output_path)
+    generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
 
     # PDFファイルが生成されたことを確認
     assert output_path.exists()
@@ -53,7 +53,7 @@ def test_generate_career_sheet_with_qualifications(tmp_path: Path) -> None:
     """免許・資格を含む職務経歴書のテスト"""
     output_path = tmp_path / "test_career_sheet_qualifications.pdf"
 
-    resume_data = {
+    rirekisho_data = {
         "personal_info": {
             "name": "山田太郎",
             "birthdate": "1990-04-01",
@@ -73,7 +73,7 @@ def test_generate_career_sheet_with_qualifications(tmp_path: Path) -> None:
     font_path = find_default_font()
     options = {"fonts": {"main": str(font_path)}}
 
-    generate_career_sheet_pdf(resume_data, markdown_content, options, output_path)
+    generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -83,7 +83,7 @@ def test_generate_career_sheet_complex_markdown(tmp_path: Path) -> None:
     """複雑なMarkdownを含む職務経歴書のテスト"""
     output_path = tmp_path / "test_career_sheet_complex.pdf"
 
-    resume_data = {
+    rirekisho_data = {
         "personal_info": {
             "name": "山田太郎",
             "birthdate": "1990-04-01",
@@ -124,7 +124,7 @@ def test_generate_career_sheet_complex_markdown(tmp_path: Path) -> None:
     font_path = find_default_font()
     options = {"fonts": {"main": str(font_path)}}
 
-    generate_career_sheet_pdf(resume_data, markdown_content, options, output_path)
+    generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)
 
     assert output_path.exists()
     assert output_path.stat().st_size > 0
@@ -134,9 +134,9 @@ def test_font_not_found_error(tmp_path: Path) -> None:
     """存在しないフォントパス指定時のエラー"""
     output_path = tmp_path / "test_error.pdf"
 
-    resume_data = {"personal_info": {"name": "Test", "email": "test@example.com"}}
+    rirekisho_data = {"personal_info": {"name": "Test", "email": "test@example.com"}}
     markdown_content = "# Test"
     options = {"fonts": {"main": "/nonexistent/font.ttf"}}
 
     with pytest.raises(FileNotFoundError):
-        generate_career_sheet_pdf(resume_data, markdown_content, options, output_path)
+        generate_career_sheet_pdf(rirekisho_data, markdown_content, options, output_path)

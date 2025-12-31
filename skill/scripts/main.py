@@ -43,7 +43,7 @@ if str(SKILL_ROOT) not in sys.path:
 
 from jtr import (  # noqa: E402
     generate_career_sheet_pdf,
-    generate_resume_pdf,
+    generate_rirekisho_pdf,
     load_config,
     resolve_font_paths,
     validate_and_load_data,
@@ -70,10 +70,10 @@ def _parse_args() -> Namespace:
     parser = ArgumentParser(description="日本のレジュメ（履歴書・職務経歴書）PDF生成")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    resume_parser = subparsers.add_parser("resume", help="履歴書PDFを生成")
-    resume_parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
-    resume_parser.add_argument("--output", type=Path, default=None, help="出力PDFファイル")
-    _add_common_options(resume_parser)
+    rirekisho_parser = subparsers.add_parser("rirekisho", help="履歴書PDFを生成")
+    rirekisho_parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
+    rirekisho_parser.add_argument("--output", type=Path, default=None, help="出力PDFファイル")
+    _add_common_options(rirekisho_parser)
 
     career_parser = subparsers.add_parser("career", help="職務経歴書PDFを生成")
     career_parser.add_argument("input_file", type=Path, help="入力YAMLまたはJSONファイル")
@@ -124,7 +124,7 @@ def main(
     input_data: str | Path,
     session_options: dict[str, Any] | None = None,
     output_path: Path | str | None = None,
-    document_type: str = "resume",
+    document_type: str = "rirekisho",
     markdown_content: str | Path | None = None,
 ) -> Path | list[Path]:
     """
@@ -134,7 +134,7 @@ def main(
         input_data: ユーザーが提供したYAML/JSONデータ（文字列またはファイルパス）
         session_options: セッション固有のオプション（和暦/西暦、用紙サイズ等）
         output_path: 出力PDFファイルのパス（bothの場合は出力ディレクトリ）
-        document_type: ドキュメントタイプ（"resume", "career_sheet", "both"）
+        document_type: ドキュメントタイプ（"rirekisho", "career_sheet", "both"）
         markdown_content: 職務経歴書本文（Markdown形式、文字列またはファイルパス）
 
     Returns:
@@ -146,13 +146,13 @@ def main(
     """
     options = _build_options(session_options)
 
-    make_resume = document_type in ("resume", "both")
+    make_rirekisho = document_type in ("rirekisho", "both")
     make_career = document_type in ("career_sheet", "both")
 
-    if not make_resume and not make_career:
+    if not make_rirekisho and not make_career:
         raise ValueError(f"不明な document_type: {document_type}")
 
-    resume_data = validate_and_load_data(input_data)
+    rirekisho_data = validate_and_load_data(input_data)
     markdown_text = _load_markdown(markdown_content) if make_career else None
 
     outputs: list[Path] = []
@@ -166,13 +166,13 @@ def main(
             raise ValueError("bothの出力先はディレクトリを指定してください")
         output_dir.mkdir(parents=True, exist_ok=True)
 
-    if make_resume:
+    if make_rirekisho:
         if output_dir:
-            resume_output_path = output_dir / "rirekisho.pdf"
+            rirekisho_output_path = output_dir / "rirekisho.pdf"
         else:
-            resume_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
-        generate_resume_pdf(resume_data, options, resume_output_path)
-        outputs.append(resume_output_path)
+            rirekisho_output_path = Path(output_path) if output_path else Path("rirekisho.pdf")
+        generate_rirekisho_pdf(rirekisho_data, options, rirekisho_output_path)
+        outputs.append(rirekisho_output_path)
 
     if make_career:
         if markdown_text is None:
@@ -181,7 +181,7 @@ def main(
             career_output_path = output_dir / "career_sheet.pdf"
         else:
             career_output_path = Path(output_path) if output_path else Path("career_sheet.pdf")
-        generate_career_sheet_pdf(resume_data, markdown_text, options, career_output_path)
+        generate_career_sheet_pdf(rirekisho_data, markdown_text, options, career_output_path)
         outputs.append(career_output_path)
 
     if document_type == "both":
@@ -195,13 +195,13 @@ if __name__ == "__main__":
 
     try:
         document_type = (
-            "resume"
-            if args.command == "resume"
+            "rirekisho"
+            if args.command == "rirekisho"
             else "career_sheet"
             if args.command == "career"
             else "both"
         )
-        output_target = args.output if args.command in ("resume", "career") else args.output_dir
+        output_target = args.output if args.command in ("rirekisho", "career") else args.output_dir
         markdown_content = args.markdown_file if args.command in ("career", "both") else None
         outputs = main(
             input_data=args.input_file,
@@ -214,7 +214,7 @@ if __name__ == "__main__":
         labels = (
             ["履歴書", "職務経歴書"]
             if args.command == "both"
-            else ["履歴書" if args.command == "resume" else "職務経歴書"]
+            else ["履歴書" if args.command == "rirekisho" else "職務経歴書"]
         )
         for label, path in zip(labels, output_list, strict=False):
             print(f"{label}PDFを生成しました: {path}")

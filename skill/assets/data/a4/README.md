@@ -4,7 +4,7 @@
 
 ```
 data/a4/
-├── resume_layout.json              # 最終レイアウトデータ（配布必須）
+├── rirekisho_layout.json              # 最終レイアウトデータ（配布必須）
 ├── definitions/
 │   └── manual_bounds.json          # 手動測定した境界座標
 │   └── career_sheet_manual_bounds.json    # 職務経歴書の手動測定境界
@@ -15,7 +15,7 @@ data/a4/
     └── career_sheet_label_alignment.json  # 職務経歴書ラベル配置ルール
 ```
 
-## resume_layout.json
+## rirekisho_layout.json
 
 JIS規格履歴書（A4 x 2ページ）の最終レイアウトデータ（v4フォーマット）。
 
@@ -117,7 +117,7 @@ uv run python tools/extract_all_missing_texts.py
 uv run python tools/merge_text_to_layout.py
 ```
 
-出力: `data/a4/resume_layout.json`（最終版）
+出力: `data/a4/rirekisho_layout.json`（最終版）
 
 ### 視覚品質（Phase 4e完了時）
 
@@ -176,7 +176,7 @@ uv run python tools/merge_text_to_layout.py
 
 ```
 [入力]
-├── resume_layout.json              ← 検証対象の最終レイアウトデータ
+├── rirekisho_layout.json              ← 検証対象の最終レイアウトデータ
 ├── definitions/manual_bounds.json  ← 手動測定した境界座標（写真エリア、満〇歳セル）
 └── rules/*.json                    ← 配置ルール定義（align/valign/margin）
 
@@ -238,10 +238,10 @@ uv run python tools/layout/analyze_data_field_alignment.py
 
 ```python
 from pathlib import Path
-from skill.scripts.jtr.resume_generator import generate_resume_pdf
+from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
 
 output_path = Path("outputs/rirekisho.pdf")
-generate_resume_pdf({}, {"paper_size": "A4"}, output_path)
+generate_rirekisho_pdf({}, {"paper_size": "A4"}, output_path)
 ```
 
 出力: JIS規格準拠のブランク履歴書（A4 x 2ページ、固定ラベル付き）
@@ -270,7 +270,7 @@ import jsonschema
 with open('skill/assets/schemas/layout_schema.json') as f:
     schema = json.load(f)
 
-with open('skill/assets/data/a4/resume_layout.json') as f:
+with open('skill/assets/data/a4/rirekisho_layout.json') as f:
     layout = json.load(f)
 
 jsonschema.validate(layout, schema)
