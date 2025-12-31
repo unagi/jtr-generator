@@ -7,9 +7,12 @@ data/a4/
 ├── resume_layout.json              # 最終レイアウトデータ（配布必須）
 ├── definitions/
 │   └── manual_bounds.json          # 手動測定した境界座標
+│   └── career_sheet_manual_bounds.json    # 職務経歴書の手動測定境界
 └── rules/
     ├── label_alignment.json        # 固定ラベルの配置ルール
-    └── field_alignment.json        # データフィールドの配置ルール
+    ├── field_alignment.json        # データフィールドの配置ルール
+    ├── career_sheet_spacing.json   # 職務経歴書の余白・インデント定義
+    └── career_sheet_label_alignment.json  # 職務経歴書ラベル配置ルール
 ```
 
 ## resume_layout.json

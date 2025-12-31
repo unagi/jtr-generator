@@ -1,0 +1,44 @@
+{
+  "format_version": "v1",
+  "spacing_mm": {
+    "xs": 1.5,
+    "sm": 2.0,
+    "md": 3.0,
+    "lg": 4.0,
+    "xl": 6.0,
+    "xxl": 8.0,
+    "xxxl": 10.0
+  },
+  "spacing_pt": {
+    "title_after": 5,
+    "h1_before": 20,
+    "h1_after": 10,
+    "h2_before": 10,
+    "h2_after": 3,
+    "h2_rule_before": 1,
+    "h2_rule_after": 3,
+    "h3_before": 10,
+    "h3_after": 9,
+    "h4_before": 8,
+    "h4_after": 7,
+    "h5_before": 15,
+    "h5_after": 5,
+    "h6_before": 15,
+    "h6_after": 3,
+    "h7_before": 15,
+    "h7_after": 1,
+    "body_after": 3,
+    "heading_bar_padding_x": 8.503937,
+    "heading_bar_padding_y": 4.251969,
+    "heading_bar_before": 17,
+    "heading_bar_after": 6,
+    "body_leading": 15
+  },
+  "indent_mm": {
+    "heading3": 2.0,
+    "heading4": 4.0,
+    "bullet_left": 8.0,
+    "bullet_hanging": 3.0
+  },
+  "note": "職務経歴書の余白・インデント定義（career_sheet_generator.pyの既定値）"
+}

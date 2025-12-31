@@ -1,0 +1,10 @@
+{
+  "format_version": "v1",
+  "defaults": {
+    "align": "left",
+    "valign": "baseline"
+  },
+  "bounds": {},
+  "labels": [],
+  "note": "職務経歴書の固定ラベル配置ルール（未定義）"
+}
