@@ -15,6 +15,7 @@
 - `uv sync --all-extras --dev`で依存関係をインストール
 - Lint（ruff）→ Format check（ruff）→ Type check（mypy）→ Test（pytest）の順に実行
 - `coverage.xml`をCodecovとSonarCloudに送信
+- SonarCloud解析は `SonarSource/sonarqube-scan-action` で実行し、`SONAR_HOST_URL=https://sonarcloud.io` を指定
 
 **パス関連の注意点**:
 - `coverage.xml`のパスはプロジェクトルート直下（pyproject.toml設定と一致）
@@ -25,11 +26,12 @@
 - `actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065` (v5)
 - `astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86` (v5)
 - `codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238` (v4)
-- `SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8` (v5.0.0)
+- `SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9` (v7.0.0)
 
-**必要なシークレット**:
+**必要なシークレット/環境変数**:
 - `CODECOV_TOKEN`: Codecovアップロード用
 - `SONAR_TOKEN`: SonarCloudスキャン用
+- `SONAR_HOST_URL`: SonarCloudの場合は `https://sonarcloud.io`（ワークフロー内で環境変数として指定）
 
 ### `.github/workflows/release.yml`
 

@@ -21,7 +21,7 @@ JIS規格準拠の日本の履歴書（rirekisho）をPDF形式で生成する**
 ## ドキュメント
 
 ### エンドユーザー向け
-- **[skill/README.md](skill/README.md)** - Skill使用方法（Claude.ai/Codexでの使い方）
+- **[skill/references/README.md](skill/references/README.md)** - Skill使用方法（Claude.ai/Codexでの使い方）
 - **[サンプルデータ](skill/assets/examples/)** - [YAML](skill/assets/examples/sample_resume.yaml) | [PDF](skill/assets/examples/sample_resume.pdf)
 
 ### 開発者向け
@@ -42,28 +42,24 @@ jtr-generator/
 ├── CLAUDE.md                   # Agent Skills技術仕様
 ├── pyproject.toml              # Pythonプロジェクト設定
 ├── skill/                      # Agent Skillsパッケージ
-│   ├── README.md               # エンドユーザー向けマニュアル
 │   ├── SKILL.md                # LLM向け指示
-│   ├── main.py                 # エントリーポイント
-│   ├── config.yaml             # ユーザー設定テンプレート
-│   ├── jtr/                    # 共通実装
-│   │   ├── pdf_generator.py   # PDF生成ロジック
-│   │   ├── resume_data.py     # データ読み込み・検証
-│   │   ├── japanese_era.py    # 和暦変換
-│   │   └── layout/             # レイアウト計算
-│   ├── data/                   # レイアウトデータ
-│   │   └── a4/
-│   │       ├── resume_layout.json
-│   │       ├── definitions/
-│   │       │   └── manual_bounds.json
-│   │       └── rules/
-│   │           ├── label_alignment.json
-│   │           └── field_alignment.json
-│   ├── schemas/                # JSON Schema
-│   │   ├── resume_schema.json
-│   │   └── layout_schema.json
-│   ├── examples/               # サンプルデータ
-│   └── fonts/                  # デフォルトフォント
+│   ├── main.py                 # Skillエントリーポイント（scripts/main.pyのラッパー）
+│   ├── assets/                 # データ/フォント/スキーマ
+│   │   ├── config.yaml         # 設定テンプレート
+│   │   ├── data/               # レイアウトデータ（A4）
+│   │   ├── examples/           # サンプルデータ
+│   │   ├── fonts/              # デフォルトフォント
+│   │   └── schemas/            # JSON Schema
+│   ├── references/             # エンドユーザー向けドキュメント
+│   │   └── README.md
+│   └── scripts/                # 実装本体
+│       ├── main.py             # Skill実行ロジック
+│       └── jtr/                # 共通実装（PDF生成・データ処理）
+│           ├── pdf_generator.py
+│           ├── resume_data.py
+│           ├── japanese_era.py
+│           ├── career_sheet_generator.py
+│           └── layout/
 ├── tests/                      # テストコード
 │   ├── jtr/                    # ユニットテスト
 │   ├── generators/             # PDF生成テスト
@@ -152,7 +148,7 @@ GitHub Actionsで以下を自動実行:
 
 - **CI**: Lint、フォーマットチェック、型チェック、テスト（カバレッジ測定）
 - **Codecov**: カバレッジレポート自動アップロード
-- **SonarCloud**: コード品質分析
+- **SonarCloud**: コード品質分析（`SonarSource/sonarqube-scan-action` を使用）
 - **Release**: Agent Skillsパッケージ自動ビルド・リリース
 
 詳細: [.github/workflows/](.github/workflows/)
@@ -177,4 +173,4 @@ MIT License - 詳細は[LICENSE](LICENSE)を参照。
 
 - **プロジェクト全体仕様**: [AGENTS.md](AGENTS.md)
 - **Agent Skills技術仕様**: [CLAUDE.md](CLAUDE.md)
-- **エンドユーザー向けマニュアル**: [skill/README.md](skill/README.md)
+- **エンドユーザー向けマニュアル**: [skill/references/README.md](skill/references/README.md)

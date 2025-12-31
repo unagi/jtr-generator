@@ -28,17 +28,38 @@ Examples:
 
 import sys
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from jtr import (
-    generate_career_sheet_pdf,
-    generate_resume_pdf,
-    load_config,
-    load_validated_data,
-    resolve_font_paths,
-    validate_and_load_data,
-)
-from jtr.paths import get_assets_path
+if TYPE_CHECKING:
+    from .jtr import (
+        generate_career_sheet_pdf,
+        generate_resume_pdf,
+        load_config,
+        load_validated_data,
+        resolve_font_paths,
+        validate_and_load_data,
+    )
+    from .jtr.paths import get_assets_path
+elif __package__:
+    from .jtr import (
+        generate_career_sheet_pdf,
+        generate_resume_pdf,
+        load_config,
+        load_validated_data,
+        resolve_font_paths,
+        validate_and_load_data,
+    )
+    from .jtr.paths import get_assets_path
+else:
+    from jtr import (
+        generate_career_sheet_pdf,
+        generate_resume_pdf,
+        load_config,
+        load_validated_data,
+        resolve_font_paths,
+        validate_and_load_data,
+    )
+    from jtr.paths import get_assets_path
 
 
 def main(
