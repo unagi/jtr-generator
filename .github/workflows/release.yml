@@ -31,12 +31,6 @@ jobs:
         run: |
           uv sync --all-extras --dev
 
-      - name: Build Agent Skills package
-        run: |
-          mkdir -p build
-          cd skill
-          zip -r ../build/jtr-generator.zip . -x "*/__pycache__/*"
-
       - name: Determine version
         id: version
         run: |
@@ -51,15 +45,19 @@ jobs:
             echo "zip_name=jtr-generator-latest.zip" >> $GITHUB_OUTPUT
           fi
 
-      - name: Rename artifact
+      - name: Build Agent Skills package
         run: |
-          mv build/jtr-generator.zip build/${{ steps.version.outputs.zip_name }}
+          mkdir -p build
+          cd skill
+          zip -r ../build/${{ steps.version.outputs.zip_name }} . -x "*/__pycache__/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: jtr-generator-skill
-          path: build/${{ steps.version.outputs.zip_name }}
+          path: |
+            skill/**
+            !skill/**/__pycache__/**
           retention-days: 90
 
       - name: Create GitHub Release
