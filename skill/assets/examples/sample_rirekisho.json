@@ -1,7 +1,7 @@
 {
   "personal_info": {
-    "name": "山田太郎",
-    "name_kana": "やまだたろう",
+    "name": "山田 太郎",
+    "name_kana": "やまだ たろう",
     "birthdate": "1990-04-01",
     "gender": "男性",
     "postal_code": "150-0041",
@@ -57,7 +57,8 @@
     {
       "date": "2015-04",
       "type": "入社",
-      "company": "株式会社△△"
+      "company": "株式会社△△",
+      "note": "現在に至る"
     }
   ],
   "qualifications": [

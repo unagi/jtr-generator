@@ -240,6 +240,10 @@ if __name__ == "__main__":
         )
         for label, path in zip(labels, output_list, strict=False):
             print(f"{label}PDFを生成しました: {path}")
+        backup_paths = [str(args.input_file)]
+        if args.command in ("career_sheet", "both"):
+            backup_paths.append(str(args.markdown_file))
+        print(f"バックアップ: 入力ファイルを保管してください（{', '.join(backup_paths)}）")
     except (FileNotFoundError, ValueError) as exc:
         print(f"エラー: {exc}", file=sys.stderr)
         sys.exit(1)

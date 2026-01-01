@@ -13,16 +13,16 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "氏名（漢字）",
+          "description": "氏名（漢字、姓と名は半角スペース区切り推奨）",
           "minLength": 1,
-          "examples": ["山田太郎", "佐藤花子"]
+          "examples": ["山田 太郎", "佐藤 花子"]
         },
         "name_kana": {
           "type": "string",
-          "description": "氏名（ふりがな）",
+          "description": "氏名（ふりがな、姓と名は半角スペース区切り推奨）",
           "minLength": 1,
-          "pattern": "^[ぁ-んー]+$",
-          "examples": ["やまだたろう", "さとうはなこ"]
+          "pattern": "^[ぁ-んー\\u3000 ]+$",
+          "examples": ["やまだ たろう", "さとう はなこ"]
         },
         "birthdate": {
           "type": "string",
@@ -186,7 +186,7 @@
           },
           "note": {
             "type": "string",
-            "description": "備考（退職理由等、オプション）",
+            "description": "備考（退職理由や現職/所属なしの明記など、オプション）",
             "examples": ["一身上の都合により", "現在に至る"]
           }
         },

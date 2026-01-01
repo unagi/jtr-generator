@@ -1,6 +1,6 @@
 personal_info:
-  name: 山田太郎
-  name_kana: やまだたろう
+  name: 山田 太郎
+  name_kana: やまだ たろう
   birthdate: 1990-04-01
   gender: 男性
   postal_code: 150-0041
@@ -18,9 +18,18 @@ contact_info:
   mobile: 080-1111-2222
 
 education:
+  - date: 2003-04
+    type: 入学
+    school: 東京都立〇〇高等学校
+
   - date: 2006-03
     type: 卒業
     school: 東京都立〇〇高等学校
+
+  - date: 2006-04
+    type: 入学
+    school: 〇〇大学
+    department: 工学部 情報工学科
 
   - date: 2010-03
     type: 卒業
@@ -40,6 +49,7 @@ work_history:
   - date: 2015-04
     type: 入社
     company: 株式会社△△
+    note: 現在に至る
 
 qualifications:
   - date: 2012-10

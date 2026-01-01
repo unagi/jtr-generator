@@ -3837,7 +3837,7 @@
     },
     "qualifications": {
       "type": "dynamic_rows",
-      "max_rows": 6,
+      "max_rows": 8,
       "row_config": {
         "row_height": 25.7,
         "font_size": 11.0,

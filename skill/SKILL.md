@@ -30,6 +30,7 @@ description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の�
 - プロフィール/免許・資格は履歴書データから出力
 - それ以降（職務要約、職務経歴、自己PRなど）はMarkdown本文で記述
 - MarkdownはGitHub Flavored Markdownに準拠し、H2（`##`）を起点に構成する
+- SNS/個人サイト、登壇・執筆はMarkdown本文に記載（複数可）
 - 規約から逸脱する場合は出力品質を保証しない
 
 ### 出力
@@ -37,9 +38,10 @@ description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の�
 - APIは `document_type`（`rirekisho` / `career_sheet` / `both`）、CLIは `rirekisho` / `career_sheet` / `both`
 - `both` は `--output-dir` 配下に以下の規則で2ファイルを出力する（`rirekisho_YYMMDD-HHMMSS.pdf` / `career_sheet_YYMMDD-HHMMSS.pdf`）
   - `YYMMDD-HHMMSS` はUTC（24時間表記）を用いる
+- 入力に使ったYAML/Markdownはバックアップとしてそのまま再利用できる
 
 ### オプション
-- `date_format`: `seireki` / `wareki`
+- `date_format`: `seireki`（既定値） / `wareki`
 - `paper_size`: `A4`（B5は将来対応）
 - `font`: `mincho` / `gothic`（履歴書・職務経歴書で共通）
 
@@ -54,19 +56,20 @@ description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の�
 
 ## References
 
-- 履歴書JIS様式の根拠: `references/README.md`
+- ユーザー向け案内: `references/README.md`（ユーザーからの問い合わせ時はここを基準に回答）
 - 職務経歴書の書き方: `references/career_sheet_best_practices.md`
 - Agent Skills仕様: https://agentskills.io/specification
 
 ## Data Requirements
 
 **必須フィールド（履歴書データ）:**
-- `personal_info`: 氏名、氏名かな、生年月日、性別、住所、電話番号、メールアドレス
-- `education`: 学歴（配列、最低1件）
-- `work_history`: 職歴（配列、0件以上可）
+- `personal_info`: 氏名（姓/名は分けて入力し、半角スペースで結合）、氏名かな（同様）、生年月日、性別、住所、電話番号、メールアドレス
+- `education`: 学歴（配列、最低1件、原則「入学」「卒業/修了」を両方記載）
+- `work_history`: 職歴（配列、0件以上可、原則「入社」「退職」を両方記載。最終行は現職なら`note`に「現在に至る」など、退職後で所属なしならその旨を明記）
 
 **職務経歴書生成時:**
 - 上記履歴書データ + Markdown本文が必須
+- SNS/個人サイト、登壇・執筆はMarkdown本文にH2セクションで記載する
 
 **日付形式:**
 - 生年月日: `YYYY-MM-DD`
@@ -98,6 +101,7 @@ description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の�
 
 入力項目が埋まっていても、採用判断に必要な情報（役割・期間・規模・技術・成果）が不足している場合は生成に進まない。  
 不足がある場合は、まず採用判断に直結する欠落から優先して質問し、内容の完成度を高める。
+学歴/職歴で「入学/卒業」「入社/退職」の片方が欠落している場合も生成前に確認する。
 
 **PDF生成:**
 - `main()` を呼び出す
@@ -180,6 +184,9 @@ outputs = main(
 
 **`YYMMDD-HHMMSS` の時刻はどの基準？**  
 UTC（24時間表記）。
+
+**履歴書JIS様式の根拠は？**  
+厚生労働省の履歴書様式例に基づいています。JIS規格の解説から様式例が削除された後、代替として広く用いられているためです。
 
 **確認が必要な補完 / 自動でよい整形**  
 - 自動で行ってよい整形: 表記ゆれ統一（全角/半角、箇条書き体裁、敬体/常体の統一など）
