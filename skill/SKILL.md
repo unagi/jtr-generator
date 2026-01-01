@@ -58,6 +58,7 @@ description: 履歴書はJIS規格準拠、職務経歴書は一般的体裁の�
 
 - ユーザー向け案内: `references/README.md`（ユーザーからの問い合わせ時はここを基準に回答）
 - 職務経歴書の書き方: `references/career_sheet_best_practices.md`
+- 職種別ガイド: `references/job_type/README.md`
 - Agent Skills仕様: https://agentskills.io/specification
 
 ## Data Requirements
