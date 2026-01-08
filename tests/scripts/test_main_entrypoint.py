@@ -4,8 +4,8 @@ from importlib import reload
 from pathlib import Path
 from typing import Any
 
-import pytest
 import main as scripts_main
+import pytest
 
 
 def _minimal_config() -> dict[str, Any]:

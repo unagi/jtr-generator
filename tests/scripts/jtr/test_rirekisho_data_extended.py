@@ -5,6 +5,7 @@ from pathlib import Path
 
 import jsonschema
 import pytest
+
 from jtr.rirekisho_data import (
     format_validation_error_ja,
     load_validated_data,

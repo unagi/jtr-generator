@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import pytest
 import yaml
+
 from jtr.helper.config import load_config, resolve_font_paths
 
 
@@ -91,7 +92,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {"mincho": "mincho.ttf"}}
 
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
+        with patch("jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = mincho_font
             result = resolve_font_paths(config)
 
@@ -103,7 +104,7 @@ class TestResolveFontPaths:
         assets_dir.mkdir()
         config = {"fonts": {"mincho": "nonexistent.ttf"}}
 
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
+        with patch("jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = assets_dir / "nonexistent.ttf"
             with pytest.raises(FileNotFoundError, match="明朝フォントファイルが見つかりません"):
                 resolve_font_paths(config)
@@ -118,7 +119,7 @@ class TestResolveFontPaths:
 
         config: dict[str, str] = {}
 
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
+        with patch("jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 
@@ -130,7 +131,7 @@ class TestResolveFontPaths:
         font_dir.mkdir(parents=True)
         config: dict[str, str] = {}
 
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
+        with patch("jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = font_dir / "BIZUDMincho-Regular.ttf"  # 存在しない
             with pytest.raises(FileNotFoundError, match="デフォルトフォントが見つかりません"):
                 resolve_font_paths(config)
@@ -145,7 +146,7 @@ class TestResolveFontPaths:
 
         config = {"fonts": {}}
 
-        with patch("skill.scripts.jtr.helper.config.get_assets_path") as mock_get_assets:
+        with patch("jtr.helper.config.get_assets_path") as mock_get_assets:
             mock_get_assets.return_value = default_font
             result = resolve_font_paths(config)
 

@@ -27,7 +27,7 @@ def test_generate_text_anchors(monkeypatch, tmp_path: Path) -> None:
     stubbed = [{"text": "stub", "line": 0}]
     monkeypatch.setitem(
         sys.modules,
-        "skill",
+        "jtr-generator",
         types.ModuleType("skill"),
     )
     monkeypatch.setitem(

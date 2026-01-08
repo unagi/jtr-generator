@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+
 from jtr.rirekisho_data import load_rirekisho_data
 
 jsonschema = pytest.importorskip("jsonschema")

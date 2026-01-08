@@ -1,6 +1,7 @@
 """和暦変換機能のテスト"""
 
 import pytest
+
 from jtr.helper.generation_context import (
     GenerationContext,
     get_generation_context,

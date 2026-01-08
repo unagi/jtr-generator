@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from reportlab.pdfbase import pdfmetrics
+
 from jtr.layout.metrics import get_font_metrics, register_font
 
 

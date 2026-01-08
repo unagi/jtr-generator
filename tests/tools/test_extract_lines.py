@@ -24,7 +24,7 @@ def layout_data():
     """v2レイアウトデータを読み込む"""
     layout_path = (
         Path(__file__).parent.parent.parent
-        / "skill"
+        / "jtr-generator"
         / "assets"
         / "data"
         / "a4"
