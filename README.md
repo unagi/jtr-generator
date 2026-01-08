@@ -20,7 +20,33 @@ Claude Agent Skills（Claude.ai）およびCodex（MCP経由）で動作し、�
 
 ### エンドユーザー（Claude.ai/Codexで履歴書を作成したい方）
 
-#### Claude.ai（推奨）
+#### ワンライナーインストール（CLI推奨）
+
+**Claude Code / Codex / Gemini などのCLIユーザー向け:**
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/unagi/jtr-generator/main/install.sh)"
+```
+
+このスクリプトは以下を自動的に実行します:
+- 最新バージョンの検出とダウンロード
+- 既存インストールのバージョンチェック
+- 複数のAIエージェント（Claude Code, Codex, Gemini）への対応
+- バックアップ付き上書きインストール
+- 一括インストール機能
+
+**使い方:**
+```bash
+# Claude Code
+claude 'jtr-generator で履歴書を作成してください'
+
+# Codex
+codex 'jtr-generator で履歴書を作成してください'
+```
+
+---
+
+#### Claude.ai（Webブラウザ）
 
 1. **zipファイルのダウンロード**
    - [Releases](https://github.com/unagi/jtr-generator/releases)から最新版の`jtr-generator-vX.X.X.zip`をダウンロード
@@ -61,9 +87,9 @@ Claude Agent Skills（Claude.ai）およびCodex（MCP経由）で動作し、�
 
 ## サンプル
 
-- [YAML入力例](skill/assets/examples/sample_rirekisho.yaml)
-- [履歴書PDF](skill/assets/examples/sample_rirekisho.pdf)
-- [職務経歴書PDF](skill/assets/examples/sample_career_sheet_mincho.pdf)
+- [YAML入力例](jtr-generator/assets/examples/sample_rirekisho.yaml)
+- [履歴書PDF](jtr-generator/assets/examples/sample_rirekisho.pdf)
+- [職務経歴書PDF](jtr-generator/assets/examples/sample_career_sheet_mincho.pdf)
 
 ## よくある質問
 
@@ -71,7 +97,7 @@ Claude Agent Skills（Claude.ai）およびCodex（MCP経由）で動作し、�
 A: Claude.aiでは会話内でダウンロードリンクが表示されます。Codexでは指定したディレクトリに保存されます。
 
 **Q: フォントは変更できますか？**
-A: 明朝体とゴシック体から選択できます。会話中に指定するか、`skill/assets/config.yaml`を編集してスキルを再アップロードしてください。
+A: 明朝体とゴシック体から選択できます。会話中に指定するか、`jtr-generator/assets/config.yaml`を編集してスキルを再アップロードしてください。
 
 **Q: 和暦と西暦は切り替えられますか？**
 A: はい、生成時に指定できます。デフォルトは西暦です。

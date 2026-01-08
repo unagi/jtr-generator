@@ -238,7 +238,7 @@ LLM Skills機能を使用して、日本の伝統的な履歴書フォーマッ�
 
 ```
 jtr-generator/
-├── skill/                  # 配布パッケージのルート相当
+├── jtr-generator/                  # 配布パッケージのルート相当
 │   ├── SKILL.md            # LLM向け指示
 │   ├── README.md           # エンドユーザー向け
 │   ├── requirements.txt    # Agent Skills仕様に基づく依存関係
@@ -254,8 +254,8 @@ jtr-generator/
 ### マルチプラットフォーム対応
 
 **設計方針:**
-- **skill/scripts/jtr/**: LLM非依存の共通実装（再利用可能）
-- **skill/scripts/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
+- **jtr-generator/scripts/jtr/**: LLM非依存の共通実装（再利用可能）
+- **jtr-generator/scripts/main.py**: 各プラットフォームからの入口（共通実装への薄いラッパー）
 
 **詳細**: [docs/specifications.md - アーキテクチャ](docs/specifications.md)を参照してください。
 
@@ -276,7 +276,7 @@ def generate_rirekisho_pdf(
     履歴書PDFを生成（LLM非依存）
 
     Args:
-        data: skill/assets/schemas/rirekisho_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
+        data: jtr-generator/assets/schemas/rirekisho_schema.jsonに準拠した履歴書データ（配布パッケージではschemas/）
         options: 生成オプション（LLM環境から注入される）
             - paper_size: 'A4'（B5は将来対応予定）
             - date_format: 'seireki' or 'wareki'
@@ -338,7 +338,7 @@ def load_rirekisho_data(file_path: Path) -> Dict[str, Any]:
 
 **重要な変更（2025年12月）:**
 - `platforms/` ディレクトリを廃止し、Agent Skillsとして単一のアーティファクトビルドに統一
-- リポジトリでは `skill/` 配下に `SKILL.md`, `main.py`, `config.yaml`, `README.md` を配置
+- リポジトリでは `jtr-generator/` 配下に `SKILL.md`, `main.py`, `config.yaml`, `README.md` を配置
 - ビルド成果物ではそれらがルート直下に展開される
 - ビルド成果物: `build/jtr-generator.zip`（GitHub Releasesで配布）
 
@@ -384,7 +384,7 @@ uv run poe build-skill
 - `platforms/claude/` など、プラットフォーム別に分離された構成
 
 **現在の構成:**
-- `skill/` 配下に統一配置（ビルド時にルート直下へ展開）
+- `jtr-generator/` 配下に統一配置（ビルド時にルート直下へ展開）
 - Agent Skillsとして単一のビルドプロセス
 - Codex（MCP経由）とClaude.ai（zipアップロード）の両方で動作確認済み
 

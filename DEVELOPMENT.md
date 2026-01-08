@@ -20,7 +20,7 @@ cd jtr-generator
 uv sync --all-extras --dev
 
 # フォントのセットアップ（オプション）
-# デフォルトでskill/assets/fonts/BIZ_UDMincho/が使用されます
+# デフォルトでjtr-generator/assets/fonts/BIZ_UDMincho/が使用されます
 ```
 
 ## ディレクトリ構成
@@ -32,7 +32,7 @@ jtr-generator/
 ├── CLAUDE.md                   # Agent Skills技術仕様
 ├── DEVELOPMENT.md              # このファイル（開発者向けガイド）
 ├── pyproject.toml              # Pythonプロジェクト設定
-├── skill/                      # Agent Skillsパッケージ
+├── jtr-generator/                      # Agent Skillsパッケージ
 │   ├── SKILL.md                # LLM向け指示
 │   ├── README.md               # エンドユーザー向けガイド
 │   ├── assets/                 # データ/フォント/スキーマ
@@ -182,20 +182,20 @@ GitHub Actionsで以下を自動実行:
 
 ```bash
 # 履歴書のみ
-uv run python skill/scripts/main.py rirekisho \
-  skill/assets/examples/sample_rirekisho.yaml \
+uv run python jtr-generator/scripts/main.py rirekisho \
+  jtr-generator/assets/examples/sample_rirekisho.yaml \
   --output outputs/rirekisho.pdf
 
 # 職務経歴書のみ
-uv run python skill/scripts/main.py career_sheet \
-  skill/assets/examples/sample_rirekisho.yaml \
-  skill/assets/examples/sample_career_content.md \
+uv run python jtr-generator/scripts/main.py career_sheet \
+  jtr-generator/assets/examples/sample_rirekisho.yaml \
+  jtr-generator/assets/examples/sample_career_content.md \
   --output outputs/career_sheet.pdf
 
 # 両方まとめて
-uv run python skill/scripts/main.py both \
-  skill/assets/examples/sample_rirekisho.yaml \
-  skill/assets/examples/sample_career_content.md \
+uv run python jtr-generator/scripts/main.py both \
+  jtr-generator/assets/examples/sample_rirekisho.yaml \
+  jtr-generator/assets/examples/sample_career_content.md \
   --output-dir outputs
 ```
 
@@ -207,24 +207,24 @@ from skill.scripts.main import main
 
 # 履歴書のみ
 output = main(
-    input_data=Path("skill/assets/examples/sample_rirekisho.yaml"),
+    input_data=Path("jtr-generator/assets/examples/sample_rirekisho.yaml"),
     document_type="rirekisho",
     output_path=Path("outputs/rirekisho.pdf"),
 )
 
 # 職務経歴書のみ
 output = main(
-    input_data=Path("skill/assets/examples/sample_rirekisho.yaml"),
+    input_data=Path("jtr-generator/assets/examples/sample_rirekisho.yaml"),
     document_type="career_sheet",
-    markdown_content=Path("skill/assets/examples/sample_career_content.md"),
+    markdown_content=Path("jtr-generator/assets/examples/sample_career_content.md"),
     output_path=Path("outputs/career_sheet.pdf"),
 )
 
 # 両方まとめて
 outputs = main(
-    input_data=Path("skill/assets/examples/sample_rirekisho.yaml"),
+    input_data=Path("jtr-generator/assets/examples/sample_rirekisho.yaml"),
     document_type="both",
-    markdown_content=Path("skill/assets/examples/sample_career_content.md"),
+    markdown_content=Path("jtr-generator/assets/examples/sample_career_content.md"),
     output_path=Path("outputs"),
 )
 ```
@@ -245,7 +245,7 @@ outputs = main(
 
 ### ビルドが失敗する
 
-1. **ファイルの確認**: `skill/`配下の必須ファイルが揃っているか確認
+1. **ファイルの確認**: `jtr-generator/`配下の必須ファイルが揃っているか確認
 2. **権限の確認**: `build/`ディレクトリの書き込み権限を確認
 
 ## リリースフロー
@@ -265,5 +265,5 @@ outputs = main(
 
 - **プロジェクト全体仕様**: [AGENTS.md](AGENTS.md)
 - **Agent Skills技術仕様**: [CLAUDE.md](CLAUDE.md)
-- **エンドユーザー向けマニュアル**: [skill/README.md](skill/README.md)
+- **エンドユーザー向けマニュアル**: [jtr-generator/README.md](jtr-generator/README.md)
 - **テスト仕様**: [docs/testing.md](docs/testing.md)

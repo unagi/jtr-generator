@@ -45,7 +45,7 @@
 
 **パス関連の注意点**:
 - ビルド成果物は`build/jtr-generator.zip`に生成される
-- `skill/`直下のファイルをzip化し、`skill/requirements.txt`を同梱
+- `jtr-generator/`直下のファイルをzip化し、`jtr-generator/requirements.txt`を同梱
 
 **ハッシュ固定されたアクション**:
 - `actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5` (v4)
@@ -97,7 +97,7 @@ sonar.sourceEncoding=UTF-8
 ```
 
 **パス関連の注意点**:
-- `sonar.sources`: 解析対象のソースコード配置先（`skill/`, `tools/`）
+- `sonar.sources`: 解析対象のソースコード配置先（`jtr-generator/`, `tools/`）
 - `sonar.tests`: テストコード配置先（`tests/`）
 - `sonar.python.coverage.reportPaths`: カバレッジファイル（`coverage.xml`）
 - `sonar.exclusions`: 解析除外パターン
@@ -171,7 +171,7 @@ uv run poe test-cov     # カバレッジ付きテスト
 
 **Agent Skillsにおける出力ファイル指定**:
 
-`skill/scripts/main.py`の`main()`関数は`output_path`パラメータで出力先を指定できます。
+`jtr-generator/scripts/main.py`の`main()`関数は`output_path`パラメータで出力先を指定できます。
 
 **パラメータ**:
 ```python

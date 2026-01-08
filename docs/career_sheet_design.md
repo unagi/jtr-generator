@@ -19,7 +19,7 @@
 実装時は以下のAgent Skills標準ディレクトリ構造に準拠します：
 
 ```
-skill/
+jtr-generator/
 ├── SKILL.md              # Agent Skills定義ファイル（必須）
 ├── scripts/              # 実行可能コード（Python実装）
 │   ├── main.py           # エントリーポイント
@@ -60,7 +60,7 @@ skill/
 ### デザインルール（現行）
 
 - **配色**: モノクロ + 追加3色（本文/メイン/サブ/アクセント）
-  - 設定は `skill/assets/config.yaml` の `styles.colors` で管理
+  - 設定は `jtr-generator/assets/config.yaml` の `styles.colors` で管理
   - サブカラーは背景・罫線などの加飾専用（文字色には使用しない）
 - **整列**: 左寄せを基本、日付のみ右寄せ
 - **余白**: 2mm基準のトークンで統一
@@ -70,7 +70,7 @@ skill/
 
 - 参照DOCX（`tests/fixtures/rirekisho_sample.docx`）を解析し、ReportLab用の加飾定義の素案を抽出
 - 解析スクリプト: `tools/analyze_docx_styles.py`
-- 出力: `skill/assets/data/career_sheet/docx_style_report.json`
+- 出力: `jtr-generator/assets/data/career_sheet/docx_style_report.json`
 
 ### HTML媒介アプローチの比較（職務経歴書）
 
@@ -120,7 +120,7 @@ Mistune v3 + GFM相当プラグインで解析し、ReportLabへ変換する。
 ### ディレクトリ構造（Agent Skills標準準拠）
 
 ```
-skill/
+jtr-generator/
 ├── SKILL.md                                        # 更新: 職務経歴書の説明追加
 │
 ├── scripts/                                        # 実行可能コード
@@ -422,7 +422,7 @@ def main(
 このSkillは以下の構造に従います：
 
 ```
-skill/
+jtr-generator/
 ├── SKILL.md              # このファイル
 ├── scripts/              # 実行可能コード（main.py, jtr/）
 ├── references/           # ドキュメント（README.md, career_sheet_best_practices.md）
