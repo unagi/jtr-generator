@@ -71,7 +71,7 @@ sonar.projectName=jtr-generator
 sonar.projectVersion=0.1.0
 
 # ソースコードのパス
-sonar.sources=skill,tools
+sonar.sources=jtr-generator,tools
 sonar.tests=tests
 
 # Python設定

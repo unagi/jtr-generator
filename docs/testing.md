@@ -73,7 +73,7 @@ uv run poe test
 uv run poe test-cov
 
 # 手動で詳細確認する場合（CIと同等）
-uv run pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec
+uv run pytest tests/ --cov=jtr-generator --cov=tools --cov-report=term-missing --cov-report=xml --spec
 ```
 
 ### カバレッジが低い場合の対処

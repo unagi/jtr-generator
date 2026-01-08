@@ -1,6 +1,6 @@
 {
   "format_version": "v1",
-  "source_layout": "skill/assets/data/a4/rirekisho_layout.json",
+  "source_layout": "jtr-generator/assets/data/a4/rirekisho_layout.json",
   "anchor_strategy": "nearest_line",
   "cluster_tolerance_pt": 0.2,
   "page1_texts": [

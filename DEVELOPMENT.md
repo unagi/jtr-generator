@@ -203,7 +203,7 @@ uv run python jtr-generator/scripts/main.py both \
 
 ```python
 from pathlib import Path
-from skill.scripts.main import main
+from main import main
 
 # 履歴書のみ
 output = main(
