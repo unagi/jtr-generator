@@ -2,13 +2,13 @@
 
 import pytest
 
-from skill.scripts.jtr.helper.generation_context import (
+from jtr.helper.generation_context import (
     GenerationContext,
     get_generation_context,
     init_generation_context,
     set_generation_context,
 )
-from skill.scripts.jtr.helper.japanese_era import (
+from jtr.helper.japanese_era import (
     JapaneseDateFormatter,
     convert_to_wareki,
     format_japanese_date,

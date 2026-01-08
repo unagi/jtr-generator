@@ -5,7 +5,7 @@
 **ディレクトリ構成が変更されました:**
 
 - **変更前**: `platforms/claude/` ディレクトリに配置
-- **変更後**: リポジトリでは `skill/` 配下に統一配置（`SKILL.md`, `main.py`, `config.yaml`, `README.md`）
+- **変更後**: リポジトリでは `jtr-generator/` 配下に統一配置（`SKILL.md`, `main.py`, `config.yaml`, `README.md`）
 - **ビルド成果物**: これらがルート直下に展開される
 - **理由**: Codexでも同一のzipファイルが動作することが確認されたため、プラットフォーム分離を廃止
 
@@ -38,7 +38,7 @@
 
 ```
 jtr-generator/
-├── skill/                  # 配布パッケージのルート相当
+├── jtr-generator/                  # 配布パッケージのルート相当
 │   ├── SKILL.md            # Agent Skills定義ファイル（YAMLフロントマター + 指示）
 │   ├── main.py             # エントリーポイント
 │   ├── config.yaml         # ユーザー設定テンプレート
@@ -465,7 +465,7 @@ for file_id in file_ids:
 
 - [README.md](README.md) - エンドユーザー向け使い方ガイド
 - [AGENTS.md](AGENTS.md) - プロジェクト全体仕様（LLM非依存）
-- [skill/assets/schemas/rirekisho_schema.json](skill/assets/schemas/rirekisho_schema.json) - データスキーマ定義
+- [jtr-generator/assets/schemas/rirekisho_schema.json](jtr-generator/assets/schemas/rirekisho_schema.json) - データスキーマ定義
 
 ## 今後のAPI変更
 

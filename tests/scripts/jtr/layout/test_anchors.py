@@ -2,7 +2,7 @@
 
 import pytest
 
-from skill.scripts.jtr.layout.anchors import (
+from jtr.layout.anchors import (
     _cluster_positions,
     _collect_line_positions,
     _nearest_position,

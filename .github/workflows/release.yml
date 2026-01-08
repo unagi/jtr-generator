@@ -48,7 +48,7 @@ jobs:
       - name: Build Agent Skills package
         run: |
           mkdir -p build
-          cd skill
+          cd jtr-generator
           zip -r ../build/${{ steps.version.outputs.zip_name }} . -x "*/__pycache__/*"
 
       - name: Upload artifact
@@ -56,8 +56,8 @@ jobs:
         with:
           name: jtr-generator-skill
           path: |
-            skill/**
-            !skill/**/__pycache__/**
+            jtr-generator/**
+            !jtr-generator/**/__pycache__/**
           retention-days: 90
 
       - name: Create GitHub Release

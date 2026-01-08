@@ -39,7 +39,9 @@ def _reload_fmr(monkeypatch):
 
 def test_build_report_contains_expected_fields(monkeypatch) -> None:
     fmr = _reload_fmr(monkeypatch)
-    font_path = Path("skill") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
+    font_path = (
+        Path("jtr-generator") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
+    )
     report = fmr.build_report(font_path)
 
     assert report["font"]["name"] == font_path.stem
@@ -55,7 +57,9 @@ def test_build_report_contains_expected_fields(monkeypatch) -> None:
 
 def test_main_writes_report(tmp_path, monkeypatch) -> None:
     fmr = _reload_fmr(monkeypatch)
-    font_path = Path("skill") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
+    font_path = (
+        Path("jtr-generator") / "assets" / "fonts" / "BIZ_UDMincho" / "BIZUDMincho-Regular.ttf"
+    )
     output = tmp_path / "report.json"
 
     monkeypatch.setattr(

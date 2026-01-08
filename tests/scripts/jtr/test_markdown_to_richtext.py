@@ -11,7 +11,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import HRFlowable, Paragraph, Preformatted, Table
 
-from skill.scripts.jtr.markdown_to_richtext import HeadingBar, markdown_to_flowables
+from jtr.markdown_to_richtext import HeadingBar, markdown_to_flowables
 
 
 @pytest.fixture

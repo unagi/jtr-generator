@@ -10,7 +10,7 @@ TOLERANCE_PT = 1.0
 def layout_data():
     layout_path = (
         Path(__file__).parent.parent.parent
-        / "skill"
+        / "jtr-generator"
         / "assets"
         / "data"
         / "a4"

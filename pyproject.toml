@@ -5,7 +5,7 @@ description = "日本の履歴書（JIS規格準拠）をPDF形式で生成す�
 authors = [
     { name = "jtr-generator contributors" }
 ]
-readme = "skill/references/README.md"
+readme = "jtr-generator/references/README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
@@ -20,13 +20,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-only-include = ["skill"]
+only-include = ["jtr-generator"]
 
 # Ruff設定
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["skill", "tests", "tools"]
+src = ["jtr-generator", "tests", "tools"]
 
 [tool.ruff.lint]
 select = [
@@ -43,7 +43,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["skill", "jtr"]
+known-first-party = ["jtr-generator", "jtr"]
 
 # mypy設定
 [tool.mypy]
@@ -78,7 +78,7 @@ spec_test_format = "{result} {docstring_summary}"
 
 # pytest-cov設定
 [tool.coverage.run]
-source = ["skill", "tools"]
+source = ["jtr-generator", "tools"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
@@ -95,13 +95,13 @@ fail_under = 80
 # poethepoet タスクランナー設定
 [tool.poe.tasks]
 test = "pytest tests/ --spec"
-test-cov = "pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec"
+test-cov = "pytest tests/ --cov=jtr-generator --cov=tools --cov-report=term-missing --cov-report=xml --spec"
 test-watch = "pytest tests/ -f --spec"
-lint = "ruff check skill/ tests/ tools/"
-lint-fix = "ruff check --fix skill/ tests/ tools/"
-format = "ruff format skill/ tests/ tools/"
-format-check = "ruff format --check skill/ tests/ tools/"
-typecheck = "mypy skill/"
+lint = "ruff check jtr-generator/ tests/ tools/"
+lint-fix = "ruff check --fix jtr-generator/ tests/ tools/"
+format = "ruff format jtr-generator/ tests/ tools/"
+format-check = "ruff format --check jtr-generator/ tests/ tools/"
+typecheck = "mypy jtr-generator/"
 check-coverage = "python tools/check_coverage_per_file.py"
 clean-outputs = "rm -rf outputs/*.pdf outputs/*.jpg outputs/debug/"
 
@@ -120,7 +120,7 @@ sequence = [
 [tool.poe.tasks.build-skill]
 help = "Build Agent Skills package (jtr-generator.zip)"
 sequence = [
-    { cmd = "cd skill && zip -r ../build/jtr-generator.zip . -x \"*/__pycache__/*\"" },
+    { cmd = "cd jtr-generator && zip -r ../build/jtr-generator.zip . -x \"*/__pycache__/*\"" },
 ]
 
 [dependency-groups]

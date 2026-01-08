@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from skill.scripts.jtr.rirekisho_data import load_rirekisho_data
+from jtr.rirekisho_data import load_rirekisho_data
 
 jsonschema = pytest.importorskip("jsonschema")
 ValidationError = jsonschema.ValidationError

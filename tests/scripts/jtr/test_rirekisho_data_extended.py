@@ -6,7 +6,7 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from skill.scripts.jtr.rirekisho_data import (
+from jtr.rirekisho_data import (
     format_validation_error_ja,
     load_validated_data,
     validate_and_load_data,

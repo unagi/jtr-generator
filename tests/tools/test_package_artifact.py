@@ -6,7 +6,7 @@ from pathlib import Path
 
 def test_skill_directory_zips_flat(monkeypatch, tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[2]
-    skill_dir = repo_root / "skill"
+    skill_dir = repo_root / "jtr-generator"
     build_dir = tmp_path / "build"
     build_dir.mkdir()
     zip_path = build_dir / "jtr-generator.zip"

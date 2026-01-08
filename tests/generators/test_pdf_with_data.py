@@ -11,8 +11,8 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr.helper.generation_context import init_generation_context
-from skill.scripts.jtr.rirekisho_generator import (
+from jtr.helper.generation_context import init_generation_context
+from jtr.rirekisho_generator import (
     _calculate_age,
     _format_date,
     _get_field_value,
@@ -272,7 +272,7 @@ def test_generate_rirekisho_with_education_wareki_format(tmp_path):
 
 def test_format_content():
     """_format_content関数のテスト"""
-    from skill.scripts.jtr.rirekisho_generator import _format_content
+    from jtr.rirekisho_generator import _format_content
 
     # 学歴（department付き）
     item = {"school": "〇〇大学", "department": "工学部"}

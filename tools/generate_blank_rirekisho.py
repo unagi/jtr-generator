@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
+from jtr.rirekisho_generator import generate_rirekisho_pdf
 
 if __name__ == "__main__":
     output_dir = Path("outputs")

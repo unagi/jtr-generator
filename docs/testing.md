@@ -39,7 +39,7 @@
 
 各モジュールに対するユニットテスト:
 
-- `skill/scripts/jtr/` - PDF生成、データ読み込み、日付変換、レイアウト関連
+- `jtr-generator/scripts/jtr/` - PDF生成、データ読み込み、日付変換、レイアウト関連
 - `tools/` - レイアウト検証ツール
 
 ### 統合テスト
@@ -73,7 +73,7 @@ uv run poe test
 uv run poe test-cov
 
 # 手動で詳細確認する場合（CIと同等）
-uv run pytest tests/ --cov=skill --cov=tools --cov-report=term-missing --cov-report=xml --spec
+uv run pytest tests/ --cov=jtr-generator --cov=tools --cov-report=term-missing --cov-report=xml --spec
 ```
 
 ### カバレッジが低い場合の対処
