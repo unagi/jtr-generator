@@ -7,8 +7,8 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr import career_sheet_generator
-from skill.scripts.jtr.career_sheet_generator import generate_career_sheet_pdf
+from jtr import career_sheet_generator
+from jtr.career_sheet_generator import generate_career_sheet_pdf
 
 
 def test_generate_career_sheet_pdf_basic(tmp_path: Path) -> None:
@@ -37,7 +37,7 @@ def test_generate_career_sheet_pdf_basic(tmp_path: Path) -> None:
 """
 
     # フォント設定
-    from skill.scripts.jtr.helper.fonts import find_default_font
+    from jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
     options = {"fonts": {"mincho": str(font_path)}}
@@ -69,7 +69,7 @@ def test_generate_career_sheet_with_qualifications(tmp_path: Path) -> None:
 
     markdown_content = "# 職務要約\n\nテスト"
 
-    from skill.scripts.jtr.helper.fonts import find_default_font
+    from jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
     options = {"fonts": {"mincho": str(font_path)}}
@@ -120,7 +120,7 @@ def test_generate_career_sheet_complex_markdown(tmp_path: Path) -> None:
 - SQL（7年）
 """
 
-    from skill.scripts.jtr.helper.fonts import find_default_font
+    from jtr.helper.fonts import find_default_font
 
     font_path = find_default_font()
     options = {"fonts": {"mincho": str(font_path)}}

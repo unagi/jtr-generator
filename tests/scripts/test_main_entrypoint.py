@@ -5,8 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
-from skill.scripts import main as scripts_main
+import main as scripts_main
 
 
 def _minimal_config() -> dict[str, Any]:

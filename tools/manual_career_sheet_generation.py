@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from skill.scripts import main as skill_main
+import main as skill_main
 
 SAMPLE_RIREKISHO = Path("skill/assets/examples/sample_rirekisho.yaml")
 SAMPLE_MARKDOWN = Path("skill/assets/examples/sample_career_content.md")

@@ -40,7 +40,7 @@ try:
 except ImportError:
     PDF2IMAGE_AVAILABLE = False
 
-from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
+from jtr.rirekisho_generator import generate_rirekisho_pdf
 
 # pdf2imageが利用できない場合はテストをスキップ
 pytestmark = pytest.mark.skipif(

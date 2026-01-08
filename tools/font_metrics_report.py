@@ -13,7 +13,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from skill.scripts.jtr.layout.metrics import get_font_metrics, register_font
+from jtr.layout.metrics import get_font_metrics, register_font
 
 
 @dataclass(frozen=True)

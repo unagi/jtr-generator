@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from skill.scripts.jtr.layout.anchors import build_text_anchors
+from jtr.layout.anchors import build_text_anchors
 
 
 def _parse_args() -> argparse.Namespace:

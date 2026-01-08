@@ -4,8 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
-
-from skill.scripts.jtr.layout import career_sheet
+from jtr.layout import career_sheet
 
 
 def _write_rules(path: Path) -> None:

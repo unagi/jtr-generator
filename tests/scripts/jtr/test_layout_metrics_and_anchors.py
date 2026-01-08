@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from skill.scripts.jtr.layout.anchors import (
+from jtr.layout.anchors import (
     _cluster_positions,
     _collect_line_positions,
     _nearest_position,
     build_text_anchors,
     resolve_texts_from_anchors,
 )
-from skill.scripts.jtr.layout.metrics import get_font_metrics
+from jtr.layout.metrics import get_font_metrics
 
 
 def test_cluster_positions_groups_values() -> None:

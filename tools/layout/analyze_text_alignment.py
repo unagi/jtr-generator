@@ -4,8 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from reportlab.pdfbase import pdfmetrics
-
-from skill.scripts.jtr.layout.metrics import get_font_metrics, register_font
+from jtr.layout.metrics import get_font_metrics, register_font
 
 
 def _parse_args() -> argparse.Namespace:

@@ -9,8 +9,8 @@ import pytest
 # reportlabがない環境ではスキップ
 pytest.importorskip("reportlab")
 
-from skill.scripts.jtr import rirekisho_generator
-from skill.scripts.jtr.rirekisho_generator import generate_rirekisho_pdf
+from jtr import rirekisho_generator
+from jtr.rirekisho_generator import generate_rirekisho_pdf
 
 
 def test_generate_rirekisho_pdf_basic(tmp_path: Path) -> None:

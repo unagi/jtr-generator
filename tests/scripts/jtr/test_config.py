@@ -5,8 +5,7 @@ from unittest.mock import patch
 
 import pytest
 import yaml
-
-from skill.scripts.jtr.helper.config import load_config, resolve_font_paths
+from jtr.helper.config import load_config, resolve_font_paths
 
 
 class TestLoadConfig:
