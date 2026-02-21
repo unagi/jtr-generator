@@ -61,6 +61,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: SonarCloud Scan
+        # Dependabot PR（dependabot/**）ではSonarCloud stepをスキップ
+        if: ${{ github.event_name != 'pull_request' || !startsWith(github.head_ref, 'dependabot/') }}
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

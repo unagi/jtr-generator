@@ -16,6 +16,7 @@
 - Lint（ruff）→ Format check（ruff）→ Type check（mypy）→ Test（pytest）の順に実行
 - `coverage.xml`をCodecovとSonarCloudに送信
 - SonarCloud解析は `SonarSource/sonarqube-scan-action` で実行し、`SONAR_HOST_URL=https://sonarcloud.io` を指定
+- Dependabot PR（`dependabot/**`）ではSonarCloud stepをスキップ（シークレット利用制約への対策）
 
 **パス関連の注意点**:
 - `coverage.xml`のパスはプロジェクトルート直下（pyproject.toml設定と一致）
