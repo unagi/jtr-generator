@@ -202,11 +202,11 @@ def _append_block(
     section_depth: int,
     section_indent_step: float,
 ) -> int:
-    token_type = token.get("type")
-    if token_type in ("blank_line", None):
+    node_kind = token.get("type")
+    if node_kind in ("blank_line", None):
         return section_depth
 
-    if token_type == "heading":
+    if node_kind == "heading":
         level = int(token.get("attrs", {}).get("level", 2))
         text = _render_inline(token.get("children", []))
         if level <= 2:
@@ -223,13 +223,13 @@ def _append_block(
         _append_flowable(flowables, _wrap_inset(heading, heading_indent))
         return min(level - 1, 6)
 
-    if token_type == "paragraph":
+    if node_kind == "paragraph":
         text = _render_inline(token.get("children", []))
         body = _build_paragraph(text, styles["BodyText"])
         _append_flowable(flowables, _wrap_inset(body, section_depth * section_indent_step))
         return section_depth
 
-    if token_type == "list":
+    if node_kind == "list":
         _append_list(
             token,
             flowables,
@@ -241,7 +241,7 @@ def _append_block(
         )
         return section_depth
 
-    if token_type == "block_quote":
+    if node_kind == "block_quote":
         _append_block_quote(
             token,
             flowables,
@@ -252,7 +252,7 @@ def _append_block(
         )
         return section_depth
 
-    if token_type == "block_code":
+    if node_kind == "block_code":
         _append_block_code(
             token,
             flowables,
@@ -263,7 +263,7 @@ def _append_block(
         )
         return section_depth
 
-    if token_type == "thematic_break":
+    if node_kind == "thematic_break":
         _append_rule(
             flowables,
             decorations.get("thematic_break", {}),
@@ -272,7 +272,7 @@ def _append_block(
         )
         return section_depth
 
-    if token_type == "table":
+    if node_kind == "table":
         _append_table(
             token,
             flowables,
@@ -528,9 +528,7 @@ def _render_list_item(item: dict[str, Any]) -> str:
     parts: list[str] = []
     for child in item.get("children", []):
         child_type = child.get("type")
-        if child_type == "block_text":
-            parts.append(_render_inline(child.get("children", [])))
-        elif child_type == "paragraph":
+        if child_type == "block_text" or child_type == "paragraph":
             parts.append(_render_inline(child.get("children", [])))
     return " ".join([part for part in parts if part]).strip()
 
@@ -538,29 +536,29 @@ def _render_list_item(item: dict[str, Any]) -> str:
 def _render_inline(tokens: Iterable[dict[str, Any]]) -> str:
     parts: list[str] = []
     for token in tokens:
-        token_type = token.get("type")
-        if token_type == "text":
+        node_kind = token.get("type")
+        if node_kind == "text":
             parts.append(_escape_text(token.get("raw", "")))
-        elif token_type == "strong":
+        elif node_kind == "strong":
             parts.append(f"<b>{_render_inline(token.get('children', []))}</b>")
-        elif token_type == "emphasis":
+        elif node_kind == "emphasis":
             parts.append(f"<i>{_render_inline(token.get('children', []))}</i>")
-        elif token_type == "strikethrough":
+        elif node_kind == "strikethrough":
             parts.append(f"<strike>{_render_inline(token.get('children', []))}</strike>")
-        elif token_type == "codespan":
+        elif node_kind == "codespan":
             code = _escape_text(token.get("raw", ""))
             parts.append(f'<font face="Courier">{code}</font>')
-        elif token_type == "link":
+        elif node_kind == "link":
             url = _escape_text(token.get("attrs", {}).get("url", ""))
             label = _render_inline(token.get("children", []))
             parts.append(f'<a href="{url}">{label}</a>')
-        elif token_type == "image":
+        elif node_kind == "image":
             alt = _escape_text(token.get("attrs", {}).get("alt", ""))
             if alt:
                 parts.append(alt)
-        elif token_type == "linebreak":
+        elif node_kind == "linebreak":
             parts.append("<br/>")
-        elif token_type == "softbreak":
+        elif node_kind == "softbreak":
             parts.append(" ")
     return "".join(parts)
 

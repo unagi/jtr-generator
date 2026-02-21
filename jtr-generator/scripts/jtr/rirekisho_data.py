@@ -23,14 +23,11 @@ def _normalize_dates(data: Any) -> Any:
     """
     if isinstance(data, dict):
         return {key: _normalize_dates(value) for key, value in data.items()}
-    elif isinstance(data, list):
+    if isinstance(data, list):
         return [_normalize_dates(item) for item in data]
-    elif isinstance(data, datetime):
+    if isinstance(data, (datetime, date)):
         return data.isoformat()
-    elif isinstance(data, date):
-        return data.isoformat()
-    else:
-        return data
+    return data
 
 
 def load_rirekisho_data(file_path: Path) -> dict[str, Any]:
@@ -182,7 +179,7 @@ def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
             f"対象: {field_path}\n"
             f"assets/examples/sample_rirekisho.yamlを参考にデータを追加してください。"
         )
-    elif error.validator == "pattern":  # type: ignore[comparison-overlap]
+    if error.validator == "pattern":  # type: ignore[comparison-overlap]
         expected_pattern = error.schema.get("pattern", "")  # type: ignore[union-attr]
         examples = error.schema.get("examples", [])  # type: ignore[union-attr]
         example_str = f"\n例: {examples[0]}" if examples else ""
@@ -190,29 +187,28 @@ def format_validation_error_ja(error: jsonschema.ValidationError) -> str:
             f"フィールド '{field_path}' の形式が不正です。\n"
             f"期待される形式: {expected_pattern}{example_str}"
         )
-    elif error.validator == "enum":  # type: ignore[comparison-overlap]
+    if error.validator == "enum":  # type: ignore[comparison-overlap]
         allowed_values = error.schema.get("enum", [])  # type: ignore[union-attr]
         return (
             f"フィールド '{field_path}' の値が不正です。\n"
             f"許可される値: {', '.join(str(v) for v in allowed_values)}"
         )
-    elif error.validator == "format" and error.schema.get("format") == "date":  # type: ignore[comparison-overlap, union-attr]
+    if error.validator == "format" and error.schema.get("format") == "date":  # type: ignore[comparison-overlap, union-attr]
         return (
             f"フィールド '{field_path}' の日付形式が不正です。\n"
             f"期待される形式: YYYY-MM-DD（例: 1990-04-01）"
         )
-    elif error.validator == "minItems":  # type: ignore[comparison-overlap]
+    if error.validator == "minItems":  # type: ignore[comparison-overlap]
         min_items = error.schema.get("minItems", 0)  # type: ignore[union-attr]
         return (
             f"フィールド '{field_path}' は最低{min_items}件の要素が必要です。\n"
             f"現在の要素数: {len(error.instance) if isinstance(error.instance, list) else 0}"
         )
-    else:
-        return (
-            f"データ検証エラー: {error.message}\n"
-            f"対象フィールド: {field_path}\n"
-            f"詳細: schemas/rirekisho_schema.jsonを参照してください。"
-        )
+    return (
+        f"データ検証エラー: {error.message}\n"
+        f"対象フィールド: {field_path}\n"
+        f"詳細: schemas/rirekisho_schema.jsonを参照してください。"
+    )
 
 
 def validate_and_load_data(input_data: str | Path) -> dict[str, Any]:
