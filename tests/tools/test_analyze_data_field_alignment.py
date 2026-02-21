@@ -120,3 +120,75 @@ def test_main_generates_report(monkeypatch, tmp_path: Path) -> None:
     assert data["multiline_blocks"][0]["field"] == "history_block"
     assert any(block["field"] == "missing_block" for block in data["multiline_blocks"])
     assert "education_rows" in data["dynamic_rows"]
+
+
+def test_custom_stacked_block_is_reported(monkeypatch, tmp_path: Path) -> None:
+    layout = {
+        "page1_lines": [
+            {"x0": 0.0, "y0": 0.0, "x1": 100.0, "y1": 0.0, "width": 1.0},
+            {"x0": 0.0, "y0": 20.0, "x1": 100.0, "y1": 20.0, "width": 1.0},
+            {"x0": 0.0, "y0": 0.0, "x1": 0.0, "y1": 20.0, "width": 1.0},
+        ],
+        "page1_data_fields": {
+            "custom_line1": {"x": 5.0, "y": 18.0, "font_size": 10.0},
+            "custom_line2": {"x": 5.0, "y": 10.0, "font_size": 10.0},
+        },
+        "page2_lines": [],
+        "page2_data_fields": {},
+    }
+    rules = {
+        "tolerance_pt": 2.0,
+        "page1_fields": {
+            "custom_block": {
+                "type": "stacked_lines",
+                "fields": ["custom_line1", "custom_line2"],
+                "align": "left",
+                "valign": "top",
+                "margin_top": 0.5,
+                "line_height": 6.0,
+            }
+        },
+        "multiline_blocks": {},
+        "dynamic_rows": {},
+    }
+    layout_path = tmp_path / "layout_custom.json"
+    rules_path = tmp_path / "rules_custom.json"
+    output_path = tmp_path / "report_custom.json"
+    layout_path.write_text(json.dumps(layout), encoding="utf-8")
+    rules_path.write_text(json.dumps(rules), encoding="utf-8")
+
+    monkeypatch.setattr(adfa, "register_font", lambda _: "stub-font")
+    monkeypatch.setattr(adfa, "get_font_metrics", lambda *_args, **_kwargs: _stub_metrics())
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "adfa",
+            "--layout",
+            str(layout_path),
+            "--rules",
+            str(rules_path),
+            "--font",
+            str(tmp_path / "dummy.ttf"),
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    adfa.main()
+
+    data = json.loads(output_path.read_text(encoding="utf-8"))
+    assert "custom_block" in data
+    assert data["custom_block"]["fields"][0]["field"] == "custom_line1"
+
+
+def test_alignment_status_and_iter_existing_fields() -> None:
+    assert adfa._alignment_status("baseline", 10.0, 1.0) == "baseline"
+    assert adfa._alignment_status("top", None, 1.0) == "ok"
+    assert adfa._alignment_status("top", 2.0, 1.0) == "needs_review"
+
+    keys = ["a", "missing", "b"]
+    layout_fields = {"a": {"x": 1}, "b": {"x": 2}}
+    existing = adfa._iter_existing_fields(keys, layout_fields)
+    assert [(idx, key) for idx, key, _field in existing] == [(0, "a"), (2, "b")]
