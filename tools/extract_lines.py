@@ -56,6 +56,16 @@ class LineExtractionConfig:
     line_width_round_digits: int = 3
 
 
+@dataclass(frozen=True)
+class DrawingStyle:
+    stroke_width: float
+    dash_pattern: list[float]
+    dash_phase: float
+    line_cap: int
+    line_join: int
+    color: list[float]
+
+
 def _default_config_path() -> Path:
     return (
         Path(__file__).resolve().parents[1]
@@ -150,6 +160,80 @@ def _merge_intervals(intervals: list[MergeInterval], tol: float) -> list[MergeIn
     ]
 
 
+def _resolve_line_cap(line_cap_raw: Any, last_cap: int) -> tuple[int, int]:
+    if line_cap_raw is None:
+        return last_cap, last_cap
+    if isinstance(line_cap_raw, tuple):
+        resolved = int(line_cap_raw[0])
+        return resolved, resolved
+    resolved = int(line_cap_raw)
+    return resolved, resolved
+
+
+def _resolve_line_join(line_join_raw: Any, last_join: int) -> tuple[int, int]:
+    if line_join_raw is None:
+        return last_join, last_join
+    resolved = int(line_join_raw)
+    return resolved, resolved
+
+
+def _resolve_color(color_tuple: Any) -> list[float]:
+    return [0.0, 0.0, 0.0] if color_tuple is None else list(color_tuple)
+
+
+def _resolve_drawing_style(
+    drawing: dict[str, Any], last_cap: int, last_join: int
+) -> tuple[DrawingStyle, int, int]:
+    stroke_width = drawing.get("width", 1.0) or 1.0
+    dash_pattern, dash_phase = _parse_dashes(drawing.get("dashes") or "[] 0")
+    line_cap, next_cap = _resolve_line_cap(drawing.get("lineCap"), last_cap)
+    line_join, next_join = _resolve_line_join(drawing.get("lineJoin"), last_join)
+    color = _resolve_color(drawing.get("color"))
+    style = DrawingStyle(
+        stroke_width=stroke_width,
+        dash_pattern=dash_pattern,
+        dash_phase=dash_phase,
+        line_cap=line_cap,
+        line_join=line_join,
+        color=color,
+    )
+    return style, next_cap, next_join
+
+
+def _line_segment(x0: float, y0: float, x1: float, y1: float, style: DrawingStyle) -> RawSegment:
+    return (
+        x0,
+        y0,
+        x1,
+        y1,
+        style.stroke_width,
+        style.dash_pattern,
+        style.dash_phase,
+        style.line_cap,
+        style.line_join,
+        style.color,
+    )
+
+
+def _rect_segments(rect: Any, style: DrawingStyle) -> list[RawSegment]:
+    return [
+        _line_segment(rect.x0, rect.y0, rect.x1, rect.y0, style),
+        _line_segment(rect.x1, rect.y0, rect.x1, rect.y1, style),
+        _line_segment(rect.x1, rect.y1, rect.x0, rect.y1, style),
+        _line_segment(rect.x0, rect.y1, rect.x0, rect.y0, style),
+    ]
+
+
+def _segments_from_item(item: tuple[Any, ...], style: DrawingStyle) -> list[RawSegment]:
+    op = item[0]
+    if op == "l":
+        p1, p2 = item[1], item[2]
+        return [_line_segment(p1.x, p1.y, p2.x, p2.y, style)]
+    if op == "re":
+        return _rect_segments(item[1], style)
+    return []
+
+
 def _extract_raw_segments(page: fitz.Page) -> tuple[list[RawSegment], float, float]:
     width, height = page.rect.width, page.rect.height
     last_cap = 0  # PDF初期値: butt cap
@@ -157,104 +241,9 @@ def _extract_raw_segments(page: fitz.Page) -> tuple[list[RawSegment], float, flo
     segments: list[RawSegment] = []
 
     for drawing in page.get_drawings():
-        stroke_width = drawing.get("width", 1.0) or 1.0
-        dashes_str = drawing.get("dashes") or "[] 0"
-        line_cap_tuple = drawing.get("lineCap")
-        line_join_raw = drawing.get("lineJoin")
-        color_tuple = drawing.get("color")
-
-        if line_cap_tuple is None:
-            line_cap = last_cap
-        elif isinstance(line_cap_tuple, tuple):
-            line_cap = int(line_cap_tuple[0])
-            last_cap = line_cap
-        else:
-            line_cap = int(line_cap_tuple)
-            last_cap = line_cap
-
-        if line_join_raw is None:
-            line_join = last_join
-        else:
-            line_join = int(line_join_raw)
-            last_join = line_join
-
-        color = [0.0, 0.0, 0.0] if color_tuple is None else list(color_tuple)
-        dash_pattern, dash_phase = _parse_dashes(dashes_str)
-
+        style, last_cap, last_join = _resolve_drawing_style(drawing, last_cap, last_join)
         for item in drawing["items"]:
-            op = item[0]
-            if op == "l":
-                p1, p2 = item[1], item[2]
-                segments.append(
-                    (
-                        p1.x,
-                        p1.y,
-                        p2.x,
-                        p2.y,
-                        stroke_width,
-                        dash_pattern,
-                        dash_phase,
-                        line_cap,
-                        line_join,
-                        color,
-                    )
-                )
-                continue
-
-            if op == "re":
-                rect = item[1]
-                segments.extend(
-                    [
-                        (
-                            rect.x0,
-                            rect.y0,
-                            rect.x1,
-                            rect.y0,
-                            stroke_width,
-                            dash_pattern,
-                            dash_phase,
-                            line_cap,
-                            line_join,
-                            color,
-                        ),
-                        (
-                            rect.x1,
-                            rect.y0,
-                            rect.x1,
-                            rect.y1,
-                            stroke_width,
-                            dash_pattern,
-                            dash_phase,
-                            line_cap,
-                            line_join,
-                            color,
-                        ),
-                        (
-                            rect.x1,
-                            rect.y1,
-                            rect.x0,
-                            rect.y1,
-                            stroke_width,
-                            dash_pattern,
-                            dash_phase,
-                            line_cap,
-                            line_join,
-                            color,
-                        ),
-                        (
-                            rect.x0,
-                            rect.y1,
-                            rect.x0,
-                            rect.y0,
-                            stroke_width,
-                            dash_pattern,
-                            dash_phase,
-                            line_cap,
-                            line_join,
-                            color,
-                        ),
-                    ]
-                )
+            segments.extend(_segments_from_item(item, style))
 
     return segments, width, height
 
@@ -300,27 +289,41 @@ def _split_segments_for_pages(
     return left_h, right_h, left_v, right_v
 
 
-def _to_reportlab_lines(
-    horizontal_segments: list[HorizontalSegment],
-    vertical_segments: list[VerticalSegment],
-    page_height: float,
-    x_shift: float,
-    config: LineExtractionConfig,
-) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-
-    by_y_attr: dict[tuple[Any, ...], list[tuple[float, float]]] = defaultdict(list)
+def _group_horizontal_segments(
+    horizontal_segments: list[HorizontalSegment], x_shift: float
+) -> dict[tuple[Any, ...], list[tuple[float, float]]]:
+    grouped: dict[tuple[Any, ...], list[tuple[float, float]]] = defaultdict(list)
     for x0, y, x1, width, dash_pat, dash_ph, cap, join, color in horizontal_segments:
         y_key = round(y, 2)
         attr_key = (y_key, round(width, 3), tuple(dash_pat), dash_ph, cap, join, tuple(color))
-        by_y_attr[attr_key].append((x0 - x_shift, x1 - x_shift))
+        grouped[attr_key].append((x0 - x_shift, x1 - x_shift))
+    return grouped
 
-    for (y_key, width, dash_pat_tuple, dash_ph, cap, join, color_tuple), xs in by_y_attr.items():
+
+def _group_vertical_segments(
+    vertical_segments: list[VerticalSegment],
+) -> dict[tuple[Any, ...], list[tuple[float, float]]]:
+    grouped: dict[tuple[Any, ...], list[tuple[float, float]]] = defaultdict(list)
+    for x, y0, y1, width, dash_pat, dash_ph, cap, join, color in vertical_segments:
+        x_key = round(x, 2)
+        attr_key = (x_key, round(width, 3), tuple(dash_pat), dash_ph, cap, join, tuple(color))
+        grouped[attr_key].append((y0, y1))
+    return grouped
+
+
+def _build_horizontal_lines(
+    grouped: dict[tuple[Any, ...], list[tuple[float, float]]],
+    page_height: float,
+    config: LineExtractionConfig,
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for (y_key, width, dash_pat_tuple, dash_ph, cap, join, color_tuple), xs in grouped.items():
         dash_pat = list(dash_pat_tuple)
         color = list(color_tuple)
         intervals: list[MergeInterval] = [
             (min(a, b), max(a, b), width, dash_pat, dash_ph, cap, join, color) for a, b in xs
         ]
+        merged = _merge_intervals(intervals, tol=config.merge_tolerance_pt)
         for (
             s,
             e,
@@ -330,7 +333,7 @@ def _to_reportlab_lines(
             merged_cap,
             merged_join,
             merged_color,
-        ) in _merge_intervals(intervals, tol=config.merge_tolerance_pt):
+        ) in merged:
             y_rl = page_height - y_key
             out.append(
                 {
@@ -346,19 +349,23 @@ def _to_reportlab_lines(
                     "color": merged_color,
                 }
             )
+    return out
 
-    by_x_attr: dict[tuple[Any, ...], list[tuple[float, float]]] = defaultdict(list)
-    for x, y0, y1, width, dash_pat, dash_ph, cap, join, color in vertical_segments:
-        x_key = round(x, 2)
-        attr_key = (x_key, round(width, 3), tuple(dash_pat), dash_ph, cap, join, tuple(color))
-        by_x_attr[attr_key].append((y0, y1))
 
-    for (x_key, width, dash_pat_tuple, dash_ph, cap, join, color_tuple), ys in by_x_attr.items():
+def _build_vertical_lines(
+    grouped: dict[tuple[Any, ...], list[tuple[float, float]]],
+    page_height: float,
+    x_shift: float,
+    config: LineExtractionConfig,
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for (x_key, width, dash_pat_tuple, dash_ph, cap, join, color_tuple), ys in grouped.items():
         dash_pat = list(dash_pat_tuple)
         color = list(color_tuple)
-        intervals = [
+        intervals: list[MergeInterval] = [
             (min(a, b), max(a, b), width, dash_pat, dash_ph, cap, join, color) for a, b in ys
         ]
+        merged = _merge_intervals(intervals, tol=config.merge_tolerance_pt)
         for (
             s,
             e,
@@ -368,7 +375,7 @@ def _to_reportlab_lines(
             merged_cap,
             merged_join,
             merged_color,
-        ) in _merge_intervals(intervals, tol=config.merge_tolerance_pt):
+        ) in merged:
             x_rl = x_key - x_shift
             y0_rl = page_height - e
             y1_rl = page_height - s
@@ -386,16 +393,34 @@ def _to_reportlab_lines(
                     "color": merged_color,
                 }
             )
+    return out
 
-    for line in out:
+
+def _round_and_sort_lines(
+    lines: list[dict[str, Any]], config: LineExtractionConfig
+) -> list[dict[str, Any]]:
+    for line in lines:
         line["x0"] = round(line["x0"], config.position_round_digits)
         line["y0"] = round(line["y0"], config.position_round_digits)
         line["x1"] = round(line["x1"], config.position_round_digits)
         line["y1"] = round(line["y1"], config.position_round_digits)
         line["width"] = round(line["width"], config.line_width_round_digits)
+    lines.sort(key=lambda row: (row["y0"], row["x0"], row["y1"], row["x1"]))
+    return lines
 
-    out.sort(key=lambda row: (row["y0"], row["x0"], row["y1"], row["x1"]))
-    return out
+
+def _to_reportlab_lines(
+    horizontal_segments: list[HorizontalSegment],
+    vertical_segments: list[VerticalSegment],
+    page_height: float,
+    x_shift: float,
+    config: LineExtractionConfig,
+) -> list[dict[str, Any]]:
+    horizontal_grouped = _group_horizontal_segments(horizontal_segments, x_shift)
+    vertical_grouped = _group_vertical_segments(vertical_segments)
+    lines = _build_horizontal_lines(horizontal_grouped, page_height, config)
+    lines.extend(_build_vertical_lines(vertical_grouped, page_height, x_shift, config))
+    return _round_and_sort_lines(lines, config)
 
 
 def extract_lines_a3_to_a4x2(pdf_path: str, config_path: Path | None = None) -> dict[str, Any]:

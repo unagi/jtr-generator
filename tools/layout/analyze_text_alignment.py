@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,14 @@ DEFAULT_RULES_PATH = Path("jtr-generator/assets/data/a4/rules/label_alignment.js
 DEFAULT_FONT_PATH = Path("jtr-generator/assets/fonts/BIZ_UDMincho/BIZUDMincho-Regular.ttf")
 DEFAULT_CRITICAL_CELLS_PATH = Path("jtr-generator/assets/data/a4/definitions/manual_bounds.json")
 DEFAULT_OUTPUT_PATH = Path("outputs/validation/label_alignment_report.json")
+
+
+@dataclass(frozen=True)
+class VerticalAlignmentResult:
+    expected_y: float | None
+    status: str
+    margin_top: float | None = None
+    margin_bottom: float | None = None
 
 
 def _parse_args() -> argparse.Namespace:
@@ -129,6 +138,68 @@ def _build_label_rule_index(rules: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return lookup
 
 
+def _baseline_result() -> VerticalAlignmentResult:
+    return VerticalAlignmentResult(expected_y=None, status="baseline")
+
+
+def _center_result(
+    text_y: float, bottom: float, top: float, metrics: dict[str, float], tolerance: float
+) -> VerticalAlignmentResult:
+    expected_y = expected_baseline("center", bottom, top, metrics)
+    if expected_y is None:
+        return _baseline_result()
+    status = "ok" if abs(text_y - expected_y) <= tolerance else "needs_review"
+    return VerticalAlignmentResult(expected_y=expected_y, status=status)
+
+
+def _top_result(
+    text_y: float, bottom: float, top: float, metrics: dict[str, float]
+) -> VerticalAlignmentResult:
+    expected_y = expected_baseline("top", bottom, top, metrics)
+    if expected_y is None:
+        return _baseline_result()
+    margin_top = top - (text_y + metrics["ascent"])
+    return VerticalAlignmentResult(
+        expected_y=expected_y, status="needs_margin", margin_top=margin_top
+    )
+
+
+def _bottom_result(
+    text_y: float, bottom: float, top: float, metrics: dict[str, float]
+) -> VerticalAlignmentResult:
+    expected_y = expected_baseline("bottom", bottom, top, metrics)
+    if expected_y is None:
+        return _baseline_result()
+    margin_bottom = (text_y + metrics["descent"]) - bottom
+    return VerticalAlignmentResult(
+        expected_y=expected_y, status="needs_margin", margin_bottom=margin_bottom
+    )
+
+
+def _build_vertical_alignment_result(
+    valign: str,
+    text_y: float,
+    bottom: float | None,
+    top: float | None,
+    metrics: dict[str, float],
+    tolerance: float,
+) -> VerticalAlignmentResult:
+    if valign == "baseline" or bottom is None or top is None:
+        return _baseline_result()
+    if valign == "center":
+        return _center_result(text_y, bottom, top, metrics, tolerance)
+    if valign == "top":
+        return _top_result(text_y, bottom, top, metrics)
+    if valign == "bottom":
+        return _bottom_result(text_y, bottom, top, metrics)
+    return _baseline_result()
+
+
+def _compute_left_margin(text_x: float, v_lines: list[float]) -> float | None:
+    left_ref = nearest_left(text_x, v_lines)
+    return None if left_ref is None else text_x - left_ref
+
+
 def _analyze_text_entry(
     text: dict[str, Any],
     rule: dict[str, Any],
@@ -148,34 +219,17 @@ def _analyze_text_entry(
     bottom, top = _resolve_bounds(text, bounds_key, bounds_map, h_lines)
     metrics = get_font_metrics(font_name, float(text["font_size"]))
     text_y = float(text["y"])
-
-    expected_y = None
-    status = "baseline"
-    margin_top = None
-    margin_bottom = None
-
-    if bottom is not None and top is not None and valign in {"center", "top", "bottom"}:
-        expected_y = expected_baseline(valign, bottom, top, metrics)
-        if valign == "center":
-            if expected_y is not None and abs(text_y - expected_y) <= entry_tolerance:
-                status = "ok"
-            else:
-                status = "needs_review"
-        else:
-            status = "needs_margin"
-            if valign == "top":
-                margin_top = top - (text_y + metrics["ascent"])
-            else:
-                margin_bottom = (text_y + metrics["descent"]) - bottom
-
-    if valign == "baseline":
-        status = "baseline"
-    if manual:
-        status = "manual"
-
-    left_ref = nearest_left(float(text["x"]), v_lines)
-    left_margin = None if left_ref is None else float(text["x"]) - left_ref
-    delta = None if expected_y is None else text_y - expected_y
+    vertical = _build_vertical_alignment_result(
+        valign=valign,
+        text_y=text_y,
+        bottom=bottom,
+        top=top,
+        metrics=metrics,
+        tolerance=entry_tolerance,
+    )
+    status = "manual" if manual else vertical.status
+    left_margin = _compute_left_margin(float(text["x"]), v_lines)
+    delta = None if vertical.expected_y is None else text_y - vertical.expected_y
 
     return {
         "text": text["text"],
@@ -190,14 +244,14 @@ def _analyze_text_entry(
             "top": top,
             "source": bounds_key or "nearest_lines",
         },
-        "expected_y": expected_y,
+        "expected_y": vertical.expected_y,
         "delta": delta,
         "metrics": metrics,
         "tolerance_pt": entry_tolerance,
         "margins": {
             "left": left_margin,
-            "top": margin_top,
-            "bottom": margin_bottom,
+            "top": vertical.margin_top,
+            "bottom": vertical.margin_bottom,
         },
     }
 
@@ -289,16 +343,74 @@ def _select_title_text(
     if isinstance(configured_title, str) and configured_title in text_lookup:
         return text_lookup[configured_title]
 
-    fallback_rules = [
-        rule
+    fallback_texts = [
+        rule.get("text")
         for rule in block_rules
         if rule.get("align") == "center" and rule.get("valign") == "center"
     ]
-    for rule in fallback_rules:
-        text = rule.get("text")
+    for text in fallback_texts:
         if isinstance(text, str) and text in text_lookup:
             return text_lookup[text]
     return None
+
+
+def _build_manual_block_body(
+    bounds: dict[str, float], block_texts: list[dict[str, Any]], font_name: str
+) -> dict[str, Any]:
+    block_texts_sorted = sorted(block_texts, key=lambda item: item["y"])
+    baselines = [float(item["y"]) for item in block_texts_sorted]
+    line_gaps = [b - a for a, b in zip(baselines, baselines[1:], strict=False)]
+    line_height = sum(line_gaps) / len(line_gaps) if line_gaps else 0.0
+    font_size = float(block_texts_sorted[0]["font_size"])
+    metrics = get_font_metrics(font_name, font_size)
+
+    baseline_min = baselines[0]
+    baseline_max = baselines[-1]
+    text_top = baseline_max + metrics["ascent"]
+    text_bottom = baseline_min + metrics["descent"]
+    left_margin = min(float(item["x"]) for item in block_texts_sorted) - bounds["x0"]
+
+    return {
+        "lines": [item["text"] for item in block_texts_sorted],
+        "font_size": font_size,
+        "line_height": round(line_height, 3),
+        "baseline_min": baseline_min,
+        "baseline_max": baseline_max,
+        "text_top": round(text_top, 3),
+        "text_bottom": round(text_bottom, 3),
+        "margin_bottom": round(text_bottom - bounds["y0"], 3),
+        "margin_top": round(bounds["y1"] - text_top, 3),
+        "margin_left": round(left_margin, 3),
+        "metrics": metrics,
+    }
+
+
+def _build_manual_block_title(
+    bounds: dict[str, float],
+    title: dict[str, Any],
+    block_top: float,
+    font_name: str,
+) -> dict[str, Any]:
+    font_size = float(title["font_size"])
+    metrics = get_font_metrics(font_name, font_size)
+    text_width = float(pdfmetrics.stringWidth(title["text"], font_name, font_size))
+
+    remaining_center = (bounds["y1"] + block_top) / 2
+    expected_baseline = remaining_center - (metrics["ascent"] + metrics["descent"]) / 2
+    center_x = (bounds["x0"] + bounds["x1"]) / 2
+    expected_center_delta = (float(title["x"]) + text_width / 2) - center_x
+
+    return {
+        "text": title["text"],
+        "font_size": font_size,
+        "baseline": title["y"],
+        "expected_baseline": round(expected_baseline, 3),
+        "delta_baseline": round(float(title["y"]) - expected_baseline, 3),
+        "text_width": round(text_width, 3),
+        "expected_center_x": round(center_x, 3),
+        "delta_center_x": round(expected_center_delta, 3),
+        "metrics": metrics,
+    }
 
 
 def _analyze_manual_block(
@@ -316,57 +428,14 @@ def _analyze_manual_block(
 
     block_texts = _select_block_texts(block_config, block_rules, text_lookup)
     if block_texts:
-        block_texts_sorted = sorted(block_texts, key=lambda item: item["y"])
-        baselines = [float(item["y"]) for item in block_texts_sorted]
-        line_gaps = [b - a for a, b in zip(baselines, baselines[1:], strict=False)]
-        line_height = sum(line_gaps) / len(line_gaps) if line_gaps else 0.0
-        font_size = float(block_texts_sorted[0]["font_size"])
-        metrics = get_font_metrics(font_name, font_size)
-
-        baseline_min = baselines[0]
-        baseline_max = baselines[-1]
-        text_top = baseline_max + metrics["ascent"]
-        text_bottom = baseline_min + metrics["descent"]
-        left_margin = min(float(item["x"]) for item in block_texts_sorted) - bounds["x0"]
-
-        manual_block["block"] = {
-            "lines": [item["text"] for item in block_texts_sorted],
-            "font_size": font_size,
-            "line_height": round(line_height, 3),
-            "baseline_min": baseline_min,
-            "baseline_max": baseline_max,
-            "text_top": round(text_top, 3),
-            "text_bottom": round(text_bottom, 3),
-            "margin_bottom": round(text_bottom - bounds["y0"], 3),
-            "margin_top": round(bounds["y1"] - text_top, 3),
-            "margin_left": round(left_margin, 3),
-            "metrics": metrics,
-        }
+        manual_block["block"] = _build_manual_block_body(bounds, block_texts, font_name)
 
     title = _select_title_text(block_config, block_rules, text_lookup)
     if title:
-        font_size = float(title["font_size"])
-        metrics = get_font_metrics(font_name, font_size)
-        text_width = float(pdfmetrics.stringWidth(title["text"], font_name, font_size))
-
         block_top = manual_block["block"].get("text_top", bounds["y0"])
-        remaining_center = (bounds["y1"] + block_top) / 2
-        expected_baseline = remaining_center - (metrics["ascent"] + metrics["descent"]) / 2
-
-        center_x = (bounds["x0"] + bounds["x1"]) / 2
-        expected_center_delta = (float(title["x"]) + text_width / 2) - center_x
-
-        manual_block["title"] = {
-            "text": title["text"],
-            "font_size": font_size,
-            "baseline": title["y"],
-            "expected_baseline": round(expected_baseline, 3),
-            "delta_baseline": round(float(title["y"]) - expected_baseline, 3),
-            "text_width": round(text_width, 3),
-            "expected_center_x": round(center_x, 3),
-            "delta_center_x": round(expected_center_delta, 3),
-            "metrics": metrics,
-        }
+        manual_block["title"] = _build_manual_block_title(
+            bounds, title, float(block_top), font_name
+        )
 
     return manual_block
 

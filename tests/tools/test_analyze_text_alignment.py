@@ -218,3 +218,42 @@ def test_manual_block_key_is_rule_driven(monkeypatch, tmp_path: Path) -> None:
     data = json.loads(output.read_text(encoding="utf-8"))
     assert "manual_blocks" in data
     assert "custom_photo_area" in data["manual_blocks"]
+
+
+def test_vertical_alignment_helper(monkeypatch) -> None:
+    _install_metric_stubs(monkeypatch)
+    module = importlib.import_module("tools.layout.analyze_text_alignment")
+    metrics = _stub_metrics()
+
+    center = module._build_vertical_alignment_result(
+        valign="center",
+        text_y=7.0,
+        bottom=0.0,
+        top=20.0,
+        metrics=metrics,
+        tolerance=1.0,
+    )
+    assert center.status == "ok"
+    assert center.expected_y == 7.0
+
+    top = module._build_vertical_alignment_result(
+        valign="top",
+        text_y=10.0,
+        bottom=0.0,
+        top=20.0,
+        metrics=metrics,
+        tolerance=1.0,
+    )
+    assert top.status == "needs_margin"
+    assert top.margin_top == 2.0
+
+    baseline = module._build_vertical_alignment_result(
+        valign="baseline",
+        text_y=10.0,
+        bottom=0.0,
+        top=20.0,
+        metrics=metrics,
+        tolerance=1.0,
+    )
+    assert baseline.status == "baseline"
+    assert baseline.expected_y is None

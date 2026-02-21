@@ -181,3 +181,14 @@ def test_custom_stacked_block_is_reported(monkeypatch, tmp_path: Path) -> None:
     data = json.loads(output_path.read_text(encoding="utf-8"))
     assert "custom_block" in data
     assert data["custom_block"]["fields"][0]["field"] == "custom_line1"
+
+
+def test_alignment_status_and_iter_existing_fields() -> None:
+    assert adfa._alignment_status("baseline", 10.0, 1.0) == "baseline"
+    assert adfa._alignment_status("top", None, 1.0) == "ok"
+    assert adfa._alignment_status("top", 2.0, 1.0) == "needs_review"
+
+    keys = ["a", "missing", "b"]
+    layout_fields = {"a": {"x": 1}, "b": {"x": 2}}
+    existing = adfa._iter_existing_fields(keys, layout_fields)
+    assert [(idx, key) for idx, key, _field in existing] == [(0, "a"), (2, "b")]
