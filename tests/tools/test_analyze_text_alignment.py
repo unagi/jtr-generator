@@ -137,3 +137,84 @@ def test_main_outputs_report(monkeypatch, tmp_path: Path) -> None:
     assert "pages" in data
     assert any(entry["text"] == "名前" for entry in data["pages"]["page1"])
     assert "manual_blocks" in data
+
+
+def test_manual_block_key_is_rule_driven(monkeypatch, tmp_path: Path) -> None:
+    _install_metric_stubs(monkeypatch)
+    layout = _write_layout(tmp_path)
+    output = tmp_path / "text_alignment_custom_manual.json"
+    rules_path = tmp_path / "rules_custom_manual.json"
+    rules_path.write_text(
+        json.dumps(
+            {
+                "defaults": {"align": "left", "valign": "center"},
+                "bounds": {"custom_photo_area": {"bbox_pt": [0.0, 0.0, 50.0, 20.0]}},
+                "manual_blocks": {
+                    "custom_photo_area": {
+                        "block": {
+                            "align": "left",
+                            "valign": "bottom",
+                            "lines": ["写真注釈1", "写真注釈2"],
+                        },
+                        "title": {
+                            "text": "写真注意",
+                            "align": "center",
+                            "valign": "center",
+                        },
+                    }
+                },
+                "labels": [
+                    {"text": "名前", "align": "left", "valign": "center"},
+                    {
+                        "text": "写真注意",
+                        "align": "center",
+                        "valign": "center",
+                        "bounds": "custom_photo_area",
+                        "manual": True,
+                    },
+                    {
+                        "text": "写真注釈1",
+                        "align": "left",
+                        "valign": "bottom",
+                        "bounds": "custom_photo_area",
+                        "manual": True,
+                    },
+                    {
+                        "text": "写真注釈2",
+                        "align": "left",
+                        "valign": "bottom",
+                        "bounds": "custom_photo_area",
+                        "manual": True,
+                    },
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    critical = _write_critical(tmp_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "analyze_text_alignment",
+            "--layout",
+            str(layout),
+            "--rules",
+            str(rules_path),
+            "--critical-cells",
+            str(critical),
+            "--font",
+            str(tmp_path / "dummy.ttf"),
+            "--output",
+            str(output),
+        ],
+    )
+
+    module = importlib.import_module("tools.layout.analyze_text_alignment")
+    module.main()
+
+    data = json.loads(output.read_text(encoding="utf-8"))
+    assert "manual_blocks" in data
+    assert "custom_photo_area" in data["manual_blocks"]

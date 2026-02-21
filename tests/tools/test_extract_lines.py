@@ -223,3 +223,31 @@ def test_split_position(layout_data):
     assert abs(split_x - expected_split) < 1.0, (
         f"Expected split at ~{expected_split}, got {split_x}"
     )
+
+
+def test_line_extraction_config_exists() -> None:
+    """罫線抽出パラメータ定義JSONが存在し、必要キーを含むことを確認"""
+    config_path = (
+        Path(__file__).parent.parent.parent
+        / "jtr-generator"
+        / "assets"
+        / "data"
+        / "a4"
+        / "definitions"
+        / "line_extraction_config.json"
+    )
+
+    assert config_path.exists(), f"Config file not found: {config_path}"
+
+    with open(config_path, encoding="utf-8") as f:
+        config = json.load(f)
+
+    required_keys = {
+        "line_detection_tolerance_pt",
+        "minimum_line_length_pt",
+        "split_tolerance_pt",
+        "merge_tolerance_pt",
+        "position_round_digits",
+        "line_width_round_digits",
+    }
+    assert required_keys.issubset(config.keys())

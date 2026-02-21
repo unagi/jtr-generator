@@ -1,0 +1,8 @@
+{
+  "line_detection_tolerance_pt": 0.1,
+  "minimum_line_length_pt": 0.5,
+  "split_tolerance_pt": 0.5,
+  "merge_tolerance_pt": 1.2,
+  "position_round_digits": 3,
+  "line_width_round_digits": 3
+}
