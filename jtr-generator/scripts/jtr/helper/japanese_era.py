@@ -110,13 +110,12 @@ def convert_to_wareki(date_str: str, format: Literal["full", "short"] = "full") 
     if format == "full":
         if month_only:
             return f"{era_name}{year_display}年{parsed_date.month}月"
-        else:
-            return f"{era_name}{year_display}年{parsed_date.month}月{parsed_date.day}日"
-    else:  # short
-        year_display_short = "1" if wareki_year == 1 else str(wareki_year)
-        if month_only:
-            return f"{era_abbrev}{year_display_short}.{parsed_date.month}"
-        return f"{era_abbrev}{year_display_short}.{parsed_date.month}.{parsed_date.day}"
+        return f"{era_name}{year_display}年{parsed_date.month}月{parsed_date.day}日"
+    # short
+    year_display_short = "1" if wareki_year == 1 else str(wareki_year)
+    if month_only:
+        return f"{era_abbrev}{year_display_short}.{parsed_date.month}"
+    return f"{era_abbrev}{year_display_short}.{parsed_date.month}.{parsed_date.day}"
 
 
 def format_seireki_japanese(

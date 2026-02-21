@@ -195,14 +195,13 @@ def _format_date(
             year_part = full_str.split("年")[0]
             import re
 
-            result = re.sub(r"(\D)(\d)", r"\1 \2", year_part)
-            return result
-        else:  # seireki
-            # 西暦の年のみ（例: "1990"）
-            return str(parsed_date.year)
-    elif format_style == "month_only":
+            return re.sub(r"(\D)(\d)", r"\1 \2", year_part)
+        # seireki
+        # 西暦の年のみ（例: "1990"）
+        return str(parsed_date.year)
+    if format_style == "month_only":
         return str(parsed_date.month)
-    elif format_style == "day_only":
+    if format_style == "day_only":
         return str(parsed_date.day)
 
     # 通常のフォーマット
@@ -217,26 +216,24 @@ def _format_date(
             full_str = convert_to_wareki(date_str, format="full")
             # "令和5年4月1日" → "令和 5 年 4 月 1 日"
             return full_str.replace("年", " 年 ").replace("月", " 月 ").replace("日", " 日")
-        elif format_style == "inline_spaced":
+        if format_style == "inline_spaced":
             # 和暦で完全スペース区切り（例: "令和 5 年 4 月 1 日生"）
             full_str = convert_to_wareki(date_str, format="full")
             # "令和5年4月1日" → "令和 5 年 4 月 1 日"（各要素間にスペース）
             import re
 
-            result = re.sub(r"(\D)(\d)", r"\1 \2", full_str)  # 文字と数字の間
-            result = re.sub(r"(\d)(\D)", r"\1 \2", result)  # 数字と文字の間
-            return result
+            return re.sub(
+                r"(\d)(\D)",
+                r"\1 \2",
+                re.sub(r"(\D)(\d)", r"\1 \2", full_str),  # 文字と数字の間
+            )  # 数字と文字の間
         raise ValueError(f"Invalid format_style: {format_style}")
-    elif date_format == "seireki":
+    if date_format == "seireki":
         # 西暦形式
-        if format_style == "inline":
+        if format_style == "inline" or format_style == "inline_spaced":
             return f"{parsed_date.year} 年 {parsed_date.month} 月 {parsed_date.day} 日"
-        elif format_style == "inline_spaced":
-            return f"{parsed_date.year} 年 {parsed_date.month} 月 {parsed_date.day} 日"
-        else:
-            raise ValueError(f"Invalid format_style: {format_style}")
-    else:
-        raise ValueError(f"Invalid date_format: {date_format}. Expected 'seireki' or 'wareki'")
+        raise ValueError(f"Invalid format_style: {format_style}")
+    raise ValueError(f"Invalid date_format: {date_format}. Expected 'seireki' or 'wareki'")
 
 
 def _get_field_value(data: dict[str, Any], field_path: str, transform: str | None = None) -> str:
@@ -263,8 +260,7 @@ def _get_field_value(data: dict[str, Any], field_path: str, transform: str | Non
     # 変換処理
     if transform == "calculate_age":
         return str(_calculate_age(str(value)))
-    else:
-        return str(value)
+    return str(value)
 
 
 def _draw_data_fields(
@@ -474,7 +470,6 @@ def _draw_education_work_history(
     first_baseline = row_config["first_row_baseline"]
     row_height = row_config["row_height"]
 
-    current_row = 0
     all_rows = []
 
     # pending_rowsがある場合（page2での継続）
@@ -517,7 +512,7 @@ def _draw_education_work_history(
     rows_to_draw = all_rows[:max_rows]
     remaining_rows = all_rows[max_rows:] if len(all_rows) > max_rows else None
 
-    for row_data in rows_to_draw:
+    for current_row, row_data in enumerate(rows_to_draw):
         current_baseline = first_baseline - (current_row * row_height)
         _draw_row(
             c,
@@ -529,7 +524,6 @@ def _draw_education_work_history(
             date_format,
             row_config.get("label"),
         )
-        current_row += 1
 
     return remaining_rows
 

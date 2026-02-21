@@ -37,10 +37,17 @@ select = [
     "B",   # flake8-bugbear
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "S",   # flake8-bandit
 ]
 ignore = [
     "E501",  # line too long (handled by formatter)
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S"]  # テストデータの疑似秘密情報やassertを除外
+"tools/check_coverage_per_file.py" = ["S314"]  # coverage.xmlはローカル生成物のみを解析
 
 [tool.ruff.lint.isort]
 known-first-party = ["jtr-generator", "jtr"]
